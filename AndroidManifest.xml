@@ -3,6 +3,7 @@
     package="com.polytech.devintandroid"
     android:versionCode="1"
     android:versionName="1.0" >
+
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
@@ -14,14 +15,37 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
         <activity
             android:name="com.polytech.devintandroid.MainActivity"
-            android:label="@string/app_name" 
+            android:label="@string/app_name"
             android:screenOrientation="landscape" >
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.polytech.devintandroid.GameActivity"
+            android:label="@string/title_activity_game"
+            android:parentActivityName="com.polytech.devintandroid.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.polytech.devintandroid.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.polytech.devintandroid.HelpActivity"
+            android:label="@string/title_activity_help"
+            android:parentActivityName="com.polytech.devintandroid.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.polytech.devintandroid.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.polytech.devintandroid.OptionsActivity"
+            android:label="@string/title_activity_options"
+            android:parentActivityName="com.polytech.devintandroid.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.polytech.devintandroid.MainActivity" />
         </activity>
     </application>
 
