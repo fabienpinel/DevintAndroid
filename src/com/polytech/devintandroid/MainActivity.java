@@ -52,7 +52,9 @@ public class MainActivity extends Activity {
 		
 
 	}
-
+	/**
+	 * Pour l'instant ce menu ne sert pas.
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
