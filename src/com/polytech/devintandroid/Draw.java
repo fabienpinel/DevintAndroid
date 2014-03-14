@@ -3,12 +3,20 @@ package com.polytech.devintandroid;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.Context;
 import android.opengl.GLES20;
+import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
+import android.util.AttributeSet;
 
-public class Draw implements Renderer {
+public class Draw extends GLSurfaceView implements Renderer {
 	
 		
+		public Draw(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		// TODO Auto-generated constructor stub
+	}
+
 		public static int loadShader(int type, String shaderCode){
 
 		    // create a vertex shader type (GLES20.GL_VERTEX_SHADER)

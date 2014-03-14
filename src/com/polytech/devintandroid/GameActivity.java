@@ -37,7 +37,7 @@ public class GameActivity extends Activity  {
 				SensorManager.SENSOR_DELAY_UI);*/
 		GLSurfaceView view = new GLSurfaceView(this);
 
-		view.setRenderer(new Draw());
+		view.setRenderer(new Draw(this, null));
 		setContentView(view);
 		// setContentView(R.layout.activity_game);
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
