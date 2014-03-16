@@ -7,10 +7,24 @@ import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
+import android.opengl.GLU;
+import android.opengl.Matrix;
 import android.util.AttributeSet;
 
 public class Draw extends GLSurfaceView implements Renderer {
-	
+	private final String vertexShaderCode =
+		    // This matrix member variable provides a hook to manipulate
+		    // the coordinates of objects that use this vertex shader.
+		    "uniform mat4 uMVPMatrix;   \n" +
+
+		    "attribute vec4 vPosition;  \n" +
+		    "void main(){               \n" +
+		    // The matrix must be included as part of gl_Position
+		    // Note that the uMVPMatrix factor *must be first* in order
+		    // for the matrix multiplication product to be correct.
+		    " gl_Position = uMVPMatrix * vPosition; \n" +
+
+		    "}  \n";
 		
 		public Draw(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -60,40 +74,32 @@ public class Draw extends GLSurfaceView implements Renderer {
 				GL10.GL_MODULATE); // Initial clear of the screen.
 
 		gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		 Object muMVPMatrixHandle = GLES20.glGetUniformLocation(0, "uMVPMatrix");
+		 float[] mVMatrix = null;
+		Matrix.setLookAtM(mVMatrix, 0, 0, 0, -3, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
 		// initialize a triangle
 	    Triangle triangle = new Triangle();
 
 	}
 
-	public void onDrawFrame(GL10 gl10) {
 
-		// just clear the screen and depth buffer.
+	public void onDrawFrame(GL10 gl) {
+	    // Set GL_MODELVIEW transformation mode
+	    gl.glMatrixMode(GL10.GL_MODELVIEW);
+	    gl.glLoadIdentity();                      // reset the matrix to its default state
 
-		gl10.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
-
+	    // When using GL_MODELVIEW, you must set the camera view
+	    GLU.gluLookAt(gl, 0, 0, -5, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+	    gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 	}
+	public void onSurfaceChanged(GL10 gl, int width, int height) {
+	    gl.glViewport(0, 0, width, height);
 
-	public void onSurfaceChanged(GL10 gl10, int i, int i1) {
-
-		gl10.glViewport(0, 0, i, i1);
-
-		/*
-		 * 
-		 * Set our projection matrix. This doesn't have to be done each time we
-		 * 
-		 * draw, but usually a new projection needs to be set when the viewport
-		 * 
-		 * is resized.
-		 */
-
-		float ratio = (float) i / i1;
-
-		gl10.glMatrixMode(GL10.GL_PROJECTION);
-
-		gl10.glLoadIdentity();
-
-		gl10.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
-
+	    // make adjustments for screen ratio
+	    float ratio = (float) width / height;
+	    gl.glMatrixMode(GL10.GL_PROJECTION);        // set matrix to projection mode
+	    gl.glLoadIdentity();                        // reset the matrix to its default state
+	    gl.glFrustumf(-ratio, ratio, -1, 1, 3, 7);  // apply the projection matrix
 	}
 	
 }
