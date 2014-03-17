@@ -3,387 +3,218 @@ package com.polytech.devintandroid;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
 
 public class MyRenderer implements GLSurfaceView.Renderer {
-	/**
-	 * Store the model matrix. This matrix is used to move models from object
-	 * space (where each model can be thought of being located at the center of
-	 * the universe) to world space.
-	 */
-	private float[]				mModelMatrix		= new float[16];
-
-	/**
-	 * Store the view matrix. This can be thought of as our camera. This matrix
-	 * transforms world space to eye space; it positions things relative to our
-	 * eye.
-	 */
-	private float[]				mViewMatrix			= new float[16];
-
-	/**
-	 * Store the projection matrix. This is used to project the scene onto a 2D
-	 * viewport.
-	 */
-	private float[]				mProjectionMatrix	= new float[16];
-
-	/**
-	 * Allocate storage for the final combined matrix. This will be passed into
-	 * the shader program.
-	 */
-	private float[]				mMVPMatrix			= new float[16];
-
-	/** Store our model data in a float buffer. */
-	private final FloatBuffer	mTriangle1Vertices;
-	private final FloatBuffer	mTriangle2Vertices;
-	private final FloatBuffer	mTriangle3Vertices;
-
-	/** This will be used to pass in the transformation matrix. */
-	private int					mMVPMatrixHandle;
-
-	/** This will be used to pass in model position information. */
-	private int					mPositionHandle;
-
-	/** This will be used to pass in model color information. */
-	private int					mColorHandle;
-
-	/** How many bytes per float. */
-	private final int			mBytesPerFloat		= 4;
-
-	/** How many elements per vertex. */
-	private final int			mStrideBytes		= 7 * mBytesPerFloat;
-
-	/** Offset of the position data. */
-	private final int			mPositionOffset		= 0;
-
-	/** Size of the position data in elements. */
-	private final int			mPositionDataSize	= 3;
-
-	/** Offset of the color data. */
-	private final int			mColorOffset		= 3;
-
-	/** Size of the color data in elements. */
-	private final int			mColorDataSize		= 4;
-
-	public MyRenderer() {
-		// Define points for equilateral triangles.
-
-		// This triangle is red, green, and blue.
-		final float[] triangle1VerticesData = {
-				// X, Y, Z,
-				// R, G, B, A
-				-0.5f, -0.25f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-
-				0.5f, -0.25f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-
-				0.0f, 0.559016994f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f };
-
-		// This triangle is yellow, cyan, and magenta.
-		final float[] triangle2VerticesData = {
-				// X, Y, Z,
-				// R, G, B, A
-				-0.5f, -0.25f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-
-				0.5f, -0.25f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-
-				0.0f, 0.559016994f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f };
-
-		// This triangle is white, gray, and black.
-		final float[] triangle3VerticesData = {
-				// X, Y, Z,
-				// R, G, B, A
-				-0.5f, -0.25f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f,
-
-				0.5f, -0.25f, 0.0f, 0.5f, 0.5f, 0.5f, 1.0f,
-
-				0.0f, 0.559016994f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f };
-
-		// Initialize the buffers.
-		mTriangle1Vertices = ByteBuffer
-				.allocateDirect(triangle1VerticesData.length * mBytesPerFloat)
-				.order(ByteOrder.nativeOrder()).asFloatBuffer();
-		mTriangle2Vertices = ByteBuffer
-				.allocateDirect(triangle2VerticesData.length * mBytesPerFloat)
-				.order(ByteOrder.nativeOrder()).asFloatBuffer();
-		mTriangle3Vertices = ByteBuffer
-				.allocateDirect(triangle3VerticesData.length * mBytesPerFloat)
-				.order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-		mTriangle1Vertices.put(triangle1VerticesData).position(0);
-		mTriangle2Vertices.put(triangle2VerticesData).position(0);
-		mTriangle3Vertices.put(triangle3VerticesData).position(0);
-
-	}
-
-	@Override
-	public void onDrawFrame(GL10 gl) {
-		GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
-
-		// Do a complete rotation every 10 seconds.
-		long time = SystemClock.uptimeMillis() % 10000L;
-		float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
-
-		// Draw the triangle facing straight on.
-		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-		drawTriangle(mTriangle1Vertices);
-
-		// Draw one translated a bit down and rotated to be flat on the ground.
-		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.translateM(mModelMatrix, 0, 0.0f, -1.0f, 0.0f);
-		Matrix.rotateM(mModelMatrix, 0, 90.0f, 1.0f, 0.0f, 0.0f);
-		Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-		drawTriangle(mTriangle2Vertices);
-
-		// Draw one translated a bit to the right and rotated to be facing to
-		// the left.
-		Matrix.setIdentityM(mModelMatrix, 0);
-		Matrix.translateM(mModelMatrix, 0, 1.0f, 0.0f, 0.0f);
-		Matrix.rotateM(mModelMatrix, 0, 90.0f, 0.0f, 1.0f, 0.0f);
-		Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 0.0f, 1.0f);
-		drawTriangle(mTriangle3Vertices);
-	}
-
-	private void drawTriangle(final FloatBuffer aTriangleBuffer) {
-		// Pass in the position information
-		aTriangleBuffer.position(mPositionOffset);
-		GLES20.glVertexAttribPointer(mPositionHandle, mPositionDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-		GLES20.glEnableVertexAttribArray(mPositionHandle);
-
-		// Pass in the color information
-		aTriangleBuffer.position(mColorOffset);
-		GLES20.glVertexAttribPointer(mColorHandle, mColorDataSize,
-				GLES20.GL_FLOAT, false, mStrideBytes, aTriangleBuffer);
-
-		GLES20.glEnableVertexAttribArray(mColorHandle);
-
-		// This multiplies the view matrix by the model matrix, and stores the
-		// result in the MVP matrix
-		// (which currently contains model * view).
-		Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-
-		// This multiplies the modelview matrix by the projection matrix, and
-		// stores the result in the MVP matrix
-		// (which now contains model * view * projection).
-		Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-
-		GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-		GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3);
-	}
-
-	/**
-	 * Lors du passage portrait // paysage ou changement de taille
-	 */
-	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		// Set the OpenGL viewport to the same size as the surface.
-		GLES20.glViewport(0, 0, width, height);
-
-		// Create a new perspective projection matrix. The height will stay the
-		// same
-		// while the width will vary as per aspect ratio.
-		final float ratio = (float) width / height;
-		final float left = -ratio;
-		final float right = ratio;
-		final float bottom = -1.0f;
-		final float top = 1.0f;
-		final float near = 1.0f;
-		final float far = 10.0f;
-
-		Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near,
-				far);
-
-	}
-
-	/**
-	 * Appelé à l'initialisation
-	 */
-	@Override
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		// Set the background clear color to gray.
-		GLES20.glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
-
-		// Position the eye behind the origin.
-		final float eyeX = 0.0f;
-		final float eyeY = 0.0f;
-		final float eyeZ = 1.5f;
-
-		// We are looking toward the distance
-		final float lookX = 0.0f;
-		final float lookY = 0.0f;
-		final float lookZ = -5.0f;
-
-		// Set our up vector. This is where our head would be pointing were we
-		// holding the camera.
-		final float upX = 0.0f;
-		final float upY = 1.0f;
-		final float upZ = 0.0f;
-
-		// Set the view matrix. This matrix can be said to represent the camera
-		// position.
-		// NOTE: In OpenGL 1, a ModelView matrix is used, which is a combination
-		// of a model and
-		// view matrix. In OpenGL 2, we can keep track of these matrices
-		// separately if we choose.
-		Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY,
-				lookZ, upX, upY, upZ);
-
-		final String vertexShader = "uniform mat4 u_MVPMatrix;      \n" // A
-																		// constant
-																		// representing
-																		// the
-																		// combined
-																		// model/view/projection
-																		// matrix.
-
-				+ "attribute vec4 a_Position;     \n" // Per-vertex position
-														// information we will
-														// pass in.
-				+ "attribute vec4 a_Color;        \n" // Per-vertex color
-														// information we will
-														// pass in.
-
-				+ "varying vec4 v_Color;          \n" // This will be passed
-														// into the fragment
-														// shader.
-
-				+ "void main()                    \n" // The entry point for our
-														// vertex shader.
-				+ "{                              \n"
-				+ "   v_Color = a_Color;          \n" // Pass the color through
-														// to the fragment
-														// shader.
-														// It will be
-														// interpolated across
-														// the triangle.
-				+ "   gl_Position = u_MVPMatrix   \n" // gl_Position is a
-														// special variable used
-														// to store the final
-														// position.
-				+ "               * a_Position;   \n" // Multiply the vertex by
-														// the matrix to get the
-														// final point in
-				+ "}                              \n"; // normalized screen
-														// coordinates.
-
-		final String fragmentShader = "precision mediump float;       \n"
-				// Set the  default  precision to medium. We don't need  as high of  a precision in
-				// the fragment shader.
-				+ "varying vec4 v_Color;          \n" 
-				// This is the color from the vertex shader interpolated across
-				// the triangle per fragment.
-				+ "void main()                    \n" 
-				// The entry point for our fragment shader.
-				+ "{                              \n"
-				+ "   gl_FragColor = v_Color;     \n" 
-				// Pass the color directly through the pipeline.
-				+ "}                              \n";
-
-		// Load in the vertex shader.
-		int vertexShaderHandle = GLES20.glCreateShader(GLES20.GL_VERTEX_SHADER);
-
-		if (vertexShaderHandle != 0) {
-			// Pass in the shader source.
-			GLES20.glShaderSource(vertexShaderHandle, vertexShader);
-
-			// Compile the shader.
-			GLES20.glCompileShader(vertexShaderHandle);
-
-			// Get the compilation status.
-			final int[] compileStatus = new int[1];
-			GLES20.glGetShaderiv(vertexShaderHandle, GLES20.GL_COMPILE_STATUS,
-					compileStatus, 0);
-
-			// If the compilation failed, delete the shader.
-			if (compileStatus[0] == 0) {
-				GLES20.glDeleteShader(vertexShaderHandle);
-				vertexShaderHandle = 0;
-			}
-		}
-
-		if (vertexShaderHandle == 0) {
-			throw new RuntimeException("Error creating vertex shader.");
-		}
-
-		// Load in the fragment shader shader.
-		int fragmentShaderHandle = GLES20
-				.glCreateShader(GLES20.GL_FRAGMENT_SHADER);
-
-		if (fragmentShaderHandle != 0) {
-			// Pass in the shader source.
-			GLES20.glShaderSource(fragmentShaderHandle, fragmentShader);
-
-			// Compile the shader.
-			GLES20.glCompileShader(fragmentShaderHandle);
-
-			// Get the compilation status.
-			final int[] compileStatus = new int[1];
-			GLES20.glGetShaderiv(fragmentShaderHandle,
-					GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-			// If the compilation failed, delete the shader.
-			if (compileStatus[0] == 0) {
-				GLES20.glDeleteShader(fragmentShaderHandle);
-				fragmentShaderHandle = 0;
-			}
-		}
-
-		if (fragmentShaderHandle == 0) {
-			throw new RuntimeException("Error creating fragment shader.");
-		}
-
-		// Create a program object and store the handle to it.
-		int programHandle = GLES20.glCreateProgram();
-
-		if (programHandle != 0) {
-			// Bind the vertex shader to the program.
-			GLES20.glAttachShader(programHandle, vertexShaderHandle);
-
-			// Bind the fragment shader to the program.
-			GLES20.glAttachShader(programHandle, fragmentShaderHandle);
-
-			// Bind attributes
-			GLES20.glBindAttribLocation(programHandle, 0, "a_Position");
-			GLES20.glBindAttribLocation(programHandle, 1, "a_Color");
-
-			// Link the two shaders together into a program.
-			GLES20.glLinkProgram(programHandle);
-
-			// Get the link status.
-			final int[] linkStatus = new int[1];
-			GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS,
-					linkStatus, 0);
-
-			// If the link failed, delete the program.
-			if (linkStatus[0] == 0) {
-				GLES20.glDeleteProgram(programHandle);
-				programHandle = 0;
-			}
-		}
-
-		if (programHandle == 0) {
-			throw new RuntimeException("Error creating program.");
-		}
-
-		// Set program handles. These will later be used to pass in values to
-		// the program.
-		mMVPMatrixHandle = GLES20.glGetUniformLocation(programHandle,
-				"u_MVPMatrix");
-		mPositionHandle = GLES20.glGetAttribLocation(programHandle,
-				"a_Position");
-		mColorHandle = GLES20.glGetAttribLocation(programHandle, "a_Color");
-
-		// Tell OpenGL to use this program when rendering.
-		GLES20.glUseProgram(programHandle);
-
-	}
-
+    // Our matrices
+    private final float[] mtrxProjection = new float[16];
+    private final float[] mtrxView = new float[16];
+    private final float[] mtrxProjectionAndView = new float[16];
+ 
+    // Geometric variables
+    public static float vertices[];
+    public static short indices[];
+    public FloatBuffer vertexBuffer;
+    public ShortBuffer drawListBuffer;
+ 
+    // Our screenresolution
+    float   mScreenWidth = 1280;
+    float   mScreenHeight = 768;
+ 
+    // Misc
+    Context mContext;
+    long mLastTime;
+    int mProgram;
+ 
+    public MyRenderer(Context c)
+    {
+        mContext = c;
+        mLastTime = System.currentTimeMillis() + 100;
+    }
+ 
+    public void onPause()
+    {
+        /* Do stuff to pause the renderer */
+    }
+ 
+    public void onResume()
+    {
+        /* Do stuff to resume the renderer */
+        mLastTime = System.currentTimeMillis();
+    }
+ 
+    @Override
+    public void onDrawFrame(GL10 unused) {
+ 
+        // Get the current time
+        long now = System.currentTimeMillis();
+ 
+        // We should make sure we are valid and sane
+        if (mLastTime > now) return;
+ 
+        // Get the amount of time the last frame took.
+        long elapsed = now - mLastTime;
+ 
+        // Update our example
+ 
+        // Render our example
+        Render(mtrxProjectionAndView);
+ 
+        // Save the current time to see how long it took <img src="http://androidblog.reindustries.com/wp-includes/images/smilies/icon_smile.gif" alt=":)" class="wp-smiley"> .
+        mLastTime = now;
+ 
+    }
+ 
+    private void Render(float[] m) {
+ 
+        // clear Screen and Depth Buffer, we have set the clear color as black.
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
+ 
+        // get handle to vertex shader's vPosition member
+        int mPositionHandle = GLES20.glGetAttribLocation(sp_SolidColor, "vPosition");
+ 
+        // Enable generic vertex attribute array
+        GLES20.glEnableVertexAttribArray(mPositionHandle);
+ 
+        // Prepare the triangle coordinate data
+        GLES20.glVertexAttribPointer(mPositionHandle, 3,
+                                     GLES20.GL_FLOAT, false,
+                                     0, vertexBuffer);
+ 
+        // Get handle to shape's transformation matrix
+        int mtrxhandle = GLES20.glGetUniformLocation(sp_SolidColor, "uMVPMatrix");
+ 
+        // Apply the projection and view transformation
+        GLES20.glUniformMatrix4fv(mtrxhandle, 1, false, m, 0);
+ 
+        // Draw the triangle
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indices.length,
+                GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
+ 
+        // Disable vertex array
+        GLES20.glDisableVertexAttribArray(mPositionHandle);
+ 
+    }
+ 
+    @Override
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+ 
+        // We need to know the current width and height.
+        mScreenWidth = width;
+        mScreenHeight = height;
+ 
+        // Redo the Viewport, making it fullscreen.
+        GLES20.glViewport(0, 0, (int)mScreenWidth, (int)mScreenHeight);
+ 
+        // Clear our matrices
+        for(int i=0;i<16;i++)
+        {
+            mtrxProjection[i] = 0.0f;
+            mtrxView[i] = 0.0f;
+            mtrxProjectionAndView[i] = 0.0f;
+        }
+ 
+        // Setup our screen width and height for normal sprite translation.
+        Matrix.orthoM(mtrxProjection, 0, 0f, mScreenWidth, 0.0f, mScreenHeight, 0, 50);
+ 
+        // Set the camera position (View matrix)
+        Matrix.setLookAtM(mtrxView, 0, 0f, 0f, 1f, 0f, 0f, 0f, 0f, 1.0f, 0.0f);
+ 
+        // Calculate the projection and view transformation
+        Matrix.multiplyMM(mtrxProjectionAndView, 0, mtrxProjection, 0, mtrxView, 0);
+ 
+    }
+ 
+    @Override
+    public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+ 
+        // Create the triangle
+        SetupTriangle();
+ 
+        // Set the clear color to black
+        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1);
+ 
+        // Create the shaders
+        int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vs_SolidColor);
+        int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fs_SolidColor);
+ 
+        sp_SolidColor = GLES20.glCreateProgram();             // create empty OpenGL ES Program
+        GLES20.glAttachShader(sp_SolidColor, vertexShader);   // add the vertex shader to program
+        GLES20.glAttachShader(sp_SolidColor, fragmentShader); // add the fragment shader to program
+        GLES20.glLinkProgram(sp_SolidColor);                  // creates OpenGL ES program executables
+ 
+        // Set our shader programm
+        GLES20.glUseProgram(sp_SolidColor);
+    }
+ 
+    public void SetupTriangle()
+    {
+        // We have create the vertices of our view.
+        vertices = new float[]
+                   {10.0f, 200f, 0.0f,
+                    10.0f, 100f, 0.0f,
+                    100f, 100f, 0.0f,
+                   };
+ 
+        indices = new short[] {0, 1, 2}; // loop in the android official tutorial opengles why different order.
+ 
+        // The vertex buffer.
+        ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
+        bb.order(ByteOrder.nativeOrder());
+        vertexBuffer = bb.asFloatBuffer();
+        vertexBuffer.put(vertices);
+        vertexBuffer.position(0);
+ 
+        // initialize byte buffer for the draw list
+        ByteBuffer dlb = ByteBuffer.allocateDirect(indices.length * 2);
+        dlb.order(ByteOrder.nativeOrder());
+        drawListBuffer = dlb.asShortBuffer();
+        drawListBuffer.put(indices);
+        drawListBuffer.position(0);
+ 
+    }
+
+    // Program variables
+    public static int sp_SolidColor;
+ 
+    /* SHADER Solid
+     *
+     * This shader is for rendering a colored primitive.
+     *
+     */
+    public static final String vs_SolidColor =
+        "uniform    mat4        uMVPMatrix;" +
+        "attribute  vec4        vPosition;" +
+        "void main() {" +
+        "  gl_Position = uMVPMatrix * vPosition;" +
+        "}";
+ 
+    public static final String fs_SolidColor =
+        "precision mediump float;" +
+        "void main() {" +
+        "  gl_FragColor = vec4(0.5,0,0,1);" +
+        "}";
+ 
+    public static int loadShader(int type, String shaderCode){
+ 
+        // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
+        // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
+        int shader = GLES20.glCreateShader(type);
+ 
+        // add the source code to the shader and compile it
+        GLES20.glShaderSource(shader, shaderCode);
+        GLES20.glCompileShader(shader);
+ 
+        // return the shader
+        return shader;
+    }
 }

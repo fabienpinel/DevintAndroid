@@ -29,7 +29,7 @@ public class OpenglActivity extends Activity {
 	        mGLSurfaceView.setEGLContextClientVersion(2);
 	 
 	        // Set the renderer to our demo renderer, defined below.
-	        mGLSurfaceView.setRenderer(new MyRenderer());
+	        mGLSurfaceView.setRenderer(new MyRenderer(this));
 	    }
 	    else
 	    {

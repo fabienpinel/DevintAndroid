@@ -53,11 +53,6 @@ public class Vue extends View {
 		// Draw the shadow
 		canvas.drawLine(0, 10, 10, 20, p);
 		canvas.drawRect(10, 200, 150, 350, p);
-		
-
-		
-
-
 	}
 
 	
