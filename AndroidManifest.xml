@@ -5,10 +5,16 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="11"
         android:targetSdkVersion="18" />
-    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="true"/>
-	<uses-feature android:glEsVersion="0x00020000" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.sensor.accelerometer"
+        android:required="true" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -42,6 +48,14 @@
         <activity
             android:name="com.polytech.devintandroid.OptionsActivity"
             android:label="@string/title_activity_options"
+            android:parentActivityName="com.polytech.devintandroid.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.polytech.devintandroid.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.polytech.devintandroid.OpenglActivity"
+            android:label="@string/title_activity_opengl"
             android:parentActivityName="com.polytech.devintandroid.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

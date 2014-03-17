@@ -19,16 +19,24 @@
         android:id="@+id/startButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.32"
+        android:layout_weight="0.26"
         android:textSize="50sp"
         android:textStyle="bold"
         android:text="START" />
+    <Button
+        android:id="@+id/openButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.26"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:text="OPENGL ES TEST" />
 
     <Button
         android:id="@+id/optionsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.30"
+        android:layout_weight="0.15"
         android:textSize="50sp"
         android:textStyle="bold"
         android:text="OPTIONS" />
@@ -37,7 +45,7 @@
         android:id="@+id/helpButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.20"
+        android:layout_weight="0.15"
         android:textSize="50sp"
         android:textStyle="bold"
         android:text="AIDE" />

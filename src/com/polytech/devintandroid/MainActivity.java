@@ -29,6 +29,19 @@ public class MainActivity extends Activity {
 			}
 		});
 		/*
+		 * Ajout du listener sur le bouton opengltest pour charger l'activité
+		 * OpenglActivity
+		 */
+		Button openButton = (Button) findViewById(R.id.openButton);
+		openButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent opengltestView = new Intent(MainActivity.this,
+						OpenglActivity.class);
+				startActivity(opengltestView);
+			}
+		});
+		/*
 		 * Ajout du listener sur le bouton Options pour charger l'activité
 		 * OptionsActivity
 		 */
