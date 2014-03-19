@@ -75,7 +75,26 @@ public class Vue extends View {
 		canvas.drawLine(20, 1000, 300, 1280, p);
 		
 		canvas.drawLine(100, 0, 100, 1280, p);
-
+		
+		 p.setStyle(Paint.Style.FILL_AND_STROKE);
+         p.setStrokeWidth(1);
+         p.setColor(Color.WHITE);
+         
+         Path path = new Path();
+         path.moveTo(0, 0);
+         path.lineTo(200, 0);
+         path.lineTo(0, 100);
+         path.close();
+         
+         path.offset(0, 0);
+         canvas.drawPath(path, p);
+         path.offset(90, 100);
+         canvas.drawPath(path, p);
+         path.offset(80, 150);
+         canvas.drawPath(path, p);
+         
+		//Bitmap car = BitmapFactory.decodeResource(getResources(),R.drawable.car);
+		//canvas.drawBitmap(car, 130, 10, null);
 		
 	}
 
