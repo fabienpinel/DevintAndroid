@@ -5,8 +5,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -41,6 +45,13 @@ public class Vue extends View {
 		mLinearLayout.addView(i);
 		
 	}
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		Log.d("RunGameActivity", "OnTouchEvent");
+		synchronized (this) {
+		}
+		return true;
+	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
@@ -50,11 +61,21 @@ public class Vue extends View {
 		super.onDraw(canvas);
 		Paint p = new Paint();
 		p.setColor(Color.WHITE);
+		p.setStyle(Paint.Style.FILL);
 		// Draw the shadow
-		canvas.drawLine(0, 10, 10, 20, p);
-		canvas.drawRect(10, 200, 150, 350, p);
-	}
+		canvas.drawRect(0, 150, 150, 250, p);
+		
+		canvas.drawLine(0, 0, 100, 200, p);
+		canvas.drawLine(100, 200, 50, 400, p);
+		
+		canvas.drawLine(50, 400, 100, 700, p);
+		canvas.drawLine(100, 700, 20, 1000, p);
+		
+		canvas.drawLine(20, 1000, 300, 1280, p);
+		
+		canvas.drawLine(100, 0, 100, 1280, p);
 
-	
+		
+	}
 
 }

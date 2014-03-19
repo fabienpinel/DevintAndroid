@@ -13,8 +13,10 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
 import android.os.SystemClock;
+import android.view.Display;
+import android.view.SurfaceView;
 
-public class MyRenderer implements GLSurfaceView.Renderer {
+public class MyRenderer extends SurfaceView implements GLSurfaceView.Renderer {
 	 // Program variables
     public static int sp_SolidColor;
  
@@ -43,10 +45,12 @@ public class MyRenderer implements GLSurfaceView.Renderer {
  
     // Geometric variables
     public static float vertices[];
+    public static float tr2[];
     public static short indices[];
     public FloatBuffer vertexBuffer;
     public ShortBuffer drawListBuffer;
  
+    
     // Our screenresolution
     float   mScreenWidth = 1280;
     float   mScreenHeight = 768;
@@ -58,13 +62,16 @@ public class MyRenderer implements GLSurfaceView.Renderer {
  
     public MyRenderer(Context c)
     {
+    	super(c);
         mContext = c;
         mLastTime = System.currentTimeMillis() + 100;
+        
     }
  
     public void onPause()
     {
         /* Do stuff to pause the renderer */
+    	
     }
  
     public void onResume()
@@ -110,6 +117,7 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         GLES20.glVertexAttribPointer(mPositionHandle, 3,
                                      GLES20.GL_FLOAT, false,
                                      0, vertexBuffer);
+        
  
         // Get handle to shape's transformation matrix
         int mtrxhandle = GLES20.glGetUniformLocation(sp_SolidColor, "uMVPMatrix");
@@ -120,7 +128,9 @@ public class MyRenderer implements GLSurfaceView.Renderer {
         // Draw the triangle
         GLES20.glDrawElements(GLES20.GL_TRIANGLES, indices.length,
                 GLES20.GL_UNSIGNED_SHORT, drawListBuffer);
- 
+       
+
+        
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(mPositionHandle);
  
@@ -157,13 +167,13 @@ public class MyRenderer implements GLSurfaceView.Renderer {
  
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
- 
+    	
         // Create the triangle
         SetupTriangle();
- 
         // Set the clear color to black
-        GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1);
- 
+        //GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1);
+        //fond blanc
+        GLES20.glClearColor((float)1, (float)1, (float)1, 1);
         // Create the shaders
         int vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vs_SolidColor);
         int fragmentShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fs_SolidColor);
@@ -180,34 +190,44 @@ public class MyRenderer implements GLSurfaceView.Renderer {
     public void SetupTriangle()
     {
         // We have create the vertices of our view.
-        vertices = new float[]
-                   {10.0f, 200f, 0.0f,
-                    10.0f, 100f, 0.0f,
-                    100f, 100f, 0.0f,
-                   };
- 
+    	/*
+    	 * point haut gauche (plus grand = plus a droite)
+    	 * hauteur
+    	 * 
+    	 */
+    	vertices = new float[]
+                {0.0f, 400f, 0.0f,
+                 0.0f, 0.0f, 0.0f,
+                 200f, 0.0f, 0.0f,
+                };
+    	tr2 = new float[]
+                {0.0f, 400f, 0.0f,
+                 450f, 400f, 0.0f,
+                 400f, 0.0f, 0.0f,
+                };
+        
         indices = new short[] {0, 1, 2}; // loop in the android official tutorial opengles why different order.
  
         // The vertex buffer.
-        ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 4);
+        ByteBuffer bb = ByteBuffer.allocateDirect(vertices.length * 8);
         bb.order(ByteOrder.nativeOrder());
         vertexBuffer = bb.asFloatBuffer();
-        vertexBuffer.put(vertices);
-        vertexBuffer.position(0);
+        vertexBuffer.put(vertices).position(0);
+       
+        
+        
  
         // initialize byte buffer for the draw list
-        ByteBuffer dlb = ByteBuffer.allocateDirect(indices.length * 2);
+        ByteBuffer dlb = ByteBuffer.allocateDirect(indices.length * 4);
         dlb.order(ByteOrder.nativeOrder());
         drawListBuffer = dlb.asShortBuffer();
-        drawListBuffer.put(indices);
-        drawListBuffer.position(0);
- 
+        drawListBuffer.put(indices).position(0);
+        drawListBuffer.put(indices).position(1);
     }
 
    
  
     public static int loadShader(int type, String shaderCode){
- 
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
         int shader = GLES20.glCreateShader(type);
