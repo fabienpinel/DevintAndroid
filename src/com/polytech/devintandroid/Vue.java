@@ -67,6 +67,7 @@ public class Vue extends View {
 		
 		canvas.drawLine(0, 0, 100, 200, p);
 		canvas.drawLine(100, 200, 50, 400, p);
+		canvas.drawLine(0, 0, 50, 400, p);
 		
 		canvas.drawLine(50, 400, 100, 700, p);
 		canvas.drawLine(100, 700, 20, 1000, p);
