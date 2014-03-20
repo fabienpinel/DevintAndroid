@@ -1,20 +1,30 @@
 package com.polytech.devintandroid;
 
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
+	LinearLayout	layout	= null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		setContentView(R.layout.activity_main);
-
+		layout = (LinearLayout) LinearLayout.inflate(this,
+				R.layout.activity_main, null);
+		loadSettings();
+		setContentView(layout);
 		/*
 		 * Ajout du listener sur le bouton start pour charger l'activité
 		 * StartActivity
@@ -70,13 +80,21 @@ public class MainActivity extends Activity {
 
 	}
 
-	/**
-	 * Pour l'instant ce menu ne sert pas.
-	 */
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+	public void loadSettings() {
+		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		TextView titre = (TextView) layout.findViewById(R.id.title);
+		switch (settings.getInt("titreFond", 0)) {
+
+		case OptionsActivity.THEME_BLEU:
+			titre.setBackgroundColor(Color.parseColor("#0000FF"));
+			break;
+		case OptionsActivity.THEME_ROUGE:
+			titre.setBackgroundColor(Color.parseColor("#FF0000"));
+			break;
+		default:
+			titre.setBackgroundColor(Color.parseColor("#0000FF"));
+
+		}
+
 	}
 }
