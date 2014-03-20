@@ -63,7 +63,7 @@ public class Vue extends View {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
 		// Draw the shadow
-		canvas.drawRect(0, 150, 150, 250, p);
+		//canvas.drawRect(0, 150, 150, 250, p);
 		
 		canvas.drawLine(0, 0, 100, 200, p);
 		canvas.drawLine(100, 200, 50, 400, p);
@@ -83,12 +83,18 @@ public class Vue extends View {
          Path path = new Path();
          path.moveTo(0, 0);
          path.lineTo(200, 0);
-         path.lineTo(0, 100);
+         path.lineTo(0, 300);
          path.close();
          path.offset(0, 0);
          canvas.drawPath(path, p);
          
-         
+         Path triangle = new Path();
+         triangle.moveTo(0, 300);
+         triangle.lineTo(200, 500);
+         triangle.lineTo(0, 1000);
+         triangle.close();
+         triangle.offset(0,0);
+         canvas.drawPath(triangle, p);
          
          
          
