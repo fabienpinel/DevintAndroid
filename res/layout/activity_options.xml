@@ -27,23 +27,25 @@
         android:textStyle="bold"
         android:entries="@array/choixTheme" />
 
-     <SeekBar
-         android:id="@+id/seekBar1"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/applyOptions"
-         android:layout_below="@+id/selectionTheme"
-         android:max="70" />
-
      <Button
          android:id="@+id/applyOptions"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
          android:layout_alignLeft="@+id/selectionTheme"
-         android:layout_below="@+id/seekBar1"
-         android:layout_marginTop="15dp"
+         android:layout_below="@+id/selectionTheme"
+         android:layout_marginTop="36dp"
          android:layout_weight="0.20"
          android:text="Appliquer"
+         android:textSize="@dimen/menuDimension"
+         android:textStyle="bold" />
+     <Button
+         android:id="@+id/backOptions"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/applyOptions"
+         android:layout_marginTop="22dp"
+         android:layout_weight="0.20"
+         android:text="Retour"
          android:textSize="@dimen/menuDimension"
          android:textStyle="bold" />
 

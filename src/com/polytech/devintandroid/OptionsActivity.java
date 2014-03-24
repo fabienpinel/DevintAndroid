@@ -25,7 +25,7 @@ public class OptionsActivity extends Activity {
 	public static final int	THEME_BLEU	= 0;
 	public static final int	THEME_ROUGE	= 1;
 	Spinner					themeSpinner;
-
+	int pos;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,11 +39,7 @@ public class OptionsActivity extends Activity {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView,
 					View selectedItemView, int position, long id) {
-					SharedPreferences settings = getSharedPreferences("prefs",
-							Context.MODE_PRIVATE);
-					SharedPreferences.Editor editor = settings.edit();
-					editor.putInt("titreFond", position);
-					editor.commit();
+					pos=position;
 			}
 
 			@Override
@@ -59,6 +55,19 @@ public class OptionsActivity extends Activity {
 		 */
 		Button applyOption = (Button) findViewById(R.id.applyOptions);
 		applyOption.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				SharedPreferences settings = getSharedPreferences("prefs",
+						Context.MODE_PRIVATE);
+				SharedPreferences.Editor editor = settings.edit();
+				editor.putInt("titreFond", pos);
+				editor.commit();
+				Intent main = new Intent(OptionsActivity.this,
+						MainActivity.class);
+				startActivity(main);
+			}
+		});
+		Button backOption = (Button) findViewById(R.id.backOptions);
+		backOption.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				Intent main = new Intent(OptionsActivity.this,
 						MainActivity.class);

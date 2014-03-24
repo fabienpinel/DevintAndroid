@@ -1,5 +1,6 @@
 package com.polytech.devintandroid;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,41 +8,32 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.Point;
-import android.graphics.RectF;
-import android.util.AttributeSet;
+import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.Gallery;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class Vue extends View {
+public class Vue extends SurfaceView implements android.view.SurfaceHolder.Callback {
 
-	LinearLayout	mLinearLayout;
+	LinearLayout			mLinearLayout;
+	
 
-	public Vue(Context context, AttributeSet attrs) {
-		super(context, attrs);
+	private Bitmap			buffer;			// pixel buffer
+	private SurfaceHolder	holder;
+	Canvas					canvas;
+	GameLoop				game;
 
+	public Vue(Context context) {
+		super(context);
+		this.holder = getHolder();
+		this.holder.addCallback(this);
+		setFocusable(true);
+		canvas = new Canvas();
+		this.game = new GameLoop(context, holder);
 		// Create a LinearLayout in which to add the ImageView
-		mLinearLayout = new LinearLayout(this.getContext());
-
-		// Instantiate an ImageView and define its properties
-		ImageView i = new ImageView(this.getContext());
-		i.setImageResource(R.drawable.ic_launcher);
-		i.setAdjustViewBounds(true);
-		// set the ImageView bounds to match the
-		// Drawable's dimensions
-		i.setLayoutParams(new Gallery.LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT));
-
-		// Add the ImageView to the layout and set the layout as the content
-		// view
-		mLinearLayout.addView(i);
+		mLinearLayout = new LinearLayout(context);
 
 	}
 
@@ -53,12 +45,12 @@ public class Vue extends View {
 		return true;
 	}
 
-	@Override
 	protected void onDraw(Canvas canvas) {
 		// Draw the background image. Operations on the Canvas accumulate
 		// so this is like clearing the screen.
 		// canvas.drawBitmap(mBackgroundImage, 0, 0, null);
-		super.onDraw(canvas);
+
+		//super.onDraw(canvas);
 		Paint p = new Paint();
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
@@ -79,53 +71,88 @@ public class Vue extends View {
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
 		p.setStrokeWidth(1);
 		p.setColor(Color.WHITE);
-
-		// COTE GAUCHE
 		Path path = new Path();
-		path.moveTo(0, 0);
-		path.lineTo(200, 0);
-		path.lineTo(0, 300);
-		path.close();
-		path.offset(0, 0);
-		canvas.drawPath(path, p);
+		// COTE GAUCHE
+		/*
+		 * this.affichageDesPoints(path, p, canvas);
+		 * this.avancer(tousLesPoints); this.invalidate();
+		 */
 
-		Path triangle = new Path();
-		triangle.moveTo(0, 300);
-		triangle.lineTo(200, 500);
-		triangle.lineTo(0, 1000);
-		triangle.close();
-		triangle.offset(0, 0);
-		canvas.drawPath(triangle, p);
+		/*
+		 * path.moveTo(0, 0); path.lineTo(200, 0); path.lineTo(0, 300);
+		 * path.close(); path.offset(0, 0); canvas.drawPath(path, p);
+		 * 
+		 * path.moveTo(0, 300); path.lineTo(200, 500); path.lineTo(0, 1000);
+		 * path.close(); path.offset(0, 0); canvas.drawPath(path, p);
+		 * 
+		 * Path triangle2 = new Path(); triangle2.moveTo(0, 1000);
+		 * triangle2.lineTo(200, 1200); triangle2.lineTo(0, 1280);
+		 * triangle2.close(); triangle2.offset(0, 0); canvas.drawPath(triangle2,
+		 * p);
+		 * 
+		 * 
+		 * 
+		 * 
+		 * Path path2 = new Path(); path2.moveTo(800, 0); path2.lineTo(600, 0);
+		 * path2.lineTo(800, 500); path2.close(); path2.offset(0, 0);
+		 * canvas.drawPath(path2, p);
+		 * 
+		 * Path path3 = new Path(); path3.moveTo(800, 500); path3.lineTo(600,
+		 * 900); path3.lineTo(800, 1280); path3.close(); path3.offset(0, 0);
+		 * canvas.drawPath(path3, p);
+		 */
 
-		Path triangle2 = new Path();
-		triangle2.moveTo(0, 1000);
-		triangle2.lineTo(200, 1200);
-		triangle2.lineTo(0, 1280);
-		triangle2.close();
-		triangle2.offset(0, 0);
-		canvas.drawPath(triangle2, p);
-
-		// A DROITE
-		Path path2 = new Path();
-		path2.moveTo(800, 0);
-		path2.lineTo(600, 0);
-		path2.lineTo(800, 500);
-		path2.close();
-		path2.offset(0, 0);
-		canvas.drawPath(path2, p);
-
-		Path path3 = new Path();
-		path3.moveTo(800, 500);
-		path3.lineTo(600, 900);
-		path3.lineTo(800, 1280);
-		path3.close();
-		path3.offset(0, 0);
-		canvas.drawPath(path3, p);
-
-		
-		Bitmap car = BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher);
-		canvas.drawBitmap(car, 360, 1100, null);
+		// 160*340
+		Bitmap car = BitmapFactory.decodeResource(getResources(),
+				R.drawable.car);
+		canvas.drawBitmap(car, (game.getSwidth() / 2) - 80, game.getSheight() - 300, null);
 
 	}
+	/** Rafraichir l'écran*/
+	@Override
+	 public void invalidate() {
+	  if (holder != null) {
+	   Canvas c = holder.lockCanvas();
+	   if (c != null) {
+		  // canvas.drawColor(0, Mode.CLEAR);
+	    holder.unlockCanvasAndPost(c);
+	   }
+	  }
+	 }
 
+	/**
+	 * callback lorsque la surface est chargée, donc démarrer la boucle de jeu
+	 */
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+		 Log.d("mg", "Surface changed, width = [" + width + "], height = ["
+	                + height + "]");
+		game.setSwidth(width);
+		game.setSheight(height);
+		this.invalidate();
+		//this.buffer = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		//this.canvas = new Canvas(buffer);
+	}
+
+	public void surfaceCreated(SurfaceHolder holder) {
+		game.setSwidth(this.getMeasuredWidth());
+		game.setSheight(this.getMeasuredHeight());
+		game.setRunning(true);
+		game.start();
+	}
+
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		Log.d("mg", "Surface destroyed");
+        game.setRunning(false);
+        boolean alive = true;
+        while (alive) {
+            try {
+                game.join();
+                alive = false;
+            } catch (InterruptedException e) {
+            }
+        }
+	}
+
+	
 }

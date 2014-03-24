@@ -4,6 +4,7 @@ package com.polytech.devintandroid;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
@@ -21,13 +22,16 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private float			x, y, z;
 	private Display			display;
 	Vue						vue;
-
+	private int majoration = 10;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		vue = new Vue(this, null);
+		vue = new Vue(this);
+       
+		//vue = new Vue(this, null);
 		gameActivityInit();
-
+		Log.d("init","init");
 		sensorManager.registerListener(this, accelerometer,
 				SensorManager.SENSOR_DELAY_UI);
 
@@ -35,11 +39,14 @@ public class GameActivity extends Activity implements SensorEventListener {
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
 
-		view_x = (TextView) findViewById(R.id.textpos_x);
+		/*view_x = (TextView) findViewById(R.id.textpos_x);
 		view_y = (TextView) findViewById(R.id.textpos_y);
 		view_z = (TextView) findViewById(R.id.textpos_z);
-
-		setContentView(vue);
+*/
+		//setContentView(vue);
+		Log.d("avant setcontentview", "avant setcontentview");
+		 setContentView(vue);
+		 Log.d("apres setcontentview", "apres setcontentview");
 	}
 
 	public void gameActivityInit() {
@@ -61,6 +68,12 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 		super.onResume();
 	}
+	/** Lorsque l'application s'arrête, 
+	   il faut arrêter proprement la boucle de jeu*/
+	    @Override
+	    protected void onDestroy() {
+	     super.onDestroy();
+	    }
 
 	public float getX() {
 		return x;
@@ -92,7 +105,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	}
 
 	public void onSensorChanged(SensorEvent event) {
-		/*if (event != null && display != null) {
+		if (event != null && display != null) {
 			if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 				switch (display.getRotation()) {
 				case Surface.ROTATION_0:
@@ -113,11 +126,18 @@ public class GameActivity extends Activity implements SensorEventListener {
 					break;
 				} 
 				this.z = event.values[2];
-				view_x.setText("x: " + this.getX());
+				if(x>0){
+					x+=majoration;
+				}else{
+					x-=majoration;
+				}
+				vue.game.updateOrientation((int)x);
+				//Log.d("x: "+x+" y: "+y+" z: "+z, "x: "+x+" y: "+y+" z: "+z);
+				/*view_x.setText("x: " + this.getX());
 				view_y.setText("y: " + this.getY());
-				view_z.setText("z: " + this.getZ());
+				view_z.setText("z: " + this.getZ());*/
 			}
-		}*/
+		}
 
 	}
 
