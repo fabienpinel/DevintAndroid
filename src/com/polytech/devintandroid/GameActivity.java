@@ -22,7 +22,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private float			x, y, z;
 	private Display			display;
 	Vue						vue;
-	private int majoration = 10;
+	private static int majoration = 8;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

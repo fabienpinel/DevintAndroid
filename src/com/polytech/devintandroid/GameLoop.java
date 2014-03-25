@@ -19,6 +19,8 @@ public class GameLoop extends Thread {
 
 	private static final int	FOOT	= 20;
 	private static final int	HAUTEUR	= 400;
+	private static final int MAX_SIZE_LIST = 42;
+	
 
 	private boolean			running;
 	List<mPoint>			pointsGauche	= new ArrayList<mPoint>();
@@ -34,6 +36,7 @@ public class GameLoop extends Thread {
 	private int				sheight;
 	private SurfaceHolder	holder;
 	private int position;
+	private boolean switcher = false;
 	public GameLoop(Context context, SurfaceHolder holder) {
 		this.context = context;
 		this.holder = holder;
@@ -83,11 +86,22 @@ public class GameLoop extends Thread {
 					affichageDesPoints(path, p, canvas);
 					
 					//Generation
+					
 					if((this.position)>=(this.HAUTEUR/2)){
 						genererNouveauTriangleGauche(this.pointsGauche.get(pointsGauche.size()-3));
 						genererNouveauTriangleDroite(pointsDroite.get(pointsDroite.size()-3));
+						if(switcher){
+							if(this.pointsGauche.size()-1>=this.MAX_SIZE_LIST){
+							Log.d("size sup "+pointsGauche.size(), "size sup "+pointsGauche.size());
+							cleanLast(this.pointsGauche);
+							cleanLast(this.pointsDroite);
+							}
+						}else{
+							switcher=true;
+						}
 						position=0;
 					}
+					
 					//Voiture
 					Bitmap car = BitmapFactory.decodeResource(context.getResources(),
 							R.drawable.car);
@@ -116,6 +130,13 @@ public class GameLoop extends Thread {
 		this.screen.canvas.drawBitmap(car, (this.getSwidth() / 2) - 80,
 				this.getSheight() - 300, null);
 	}*/
+
+	private void cleanLast(List<mPoint> points) {
+		points.remove(0);	
+		points.remove(0);
+		points.remove(0);
+		Log.d("apres clean "+pointsGauche.size(), "apres clean "+pointsGauche.size());
+	}
 
 	/**
 	 * Mise à jour des composants du jeu Ici nous déplaçon le personnage avec la
