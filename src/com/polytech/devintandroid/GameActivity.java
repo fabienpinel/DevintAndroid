@@ -127,9 +127,9 @@ public class GameActivity extends Activity implements SensorEventListener {
 				} 
 				this.z = event.values[2];
 				if(x>0){
-					x+=majoration;
+					x*=majoration;
 				}else{
-					x-=majoration;
+					x*=majoration;
 				}
 				vue.game.updateOrientation((int)x);
 				//Log.d("x: "+x+" y: "+y+" z: "+z, "x: "+x+" y: "+y+" z: "+z);

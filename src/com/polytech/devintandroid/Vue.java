@@ -45,16 +45,15 @@ public class Vue extends SurfaceView implements android.view.SurfaceHolder.Callb
 		return true;
 	}
 	/** Rafraichir l'écran*/
-	/*@Override
-	 public void invalidate() {
+	public void invalidate(SurfaceHolder holder) {
 	  if (holder != null) {
 	   Canvas c = holder.lockCanvas();
 	   if (c != null) {
-	 canvas.drawColor(0, Mode.CLEAR);
+		   canvas.drawColor(0, Mode.CLEAR);
 	    holder.unlockCanvasAndPost(c);
 	   }
 	  }
-	 }*/
+	 }
 
 	/**
 	 * callback lorsque la surface est chargée, donc démarrer la boucle de jeu
@@ -65,7 +64,7 @@ public class Vue extends SurfaceView implements android.view.SurfaceHolder.Callb
 	                + height + "]");
 		game.setSwidth(width);
 		game.setSheight(height);
-		this.invalidate();
+		this.invalidate(holder);
 		//this.buffer = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		//this.canvas = new Canvas(buffer);
 	}

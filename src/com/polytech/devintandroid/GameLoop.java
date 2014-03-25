@@ -21,11 +21,10 @@ public class GameLoop extends Thread {
 	private static final int	HAUTEUR	= 400;
 
 	private boolean			running;
-
 	List<mPoint>			pointsGauche	= new ArrayList<mPoint>();
 	List<mPoint>			pointsDroite	= new ArrayList<mPoint>();
 
-	private long			sleepTime		= 10;
+	private long			sleepTime		= 3;
 
 	private Context			context;
 	private Paint			p;
