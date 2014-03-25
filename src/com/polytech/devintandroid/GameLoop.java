@@ -17,31 +17,32 @@ import android.view.SurfaceHolder;
 
 public class GameLoop extends Thread {
 
-	private static final int	FOOT	= 20;
-	private static final int	HAUTEUR	= 400;
-	private static final int MAX_SIZE_LIST = 42;
-	
+	private static final int	FOOT			= 20;
+	private static final int	HAUTEUR			= 400;
+	private static final int	MAX_SIZE_LIST	= 42;
 
-	private boolean			running;
-	List<mPoint>			pointsGauche	= new ArrayList<mPoint>();
-	List<mPoint>			pointsDroite	= new ArrayList<mPoint>();
+	private boolean				running;
+	List<mPoint>				pointsGauche	= new ArrayList<mPoint>();
+	List<mPoint>				pointsDroite	= new ArrayList<mPoint>();
 
-	private long			sleepTime		= 3;
+	private long				sleepTime		= 3;
 
-	private Context			context;
-	private Paint			p;
-	private Path			path;
+	private Context				context;
+	private Paint				p;
+	private Path				path;
 	// Our screenresolution
-	private int				swidth;
-	private int				sheight;
-	private SurfaceHolder	holder;
-	private int position;
-	private boolean switcher = false;
+	private int					swidth;
+	private int					sheight;
+	private SurfaceHolder		holder;
+	private int					position;
+	private boolean				switcher		= false;
+	private boolean				switcher2		= false;
+
 	public GameLoop(Context context, SurfaceHolder holder) {
 		this.context = context;
 		this.holder = holder;
 		running = true;
-		
+
 		p = new Paint();
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
@@ -53,23 +54,19 @@ public class GameLoop extends Thread {
 
 	/** la boucle de jeu */
 	public void run() {
-		int[][] pointsG = { 
-				{ 0, 500 }, { this.getSwidth() / 4, 1200 }, { 0, 1280 },
-				{ 0, 300 }, { this.getSwidth() / 4, 500 }, { 0, 1000 },
-				{ 0, 0 }, { this.getSwidth() / 3, 0 }, { 0, 400 }
-		};
-		int[][] pointsD = {
-				 { this.getSwidth(), 0 },
+		int[][] pointsG = { { 0, 500 }, { this.getSwidth() / 4, 1200 },
+				{ 0, 1280 }, { 0, 300 }, { this.getSwidth() / 4, 500 },
+				{ 0, 1000 }, { 0, 0 }, { this.getSwidth() / 3, 0 }, { 0, 400 } };
+		int[][] pointsD = { { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 900 },
-				{ this.getSwidth(), 1280 } ,
-				{ this.getSwidth(), 0 },
+				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
-				{ this.getSwidth(), 500 }	
-		
+				{ this.getSwidth(), 500 }
+
 		};
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
-		this.position=0;
+		this.position = 0;
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
@@ -78,33 +75,39 @@ public class GameLoop extends Thread {
 			try {
 				canvas = holder.lockCanvas(null);
 				synchronized (this.holder) {
-					
-					//Clear
+
+					// Clear
 					canvas.drawColor(0, Mode.CLEAR);
+
 					
-					//Triangles
-					affichageDesPoints(path, p, canvas);
-					
-					//Generation
-					
-					if((this.position)>=(this.HAUTEUR/2)){
-						genererNouveauTriangleGauche(this.pointsGauche.get(pointsGauche.size()-3));
-						genererNouveauTriangleDroite(pointsDroite.get(pointsDroite.size()-3));
+
+					// Generation
+
+					if ((this.position) >= (this.HAUTEUR / 2)) {
+						genererNouveauTriangleGauche(this.pointsGauche
+								.get(pointsGauche.size() - 3));
+						genererNouveauTriangleDroite(pointsDroite
+								.get(pointsDroite.size() - 3));
+						Log.d("size sup " + pointsGauche.size(),
+								"size sup " + pointsGauche.size());
+						
 						if(switcher){
-							if(this.pointsGauche.size()-1>=this.MAX_SIZE_LIST){
-							Log.d("size sup "+pointsGauche.size(), "size sup "+pointsGauche.size());
+							if(switcher2){
 							cleanLast(this.pointsGauche);
 							cleanLast(this.pointsDroite);
+							}else{
+								switcher2=true;
 							}
-						}else{
-							switcher=true;
-						}
-						position=0;
+							switcher = false;
+						}else{switcher=true;}
+						
+						position = 0;
 					}
-					
-					//Voiture
-					Bitmap car = BitmapFactory.decodeResource(context.getResources(),
-							R.drawable.car);
+					// Triangles
+					affichageDesPoints(path, p, canvas);
+					// Voiture
+					Bitmap car = BitmapFactory.decodeResource(
+							context.getResources(), R.drawable.car);
 					canvas.drawBitmap(car, (this.getSwidth() / 2) - 80,
 							this.getSheight() - 310, null);
 				}
@@ -116,26 +119,32 @@ public class GameLoop extends Thread {
 			try {
 				Thread.sleep(sleepTime);
 			} catch (Exception e) {
-				Log.d("Erreur sleep: "+e.getMessage(),"Erreur sleep: "+e.getMessage());
+				Log.d("Erreur sleep: " + e.getMessage(),
+						"Erreur sleep: " + e.getMessage());
 			}
 		}
 	}
 
 	/** Dessiner les composant du jeu sur le buffer de l'écran */
-	/*public void render() {
-		this.screen.canvas.drawPaint(p);
-		screen.affichageDesPoints(this.path, this.p, this.screen.canvas);
-		Bitmap car = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.car);
-		this.screen.canvas.drawBitmap(car, (this.getSwidth() / 2) - 80,
-				this.getSheight() - 300, null);
-	}*/
+	/*
+	 * public void render() { this.screen.canvas.drawPaint(p);
+	 * screen.affichageDesPoints(this.path, this.p, this.screen.canvas); Bitmap
+	 * car = BitmapFactory.decodeResource(context.getResources(),
+	 * R.drawable.car); this.screen.canvas.drawBitmap(car, (this.getSwidth() /
+	 * 2) - 80, this.getSheight() - 300, null); }
+	 */
 
 	private void cleanLast(List<mPoint> points) {
-		points.remove(0);	
 		points.remove(0);
 		points.remove(0);
-		Log.d("apres clean "+pointsGauche.size(), "apres clean "+pointsGauche.size());
+		points.remove(0);
+		points.remove(0);
+		points.remove(0);
+		points.remove(0);
+
+		
+		Log.d("apres clean " + pointsGauche.size(), "apres clean "
+				+ pointsGauche.size());
 	}
 
 	/**
@@ -145,11 +154,11 @@ public class GameLoop extends Thread {
 	public void update() {
 		this.avancer(this.pointsGauche, GameLoop.FOOT);
 		this.avancer(this.pointsDroite, GameLoop.FOOT);
-		this.position+=this.FOOT;
+		this.position += this.FOOT;
 	}
 
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
-		
+
 		for (int i = 0; i < points.length; i++) {
 			tlp.add(new mPoint(points[i][0], points[i][1]));
 		}
@@ -191,16 +200,21 @@ public class GameLoop extends Thread {
 		ppath.offset(0, 0);
 		ca.drawPath(ppath, pp);
 	}
-	public void genererNouveauTriangleGauche(mPoint p){
-		this.pointsGauche.add(new mPoint(p.getX(), p.getY()-this.HAUTEUR));
-		this.pointsGauche.add(new mPoint(p.getX()+this.getSwidth()/4,p.getY()-200));
-		this.pointsGauche.add(new mPoint(p.getX(), p.getY()+this.HAUTEUR));
+
+	public void genererNouveauTriangleGauche(mPoint p) {
+		this.pointsGauche.add(new mPoint(p.getX(), p.getY() - this.HAUTEUR));
+		this.pointsGauche.add(new mPoint(p.getX() + this.getSwidth() / 4, p
+				.getY() - 200));
+		this.pointsGauche.add(new mPoint(p.getX(), p.getY() + this.HAUTEUR));
 	}
-	public void genererNouveauTriangleDroite(mPoint p){
-		this.pointsDroite.add(new mPoint(p.getX(), p.getY()-this.HAUTEUR));
-		this.pointsDroite.add(new mPoint(p.getX()-this.getSwidth()/4,p.getY()-200));
-		this.pointsDroite.add(new mPoint(p.getX(), p.getY()+this.HAUTEUR));
+
+	public void genererNouveauTriangleDroite(mPoint p) {
+		this.pointsDroite.add(new mPoint(p.getX(), p.getY() - this.HAUTEUR));
+		this.pointsDroite.add(new mPoint(p.getX() - this.getSwidth() / 4, p
+				.getY() - 200));
+		this.pointsDroite.add(new mPoint(p.getX(), p.getY() + this.HAUTEUR));
 	}
+
 	public int getSwidth() {
 		return swidth;
 	}
