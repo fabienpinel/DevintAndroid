@@ -121,8 +121,8 @@ public class GameLoop extends Thread {
 
 						if (this.pointsDroite.size() >= this.MAX_SIZE_LIST
 								|| this.pointsGauche.size() >= this.MAX_SIZE_LIST) {
-							//cleanLast(this.pointsGauche);
-							//cleanLast(this.pointsDroite);
+							cleanLast(this.pointsGauche);
+							cleanLast(this.pointsDroite);
 						}
 						position = 0;
 					}
@@ -177,9 +177,8 @@ public class GameLoop extends Thread {
 		int avancement = (int) (((delta * 1.0) / (Math.pow(10, 9))) * speed);
 		Log.d("avancement " + avancement, "avancement " + avancement);
 		
-
-		this.avancer(this.pointsGauche, avancement);
-		this.avancer(this.pointsDroite, avancement);
+		this.avancer(this.pointsGauche, 12);
+		this.avancer(this.pointsDroite, 12);
 		this.position += avancement;
 		Log.d("position "+position, "position "+position);
 		this.lastUpdate = System.nanoTime();
