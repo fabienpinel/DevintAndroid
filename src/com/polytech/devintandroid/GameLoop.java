@@ -44,18 +44,13 @@ public class GameLoop extends Thread {
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.holder = holder;
-		running = true;
 		this.car = car;
-
-		loadMyCar(car);
-
-		p = new Paint();
-		p.setColor(Color.WHITE);
-		p.setStyle(Paint.Style.FILL);
-		p.setStyle(Paint.Style.FILL_AND_STROKE);
-		p.setStrokeWidth(1);
-		p.setColor(Color.WHITE);
 		path = new Path();
+		p = new Paint();
+		loadMyCar(car);
+		loadPaint(p);
+		this.running = true;
+		
 	}
 
 	public void loadMyCar(int car) {
@@ -79,6 +74,13 @@ public class GameLoop extends Thread {
 			break;
 		}
 	}
+	public void loadPaint(Paint p){
+		p.setColor(Color.WHITE);
+		p.setStyle(Paint.Style.FILL);
+		p.setStyle(Paint.Style.FILL_AND_STROKE);
+		p.setStrokeWidth(1);
+		p.setColor(Color.WHITE);
+	}
 
 	/** la boucle de jeu */
 	public void run() {
@@ -90,8 +92,10 @@ public class GameLoop extends Thread {
 				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
 				{ this.getSwidth(), 500 }, };
+		//Initialisation des premiers points
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
+		
 		this.position = 0;
 		while (this.running) {
 			Log.d("running", "running");
@@ -100,14 +104,13 @@ public class GameLoop extends Thread {
 			this.update();
 			Canvas canvas = null;
 			try {
-				canvas = holder.lockCanvas(null);
 				synchronized (this.holder) {
-
+					canvas = holder.lockCanvas(null);
 					// Clear
-					canvas.drawColor(0, Mode.CLEAR);
-
+					if(canvas!=null){
+						canvas.drawColor(0, Mode.CLEAR);
+					
 					// Generation
-
 					if ((this.position) >= (this.HAUTEUR)) {
 						genererNouveauTriangleGauche(this.pointsGauche
 								.get(pointsGauche.size() - 3));
@@ -129,6 +132,9 @@ public class GameLoop extends Thread {
 
 					canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 							this.getSheight() - 310, null);
+					}else{
+						Log.d("canvas null", "canvass null");
+					}
 				}
 			} finally {
 				if (canvas != null) {
@@ -168,12 +174,12 @@ public class GameLoop extends Thread {
 	 * */
 	public void update() {
 		long delta = System.nanoTime() - lastUpdate;
-		int avancement = (int) ((delta * 1.0) / (Math.pow(10, 9)) * speed);
+		int avancement = (int) (((delta * 1.0) / (Math.pow(10, 9))) * speed);
 		Log.d("avancement " + avancement, "avancement " + avancement);
 		this.position += avancement;
 
-		this.avancer(this.pointsGauche, this.FOOT);
-		this.avancer(this.pointsDroite, this.FOOT);
+		this.avancer(this.pointsGauche, avancement);
+		this.avancer(this.pointsDroite, avancement);
 		this.lastUpdate = System.nanoTime();
 	}
 
