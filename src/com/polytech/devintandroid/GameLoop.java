@@ -36,7 +36,7 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position;
-	private int speed = 600;
+	private int speed = 720;
 	private long lastUpdate;
 	
 
@@ -71,7 +71,8 @@ public class GameLoop extends Thread {
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
-			this.ancienUpdate();
+			//this.ancienUpdate();
+			this.update();
 			Canvas canvas = null;
 			try {
 				canvas = holder.lockCanvas(null);
@@ -150,8 +151,8 @@ public class GameLoop extends Thread {
 		Log.d("avancement "+avancement,"avancement "+avancement);
 		this.position+=avancement;
 		
-		this.avancer(this.pointsGauche, avancement);
-		this.avancer(this.pointsDroite, avancement);
+		this.avancer(this.pointsGauche, this.FOOT);
+		this.avancer(this.pointsDroite, this.FOOT);
 		this.lastUpdate=System.nanoTime();
 	}
 
