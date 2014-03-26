@@ -24,14 +24,15 @@ public class Vue extends SurfaceView implements android.view.SurfaceHolder.Callb
 	private SurfaceHolder	holder;
 	Canvas					canvas;
 	GameLoop				game;
+	private int car;
 
-	public Vue(Context context) {
+	public Vue(Context context, int car) {
 		super(context);
 		this.holder = getHolder();
 		this.holder.addCallback(this);
 		setFocusable(true);
 		canvas = new Canvas();
-		this.game = new GameLoop(context, holder);
+		this.game = new GameLoop(context, holder, car);
 		// Create a LinearLayout in which to add the ImageView
 		mLinearLayout = new LinearLayout(context);
 

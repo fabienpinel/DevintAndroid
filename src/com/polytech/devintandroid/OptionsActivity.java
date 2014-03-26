@@ -24,6 +24,12 @@ import android.graphics.Color;
 public class OptionsActivity extends Activity {
 	public static final int	THEME_BLEU	= 0;
 	public static final int	THEME_ROUGE	= 1;
+	//CARS
+	public static final int RED_CAR=0;
+	public static final int POLICE_CAR=1;
+	public static final int BLUE_CAR=2;
+	public static final int GREEN_CAR=3;
+	
 	Spinner					themeSpinner;
 	Spinner					carSpinner;
 	LinearLayout	layout	= null;
@@ -54,8 +60,8 @@ public class OptionsActivity extends Activity {
 
 		});
 		
-		carSpinner = (Spinner) findViewById(R.id.selectionTheme);
-		carSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.choixTheme, R.layout.spinner_item));
+		carSpinner = (Spinner) findViewById(R.id.selectionCar);
+		carSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.choixCar, R.layout.spinner_item));
 
 		carSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override

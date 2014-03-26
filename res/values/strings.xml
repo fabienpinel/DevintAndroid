@@ -16,5 +16,7 @@
     <string-array name="choixCar">
         <item>Voiture Rouge</item>
         <item>Voiture Police</item>
+        <item>Voiture Bleue</item>
+        <item>Voiture Verte</item>
     </string-array>
 </resources>

@@ -36,14 +36,18 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position;
-	private int speed = 720;
-	private long lastUpdate;
-	
+	private int					speed			= 720;
+	private long				lastUpdate;
+	private int					car				= 0;
+	private Bitmap				myCar;
 
-	public GameLoop(Context context, SurfaceHolder holder) {
+	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.holder = holder;
 		running = true;
+		this.car = car;
+
+		loadMyCar(car);
 
 		p = new Paint();
 		p.setColor(Color.WHITE);
@@ -52,6 +56,28 @@ public class GameLoop extends Thread {
 		p.setStrokeWidth(1);
 		p.setColor(Color.WHITE);
 		path = new Path();
+	}
+
+	public void loadMyCar(int car) {
+		switch (car) {
+		case OptionsActivity.RED_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.redcar);
+			break;
+		case OptionsActivity.POLICE_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.police);
+			break;
+
+		case OptionsActivity.BLUE_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.bleu);
+			break;
+		case OptionsActivity.GREEN_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.vert);
+			break;
+		}
 	}
 
 	/** la boucle de jeu */
@@ -63,15 +89,14 @@ public class GameLoop extends Thread {
 				{ this.getSwidth() - (this.getSwidth() / 4), 900 },
 				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
-				{ this.getSwidth(), 500 }, 
-		};
+				{ this.getSwidth(), 500 }, };
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
-			//this.ancienUpdate();
+			// this.ancienUpdate();
 			this.update();
 			Canvas canvas = null;
 			try {
@@ -80,22 +105,19 @@ public class GameLoop extends Thread {
 
 					// Clear
 					canvas.drawColor(0, Mode.CLEAR);
-					
-					
-					
 
 					// Generation
 
-					if ((this.position) >= (this.HAUTEUR )) {
+					if ((this.position) >= (this.HAUTEUR)) {
 						genererNouveauTriangleGauche(this.pointsGauche
 								.get(pointsGauche.size() - 3));
 						genererNouveauTriangleDroite(pointsDroite
 								.get(pointsDroite.size() - 3));
-						Log.d("size sup " + pointsGauche.size(),
-								"size sup " + pointsGauche.size());
-						
-						
-						if(this.pointsDroite.size()>=this.MAX_SIZE_LIST || this.pointsGauche.size()>=this.MAX_SIZE_LIST){
+						Log.d("size sup " + pointsGauche.size(), "size sup "
+								+ pointsGauche.size());
+
+						if (this.pointsDroite.size() >= this.MAX_SIZE_LIST
+								|| this.pointsGauche.size() >= this.MAX_SIZE_LIST) {
 							cleanLast(this.pointsGauche);
 							cleanLast(this.pointsDroite);
 						}
@@ -104,9 +126,8 @@ public class GameLoop extends Thread {
 					// Triangles
 					affichageDesPoints(path, p, canvas);
 					// Voiture
-					Bitmap car = BitmapFactory.decodeResource(
-							context.getResources(), R.drawable.car);
-					canvas.drawBitmap(car, (this.getSwidth() / 2) - 80,
+
+					canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 							this.getSheight() - 310, null);
 				}
 			} finally {
@@ -136,7 +157,7 @@ public class GameLoop extends Thread {
 		points.remove(0);
 		points.remove(0);
 		points.remove(0);
-		
+
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
 	}
@@ -146,21 +167,22 @@ public class GameLoop extends Thread {
 	 * vitesse vx S'il sort de l'écran, on le fait changer de direction
 	 * */
 	public void update() {
-		long delta = System.nanoTime()-lastUpdate;
-		int avancement = (int)((delta*1.0)/(Math.pow(10, 9))*speed);
-		Log.d("avancement "+avancement,"avancement "+avancement);
-		this.position+=avancement;
-		
+		long delta = System.nanoTime() - lastUpdate;
+		int avancement = (int) ((delta * 1.0) / (Math.pow(10, 9)) * speed);
+		Log.d("avancement " + avancement, "avancement " + avancement);
+		this.position += avancement;
+
 		this.avancer(this.pointsGauche, this.FOOT);
 		this.avancer(this.pointsDroite, this.FOOT);
-		this.lastUpdate=System.nanoTime();
+		this.lastUpdate = System.nanoTime();
 	}
 
-	public void ancienUpdate(){
+	public void ancienUpdate() {
 		this.avancer(this.pointsGauche, this.FOOT);
 		this.avancer(this.pointsDroite, this.FOOT);
-		position+=this.FOOT;
+		position += this.FOOT;
 	}
+
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
 
 		for (int i = 0; i < points.length; i++) {
@@ -242,5 +264,5 @@ public class GameLoop extends Thread {
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
-	
+
 }

@@ -4,11 +4,15 @@ package com.polytech.devintandroid;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -23,11 +27,17 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private Display			display;
 	Vue						vue;
 	private static int majoration = 8;
+	LinearLayout	layout	= null;
+	private int car;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		vue = new Vue(this);
+		layout = (LinearLayout) LinearLayout.inflate(this,
+				R.layout.activity_game, null);
+		loadSettings();
+		
+		vue = new Vue(this, car);
        
 		//vue = new Vue(this, null);
 		gameActivityInit();
@@ -136,6 +146,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 			}
 		}
 
+	}
+	public void loadSettings() {
+		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		this.car=settings.getInt("car", 0);
 	}
 
 }
