@@ -1,5 +1,20 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+<TextView
+        android:id="@+id/titleHelp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/titreFond"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="AIDE"
+        android:textColor="#000000"
+        android:textSize="@dimen/titreDimension"
+        android:textStyle="bold"
+         />
+<RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
@@ -7,12 +22,10 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".HelpActivity" >
+    >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="AIIIIIIIIIIIIIIIIIIIIIIIIIDE !"
-        android:textColor="#000000" />
+    
+    
 
 </RelativeLayout>
+</LinearLayout>
