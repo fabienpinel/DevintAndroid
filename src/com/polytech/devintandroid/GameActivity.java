@@ -42,11 +42,8 @@ public class GameActivity extends Activity implements SensorEventListener {
 		/*view_x = (TextView) findViewById(R.id.textpos_x);
 		view_y = (TextView) findViewById(R.id.textpos_y);
 		view_z = (TextView) findViewById(R.id.textpos_z);
-*/
-		//setContentView(vue);
-		Log.d("avant setcontentview", "avant setcontentview");
+		 */
 		 setContentView(vue);
-		 Log.d("apres setcontentview", "apres setcontentview");
 	}
 
 	public void gameActivityInit() {

@@ -9,6 +9,7 @@ package com.polytech.devintandroid;
 
 public final class R {
     public static final class array {
+        public static final int choixCar=0x7f060001;
         public static final int choixTheme=0x7f060000;
     }
     public static final class attr {
@@ -33,12 +34,13 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a000c;
-        public static final int applyOptions=0x7f0a000a;
-        public static final int backOptions=0x7f0a000b;
+        public static final int action_settings=0x7f0a000d;
+        public static final int applyOptions=0x7f0a000b;
+        public static final int backOptions=0x7f0a000c;
         public static final int helpButton=0x7f0a0007;
         public static final int openButton=0x7f0a0005;
         public static final int optionsButton=0x7f0a0006;
+        public static final int selectionCar=0x7f0a000a;
         public static final int selectionTheme=0x7f0a0009;
         public static final int startButton=0x7f0a0004;
         public static final int textView1=0x7f0a0008;

@@ -13,4 +13,8 @@
         <item>Theme Bleu</item>
         <item>Theme Rouge</item>
     </string-array>
+    <string-array name="choixCar">
+        <item>Voiture Rouge</item>
+        <item>Voiture Police</item>
+    </string-array>
 </resources>

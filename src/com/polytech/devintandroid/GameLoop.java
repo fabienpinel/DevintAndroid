@@ -19,7 +19,7 @@ public class GameLoop extends Thread {
 
 	private static final int	FOOT			= 20;
 	private static final int	HAUTEUR			= 400;
-	private static final int	MAX_SIZE_LIST	= 42;
+	private static final int	MAX_SIZE_LIST	= 22;
 
 	private boolean				running;
 	List<mPoint>				pointsGauche	= new ArrayList<mPoint>();
@@ -35,8 +35,6 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position;
-	private boolean				switcher		= false;
-	private boolean				switcher2		= false;
 
 	public GameLoop(Context context, SurfaceHolder holder) {
 		this.context = context;
@@ -91,16 +89,11 @@ public class GameLoop extends Thread {
 						Log.d("size sup " + pointsGauche.size(),
 								"size sup " + pointsGauche.size());
 						
-						if(switcher){
-							if(switcher2){
+						
+						if(this.pointsDroite.size()>=this.MAX_SIZE_LIST || this.pointsGauche.size()>=this.MAX_SIZE_LIST){
 							cleanLast(this.pointsGauche);
 							cleanLast(this.pointsDroite);
-							}else{
-								switcher2=true;
-							}
-							switcher = false;
-						}else{switcher=true;}
-						
+						}
 						position = 0;
 					}
 					// Triangles
@@ -138,10 +131,6 @@ public class GameLoop extends Thread {
 		points.remove(0);
 		points.remove(0);
 		points.remove(0);
-		points.remove(0);
-		points.remove(0);
-		points.remove(0);
-
 		
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
@@ -238,4 +227,5 @@ public class GameLoop extends Thread {
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
+	
 }

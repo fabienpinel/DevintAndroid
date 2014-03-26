@@ -25,11 +25,16 @@ public class OptionsActivity extends Activity {
 	public static final int	THEME_BLEU	= 0;
 	public static final int	THEME_ROUGE	= 1;
 	Spinner					themeSpinner;
-	int pos;
+	Spinner					carSpinner;
+	LinearLayout	layout	= null;
+	int pos, posCar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_options);
+		layout = (LinearLayout) LinearLayout.inflate(this,
+				R.layout.activity_options, null);
+		loadSettings();
+		setContentView(layout);
 		Intent intent = getIntent();
 
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
@@ -48,6 +53,24 @@ public class OptionsActivity extends Activity {
 			}
 
 		});
+		
+		carSpinner = (Spinner) findViewById(R.id.selectionTheme);
+		carSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.choixTheme, R.layout.spinner_item));
+
+		carSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView,
+					View selectedItemView, int position, long id) {
+					posCar=position;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				Log.d("here", "here");
+			}
+
+		});
+		
 
 		/*
 		 * Ajout du listener sur le bouton appliquer pour charger l'activité
@@ -60,6 +83,7 @@ public class OptionsActivity extends Activity {
 						Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = settings.edit();
 				editor.putInt("titreFond", pos);
+				editor.putInt("car", posCar);
 				editor.commit();
 				Intent main = new Intent(OptionsActivity.this,
 						MainActivity.class);
@@ -74,5 +98,22 @@ public class OptionsActivity extends Activity {
 				startActivity(main);
 			}
 		});
+	}
+	public void loadSettings() {
+		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		TextView titre = (TextView) layout.findViewById(R.id.textView1);
+		switch (settings.getInt("titreFond", 0)) {
+
+		case OptionsActivity.THEME_BLEU:
+			titre.setBackgroundColor(Color.parseColor("#0000FF"));
+			break;
+		case OptionsActivity.THEME_ROUGE:
+			titre.setBackgroundColor(Color.parseColor("#FF0000"));
+			break;
+		default:
+			titre.setBackgroundColor(Color.parseColor("#0000FF"));
+
+		}
+
 	}
 }
