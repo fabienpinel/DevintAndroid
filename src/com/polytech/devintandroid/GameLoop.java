@@ -1,6 +1,7 @@
 package com.polytech.devintandroid;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
@@ -22,8 +23,8 @@ public class GameLoop extends Thread {
 	private static final int	MAX_SIZE_LIST	= 22;
 
 	private boolean				running;
-	List<mPoint>				pointsGauche	= new ArrayList<mPoint>();
-	List<mPoint>				pointsDroite	= new ArrayList<mPoint>();
+	List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
+	List<mPoint>				pointsDroite	= new LinkedList<mPoint>();
 
 	private long				sleepTime		= 3;
 
@@ -35,6 +36,9 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position;
+	private int speed = 600;
+	private long lastUpdate;
+	
 
 	public GameLoop(Context context, SurfaceHolder holder) {
 		this.context = context;
@@ -59,8 +63,7 @@ public class GameLoop extends Thread {
 				{ this.getSwidth() - (this.getSwidth() / 4), 900 },
 				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
-				{ this.getSwidth(), 500 }
-
+				{ this.getSwidth(), 500 }, 
 		};
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
@@ -76,12 +79,13 @@ public class GameLoop extends Thread {
 
 					// Clear
 					canvas.drawColor(0, Mode.CLEAR);
-
+					
+					
 					
 
 					// Generation
 
-					if ((this.position) >= (this.HAUTEUR / 2)) {
+					if ((this.position) >= (this.HAUTEUR )) {
 						genererNouveauTriangleGauche(this.pointsGauche
 								.get(pointsGauche.size() - 3));
 						genererNouveauTriangleDroite(pointsDroite
@@ -141,11 +145,21 @@ public class GameLoop extends Thread {
 	 * vitesse vx S'il sort de l'écran, on le fait changer de direction
 	 * */
 	public void update() {
-		this.avancer(this.pointsGauche, GameLoop.FOOT);
-		this.avancer(this.pointsDroite, GameLoop.FOOT);
-		this.position += this.FOOT;
+		long delta = System.nanoTime()-lastUpdate;
+		int avancement = (int)((delta*1.0)/(Math.pow(10, 9))*speed);
+		Log.d("avancement "+avancement,"avancement "+avancement);
+		this.position+=avancement;
+		
+		this.avancer(this.pointsGauche, avancement);
+		this.avancer(this.pointsDroite, avancement);
+		this.lastUpdate=System.nanoTime();
 	}
 
+	public void ancienUpdate(){
+		this.avancer(this.pointsGauche, this.FOOT);
+		this.avancer(this.pointsDroite, this.FOOT);
+		position+=this.FOOT;
+	}
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
 
 		for (int i = 0; i < points.length; i++) {
