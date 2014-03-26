@@ -71,7 +71,7 @@ public class GameLoop extends Thread {
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
-			this.update();
+			this.ancienUpdate();
 			Canvas canvas = null;
 			try {
 				canvas = holder.lockCanvas(null);
