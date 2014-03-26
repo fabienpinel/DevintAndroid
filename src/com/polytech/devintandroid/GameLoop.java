@@ -36,7 +36,7 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position;
-	private int					speed			= 720;
+	private int					speed			= 710;
 	private long				lastUpdate;
 	private int					car				= 0;
 	private Bitmap				myCar;
@@ -121,8 +121,8 @@ public class GameLoop extends Thread {
 
 						if (this.pointsDroite.size() >= this.MAX_SIZE_LIST
 								|| this.pointsGauche.size() >= this.MAX_SIZE_LIST) {
-							cleanLast(this.pointsGauche);
-							cleanLast(this.pointsDroite);
+							//cleanLast(this.pointsGauche);
+							//cleanLast(this.pointsDroite);
 						}
 						position = 0;
 					}
@@ -176,10 +176,12 @@ public class GameLoop extends Thread {
 		long delta = System.nanoTime() - lastUpdate;
 		int avancement = (int) (((delta * 1.0) / (Math.pow(10, 9))) * speed);
 		Log.d("avancement " + avancement, "avancement " + avancement);
-		this.position += avancement;
+		
 
 		this.avancer(this.pointsGauche, avancement);
 		this.avancer(this.pointsDroite, avancement);
+		this.position += avancement;
+		Log.d("position "+position, "position "+position);
 		this.lastUpdate = System.nanoTime();
 	}
 
@@ -206,13 +208,14 @@ public class GameLoop extends Thread {
 		}
 	}
 
-	public void avancer(List<mPoint> points, int foot) {
+	public void avancer(List<mPoint> points, int footo) {
 		for (mPoint p : points) {
-			p.monte(foot);
+			p.monte(footo);
 		}
 	}
 
 	public void affichageDesPoints(Path path, Paint p, Canvas c) {
+		Log.d("affichage", "affichage");
 		for (int i = 0; i < pointsGauche.size(); i += 3) {
 			ajouterUnTriangle(pointsGauche.get(i), pointsGauche.get(i + 1),
 					pointsGauche.get(i + 2), path, p, c);
