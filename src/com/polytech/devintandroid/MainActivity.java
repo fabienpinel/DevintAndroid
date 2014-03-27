@@ -1,21 +1,32 @@
 package com.polytech.devintandroid;
 
+import android.net.wifi.p2p.WifiP2pManager.ActionListener;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
+import android.app.SearchManager.OnCancelListener;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
+import android.text.Editable;
+import android.text.method.KeyListener;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 	LinearLayout	layout	= null;
 
 	@Override
@@ -25,6 +36,7 @@ public class MainActivity extends Activity {
 				R.layout.activity_main, null);
 		loadSettings();
 		setContentView(layout);
+
 		/*
 		 * Ajout du listener sur le bouton start pour charger l'activité
 		 * StartActivity
@@ -81,7 +93,8 @@ public class MainActivity extends Activity {
 	}
 
 	public void loadSettings() {
-		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		SharedPreferences settings = getSharedPreferences("prefs",
+				Context.MODE_PRIVATE);
 		TextView titre = (TextView) layout.findViewById(R.id.title);
 		switch (settings.getInt("titreFond", 0)) {
 
@@ -97,4 +110,5 @@ public class MainActivity extends Activity {
 		}
 
 	}
+
 }
