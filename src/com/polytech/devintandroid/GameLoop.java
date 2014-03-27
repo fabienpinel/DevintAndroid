@@ -40,6 +40,16 @@ public class GameLoop extends Thread {
 	private long				lastUpdate;
 	private int					car				= 0;
 	private Bitmap				myCar;
+	private int					avancement;
+	private long				delta;
+
+	public int getAvancement() {
+		return avancement;
+	}
+
+	public void setAvancement(int avancement) {
+		this.avancement = avancement;
+	}
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
@@ -50,7 +60,7 @@ public class GameLoop extends Thread {
 		loadMyCar(car);
 		loadPaint(p);
 		this.running = true;
-		
+
 	}
 
 	public void loadMyCar(int car) {
@@ -74,7 +84,8 @@ public class GameLoop extends Thread {
 			break;
 		}
 	}
-	public void loadPaint(Paint p){
+
+	public void loadPaint(Paint p) {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -92,10 +103,10 @@ public class GameLoop extends Thread {
 				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
 				{ this.getSwidth(), 500 }, };
-		//Initialisation des premiers points
+		// Initialisation des premiers points
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
-		
+
 		this.position = 0;
 		while (this.running) {
 			Log.d("running", "running");
@@ -107,32 +118,32 @@ public class GameLoop extends Thread {
 				synchronized (this.holder) {
 					canvas = holder.lockCanvas(null);
 					// Clear
-					if(canvas!=null){
+					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
-					
-					// Generation
-					if ((this.position) >= (this.HAUTEUR)) {
-						genererNouveauTriangleGauche(this.pointsGauche
-								.get(pointsGauche.size() - 3));
-						genererNouveauTriangleDroite(pointsDroite
-								.get(pointsDroite.size() - 3));
-						Log.d("size sup " + pointsGauche.size(), "size sup "
-								+ pointsGauche.size());
 
-						if (this.pointsDroite.size() >= this.MAX_SIZE_LIST
-								|| this.pointsGauche.size() >= this.MAX_SIZE_LIST) {
-							cleanLast(this.pointsGauche);
-							cleanLast(this.pointsDroite);
+						// Generation
+						if ((this.position) >= (this.HAUTEUR)) {
+							genererNouveauTriangleGauche(this.pointsGauche
+									.get(pointsGauche.size() - 3));
+							genererNouveauTriangleDroite(pointsDroite
+									.get(pointsDroite.size() - 3));
+							Log.d("size sup " + pointsGauche.size(),
+									"size sup " + pointsGauche.size());
+
+							if (this.pointsDroite.size() >= this.MAX_SIZE_LIST
+									|| this.pointsGauche.size() >= this.MAX_SIZE_LIST) {
+								cleanLast(this.pointsGauche);
+								cleanLast(this.pointsDroite);
+							}
+							position = 0;
 						}
-						position = 0;
-					}
-					// Triangles
-					affichageDesPoints(path, p, canvas);
-					// Voiture
+						// Triangles
+						affichageDesPoints(path, p, canvas);
+						// Voiture
 
-					canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
-							this.getSheight() - 310, null);
-					}else{
+						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
+								this.getSheight() - 310, null);
+					} else {
 						Log.d("canvas null", "canvass null");
 					}
 				}
@@ -141,12 +152,11 @@ public class GameLoop extends Thread {
 					holder.unlockCanvasAndPost(canvas);
 				}
 			}
-			/*try {
-				Thread.sleep(sleepTime);
-			} catch (Exception e) {
-				Log.d("Erreur sleep: " + e.getMessage(),
-						"Erreur sleep: " + e.getMessage());
-			}*/
+			/*
+			 * try { Thread.sleep(sleepTime); } catch (Exception e) {
+			 * Log.d("Erreur sleep: " + e.getMessage(), "Erreur sleep: " +
+			 * e.getMessage()); }
+			 */
 		}
 	}
 
@@ -173,14 +183,15 @@ public class GameLoop extends Thread {
 	 * vitesse vx S'il sort de l'écran, on le fait changer de direction
 	 * */
 	public void update() {
-		long delta = System.nanoTime() - lastUpdate;
-		int avancement = (int) (((delta * 1.0) / (Math.pow(10, 9))) * speed);
-		Log.d("avancement " + avancement, "avancement " + avancement);
-		
-		this.avancer(this.pointsGauche, 12);
-		this.avancer(this.pointsDroite, 12);
-		this.position += avancement;
-		Log.d("position "+position, "position "+position);
+		delta = System.nanoTime() - lastUpdate;
+		this.setAvancement((int) (((delta * 1.0) / (Math.pow(10, 9))) * speed));
+		Log.d("avancement " + this.getAvancement(), "avancement " + this.getAvancement());
+		this.position += this.getAvancement();
+
+		this.avancer(this.pointsGauche, this.getAvancement());
+		this.avancer(this.pointsDroite, this.getAvancement());
+
+		Log.d("position " + position, "position " + position);
 		this.lastUpdate = System.nanoTime();
 	}
 

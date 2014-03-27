@@ -24,8 +24,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     >
 
-    
-    
+    <TextView
+        android:id="@+id/texthelp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/helptext"
+        android:textSize="@dimen/corpText" />
 
 </RelativeLayout>
 </LinearLayout>

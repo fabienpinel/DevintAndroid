@@ -107,7 +107,7 @@ public class OptionsActivity extends Activity {
 	}
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
-		TextView titre = (TextView) layout.findViewById(R.id.textView1);
+		TextView titre = (TextView) layout.findViewById(R.id.texthelp);
 		switch (settings.getInt("titreFond", 0)) {
 
 		case OptionsActivity.THEME_BLEU:

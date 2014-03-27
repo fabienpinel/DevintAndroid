@@ -26,6 +26,7 @@ public final class R {
          */
         public static final int activity_horizontal_margin=0x7f040000;
         public static final int activity_vertical_margin=0x7f040001;
+        public static final int corpText=0x7f040004;
         public static final int menuDimension=0x7f040003;
         public static final int titreDimension=0x7f040002;
     }
@@ -40,17 +41,17 @@ public final class R {
         public static final int action_settings=0x7f0a000e;
         public static final int applyOptions=0x7f0a000c;
         public static final int backOptions=0x7f0a000d;
-        public static final int helpButton=0x7f0a0008;
-        public static final int openButton=0x7f0a0006;
-        public static final int optionsButton=0x7f0a0007;
+        public static final int helpButton=0x7f0a0009;
+        public static final int openButton=0x7f0a0007;
+        public static final int optionsButton=0x7f0a0008;
         public static final int selectionCar=0x7f0a000b;
         public static final int selectionTheme=0x7f0a000a;
-        public static final int startButton=0x7f0a0005;
-        public static final int textView1=0x7f0a0009;
+        public static final int startButton=0x7f0a0006;
+        public static final int texthelp=0x7f0a0004;
         public static final int textpos_x=0x7f0a0000;
         public static final int textpos_y=0x7f0a0001;
         public static final int textpos_z=0x7f0a0002;
-        public static final int title=0x7f0a0004;
+        public static final int title=0x7f0a0005;
         public static final int titleHelp=0x7f0a0003;
     }
     public static final class layout {
@@ -69,6 +70,7 @@ public final class R {
         public static final int action_settings=0x7f050001;
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f050002;
+        public static final int helptext=0x7f050008;
         public static final int title=0x7f050003;
         public static final int title_activity_game=0x7f050004;
         public static final int title_activity_help=0x7f050005;
