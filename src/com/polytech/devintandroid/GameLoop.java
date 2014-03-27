@@ -26,7 +26,7 @@ public class GameLoop extends Thread {
 	List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
 	List<mPoint>				pointsDroite	= new LinkedList<mPoint>();
 
-	private long				sleepTime		= 3;
+	private long				sleepTime		= 1;
 
 	private Context				context;
 	private Paint				p;
@@ -141,12 +141,12 @@ public class GameLoop extends Thread {
 					holder.unlockCanvasAndPost(canvas);
 				}
 			}
-			try {
+			/*try {
 				Thread.sleep(sleepTime);
 			} catch (Exception e) {
 				Log.d("Erreur sleep: " + e.getMessage(),
 						"Erreur sleep: " + e.getMessage());
-			}
+			}*/
 		}
 	}
 
