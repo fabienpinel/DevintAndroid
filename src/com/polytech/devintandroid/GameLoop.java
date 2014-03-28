@@ -177,14 +177,17 @@ public class GameLoop extends Thread {
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
 	}
+	public int calculAvancement(int sspeed){
+		delta = System.nanoTime() - lastUpdate;
+		return (int)(((delta * 1.0) / (Math.pow(10, 9))) * sspeed);
+	}
 
 	/**
 	 * Mise à jour des composants du jeu Ici nous déplaçon le personnage avec la
 	 * vitesse vx S'il sort de l'écran, on le fait changer de direction
 	 * */
 	public void update() {
-		delta = System.nanoTime() - lastUpdate;
-		this.setAvancement((int) (((delta * 1.0) / (Math.pow(10, 9))) * speed));
+		this.setAvancement(calculAvancement(speed));
 		Log.d("avancement " + this.getAvancement(), "avancement " + this.getAvancement());
 		this.position += this.getAvancement();
 
