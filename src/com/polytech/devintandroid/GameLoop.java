@@ -188,12 +188,10 @@ public class GameLoop extends Thread {
 	 * vitesse vx S'il sort de l'écran, on le fait changer de direction
 	 * */
 	public void update() {
-		this.setAvancement(calculAvancement(speed));
+		this.setAvancement(Math.min(calculAvancement(speed),100));
 		Log.d("avancement " + this.getAvancement(),
 				"avancement " + this.getAvancement());
-		if(this.getAvancement()>=100){
-			this.setAvancement(11);
-		}
+		
 		
 		
 		this.position += this.getAvancement();
