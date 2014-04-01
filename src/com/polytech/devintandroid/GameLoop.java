@@ -139,8 +139,6 @@ public class GameLoop extends Thread {
 						// Voiture
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
-						float[] pts = {0,0,0,12,0,12,12,12,12,12,12,0,12,0,0,0};
-						canvas.drawLines(pts,p);
 					} else {
 						Log.d("canvas null", "canvass null");
 					}

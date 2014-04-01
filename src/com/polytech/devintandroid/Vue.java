@@ -19,12 +19,12 @@ public class Vue extends SurfaceView implements
 
 	LinearLayout			mLinearLayout;
 
-	private Bitmap			buffer;		// pixel buffer
+	private Bitmap			buffer;			// pixel buffer
 	private SurfaceHolder	holder;
 	Canvas					canvas;
 	GameLoop				game;
 	private int				car;
-	private boolean pause=false;
+	private boolean			pause	= false;
 
 	public Vue(Context context, int car) {
 		super(context);
@@ -33,16 +33,14 @@ public class Vue extends SurfaceView implements
 		setFocusable(true);
 		canvas = new Canvas();
 		this.game = new GameLoop(context, holder, car);
-		// Create a LinearLayout in which to add the ImageView
 		mLinearLayout = new LinearLayout(context);
-
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
 		synchronized (this.game) {
-			
+
 		}
 		return true;
 	}
