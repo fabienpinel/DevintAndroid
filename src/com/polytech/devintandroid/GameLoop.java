@@ -18,7 +18,7 @@ public class GameLoop extends Thread {
 
 	private static final int	FOOT				= 20;
 	private static final int	HAUTEUR				= 400;
-	private static final int	MAX_SIZE_LIST		= 15;
+	private static final int	MAX_SIZE_LIST		= 18;
 
 	private boolean				running;
 	List<mPoint>				pointsGauche		= new LinkedList<mPoint>();

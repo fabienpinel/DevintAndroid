@@ -24,7 +24,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private float			x, y, z;
 	private Display			display;
 	Vue						vue;
-	private static int		majoration	= 8;
+	private static int		majoration	= 6;
 	LinearLayout			layout		= null;
 	private int				car;
 
@@ -137,10 +137,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 				this.z = event.values[2];
 				if (x > 0) {
 					x *= majoration;
-					x+=majoration;
+					x+=1;
 				} else {
 					x *= majoration;
-					x-=majoration;
+					x-=1;
 				}
 				
 				vue.game.updateOrientation((int) x);
