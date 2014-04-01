@@ -1,27 +1,14 @@
 package com.polytech.devintandroid;
 
-import android.net.wifi.p2p.WifiP2pManager.ActionListener;
+import com.polytech.devintAndroid.voice.VoiceActivity;
+
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.app.Activity;
-import android.app.SearchManager.OnCancelListener;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
-import android.text.Editable;
-import android.text.method.KeyListener;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
-import android.view.View.OnTouchListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -54,13 +41,13 @@ public class MainActivity extends Activity{
 		 * Ajout du listener sur le bouton opengltest pour charger l'activité
 		 * OpenglActivity
 		 */
-		Button openButton = (Button) findViewById(R.id.openButton);
-		openButton.setOnClickListener(new View.OnClickListener() {
+		Button voiceButton = (Button) findViewById(R.id.voiceButton);
+		voiceButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent opengltestView = new Intent(MainActivity.this,
-						OpenglActivity.class);
-				startActivity(opengltestView);
+				Intent voiceact = new Intent(MainActivity.this,
+						VoiceActivity.class);
+				startActivity(voiceact);
 			}
 		});
 		/*

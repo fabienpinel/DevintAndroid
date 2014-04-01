@@ -1,6 +1,5 @@
 package com.polytech.devintandroid;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,14 +12,13 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 public class GameLoop extends Thread {
 
 	private static final int	FOOT				= 20;
 	private static final int	HAUTEUR				= 400;
-	private static final int	MAX_SIZE_LIST		= 22;
+	private static final int	MAX_SIZE_LIST		= 15;
 
 	private boolean				running;
 	List<mPoint>				pointsGauche		= new LinkedList<mPoint>();

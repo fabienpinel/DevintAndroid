@@ -10,7 +10,8 @@
     <string name="title_activity_options">OptionsActivity</string>
     <string name="title_activity_opengl">OpenglActivity</string>
     <string name="helptext">Dans le menu OPTIONS vous avec le choix entre le thème bleu et le thème rouge. Vous pouvez également changer l\'apparence de la voitureet 4 choix sont disponibles (vert, rouge, bleu, police)</string>
-	<string-array name="choixTheme">
+
+    <string-array name="choixTheme">
         <item>Theme Bleu</item>
         <item>Theme Rouge</item>
     </string-array>
@@ -20,4 +21,7 @@
         <item>Voiture Bleue</item>
         <item>Voiture Verte</item>
     </string-array>
+
+    <string name="title_activity_voice">VoiceActivity</string>
+
 </resources>

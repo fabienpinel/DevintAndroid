@@ -38,12 +38,12 @@ public final class R {
         public static final int vert=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a000e;
+        public static final int action_settings=0x7f0a000f;
         public static final int applyOptions=0x7f0a000c;
         public static final int backOptions=0x7f0a000d;
         public static final int helpButton=0x7f0a0009;
-        public static final int openButton=0x7f0a0007;
         public static final int optionsButton=0x7f0a0008;
+        public static final int playButton=0x7f0a000e;
         public static final int selectionCar=0x7f0a000b;
         public static final int selectionTheme=0x7f0a000a;
         public static final int startButton=0x7f0a0006;
@@ -53,6 +53,7 @@ public final class R {
         public static final int textpos_z=0x7f0a0002;
         public static final int title=0x7f0a0005;
         public static final int titleHelp=0x7f0a0003;
+        public static final int voiceButton=0x7f0a0007;
     }
     public static final class layout {
         public static final int activity_game=0x7f030000;
@@ -60,11 +61,13 @@ public final class R {
         public static final int activity_main=0x7f030002;
         public static final int activity_opengl=0x7f030003;
         public static final int activity_options=0x7f030004;
-        public static final int spinner_item=0x7f030005;
+        public static final int activity_voice=0x7f030005;
+        public static final int spinner_item=0x7f030006;
     }
     public static final class menu {
         public static final int main=0x7f090000;
         public static final int opengl=0x7f090001;
+        public static final int voice=0x7f090002;
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
@@ -76,6 +79,7 @@ public final class R {
         public static final int title_activity_help=0x7f050005;
         public static final int title_activity_opengl=0x7f050007;
         public static final int title_activity_options=0x7f050006;
+        public static final int title_activity_voice=0x7f050009;
     }
     public static final class style {
         /** 
