@@ -1,83 +1,43 @@
-package com.polytech.devintandroid;
+package com.polytech.devintAndroid.voice;
 
 import java.util.Locale;
 
-import com.polytech.devintAndroid.voice.VoiceActivity;
+import com.polytech.devintandroid.R;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.Build;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
-public class HelpActivity extends Activity implements OnInitListener {
-	LinearLayout			layout	= null;
-	TextView				helptext;
+public class VoiceActivity extends Activity implements OnInitListener {
 	private TextToSpeech	mTts;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		layout = (LinearLayout) LinearLayout.inflate(this,
-				R.layout.activity_help, null);
-
-		loadSettings();
-		setContentView(layout);
+		setContentView(R.layout.activity_voice);
 		init();
-		
-		helptext = (TextView) findViewById(R.id.texthelp);
-		Button playHelpButton = (Button) layout
-				.findViewById(R.id.playHelpButton);
-		playHelpButton.setOnClickListener(new View.OnClickListener() {
+		Button playButton = (Button) findViewById(R.id.playButton);
+		playButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				play(helptext.getText().toString());
-
+				play("coucou !");
+				
 			}
 		});
-		
 
 	}
-
-	public void loadSettings() {
-		SharedPreferences settings = getSharedPreferences("prefs",
-				Context.MODE_PRIVATE);
-		TextView titre = (TextView) layout.findViewById(R.id.titleHelp);
-		switch (settings.getInt("titreFond", 0)) {
-
-		case OptionsActivity.THEME_BLEU:
-			titre.setBackgroundColor(Color.parseColor("#0000FF"));
-			break;
-		case OptionsActivity.THEME_ROUGE:
-			titre.setBackgroundColor(Color.parseColor("#FF0000"));
-			break;
-		default:
-			titre.setBackgroundColor(Color.parseColor("#0000FF"));
-
-		}
-	}
-
-	public void init() {
+	public void init(){
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 		startActivityForResult(checkIntent, 0x01);
 
+		
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -22,15 +22,15 @@
         android:layout_weight="0.26"
         android:textSize="@dimen/menuDimension"
         android:textStyle="bold"
-        android:text="START" />
+        android:text="JOUER" />
     <Button
-        android:id="@+id/openButton"
+        android:id="@+id/voiceButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.26"
         android:textSize="@dimen/menuDimension"
         android:textStyle="bold"
-        android:text="OPENGL ES TEST" />
+        android:text="Voice" />
 
     <Button
         android:id="@+id/optionsButton"

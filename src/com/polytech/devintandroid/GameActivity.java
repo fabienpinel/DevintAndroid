@@ -1,14 +1,16 @@
 package com.polytech.devintandroid;
 
-
-
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -22,16 +24,22 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private float			x, y, z;
 	private Display			display;
 	Vue						vue;
-	private static int majoration = 8;
-	
+	private static int		majoration	= 6;
+	LinearLayout			layout		= null;
+	private int				car;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		vue = new Vue(this);
-       
-		//vue = new Vue(this, null);
+		layout = (LinearLayout) LinearLayout.inflate(this,
+				R.layout.activity_game, null);
+		loadSettings();
+
+		vue = new Vue(this, car);
+
+		// vue = new Vue(this, null);
 		gameActivityInit();
-		Log.d("init","init");
+		Log.d("init", "init");
 		sensorManager.registerListener(this, accelerometer,
 				SensorManager.SENSOR_DELAY_UI);
 
@@ -39,11 +47,12 @@ public class GameActivity extends Activity implements SensorEventListener {
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
 
-		/*view_x = (TextView) findViewById(R.id.textpos_x);
-		view_y = (TextView) findViewById(R.id.textpos_y);
-		view_z = (TextView) findViewById(R.id.textpos_z);
+		/*
+		 * view_x = (TextView) findViewById(R.id.textpos_x); view_y = (TextView)
+		 * findViewById(R.id.textpos_y); view_z = (TextView)
+		 * findViewById(R.id.textpos_z);
 		 */
-		 setContentView(vue);
+		setContentView(vue);
 	}
 
 	public void gameActivityInit() {
@@ -65,12 +74,15 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 		super.onResume();
 	}
-	/** Lorsque l'application s'arrête, 
-	   il faut arrêter proprement la boucle de jeu*/
-	    @Override
-	    protected void onDestroy() {
-	     super.onDestroy();
-	    }
+
+	/**
+	 * Lorsque l'application s'arrête, il faut arrêter proprement la boucle de
+	 * jeu
+	 */
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+	}
 
 	public float getX() {
 		return x;
@@ -121,21 +133,31 @@ public class GameActivity extends Activity implements SensorEventListener {
 					this.x = event.values[1];
 					this.y = -event.values[0];
 					break;
-				} 
-				this.z = event.values[2];
-				if(x>0){
-					x*=majoration;
-				}else{
-					x*=majoration;
 				}
-				vue.game.updateOrientation((int)x);
-				//Log.d("x: "+x+" y: "+y+" z: "+z, "x: "+x+" y: "+y+" z: "+z);
-				/*view_x.setText("x: " + this.getX());
-				view_y.setText("y: " + this.getY());
-				view_z.setText("z: " + this.getZ());*/
+				this.z = event.values[2];
+				if (x > 0) {
+					x *= majoration;
+					x+=1;
+				} else {
+					x *= majoration;
+					x-=1;
+				}
+				
+				vue.game.updateOrientation((int) x);
+				// Log.d("x: "+x+" y: "+y+" z: "+z, "x: "+x+" y: "+y+" z: "+z);
+				/*
+				 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
+				 * this.getY()); view_z.setText("z: " + this.getZ());
+				 */
 			}
 		}
 
+	}
+
+	public void loadSettings() {
+		SharedPreferences settings = getSharedPreferences("prefs",
+				Context.MODE_PRIVATE);
+		this.car = settings.getInt("car", 0);
 	}
 
 }

@@ -61,6 +61,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.polytech.devintandroid.MainActivity" />
         </activity>
+        <activity
+            android:name="com.polytech.devintAndroid.voice.VoiceActivity"
+            android:label="@string/title_activity_voice" >
+        </activity>
     </application>
 
 </manifest>

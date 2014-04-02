@@ -1,6 +1,5 @@
 package com.polytech.devintandroid;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,15 +16,15 @@ import android.view.SurfaceHolder;
 
 public class GameLoop extends Thread {
 
-	private static final int	FOOT			= 20;
-	private static final int	HAUTEUR			= 400;
-	private static final int	MAX_SIZE_LIST	= 22;
+	private static final int	FOOT				= 20;
+	private static final int	HAUTEUR				= 400;
+	private static final int	MAX_SIZE_LIST		= 18;
 
 	private boolean				running;
-	List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
-	List<mPoint>				pointsDroite	= new LinkedList<mPoint>();
+	List<mPoint>				pointsGauche		= new LinkedList<mPoint>();
+	List<mPoint>				pointsDroite		= new LinkedList<mPoint>();
 
-	private long				sleepTime		= 3;
+	private long				sleepTime			= 1;
 
 	private Context				context;
 	private Paint				p;
@@ -35,22 +34,61 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position;
-	private int speed = 600;
-	private long lastUpdate;
-	
+	private int					speed				= 710;
+	private long				lastUpdate;
+	private int					car					= 0;
+	private Bitmap				myCar;
+	private int					avancement;
+	private long				delta;
 
-	public GameLoop(Context context, SurfaceHolder holder) {
+	public int getAvancement() {
+		return avancement;
+	}
+
+	public void setAvancement(int avancement) {
+		this.avancement = avancement;
+	}
+
+	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.holder = holder;
-		running = true;
-
+		this.car = car;
+		path = new Path();
 		p = new Paint();
+		loadMyCar(car);
+		loadPaint(p);
+		this.running = true;
+
+	}
+
+	public void loadMyCar(int car) {
+		switch (car) {
+		case OptionsActivity.RED_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.redcar);
+			break;
+		case OptionsActivity.POLICE_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.police);
+			break;
+
+		case OptionsActivity.BLUE_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.bleu);
+			break;
+		case OptionsActivity.GREEN_CAR:
+			myCar = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.vert);
+			break;
+		}
+	}
+
+	public void loadPaint(Paint p) {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
 		p.setStrokeWidth(1);
 		p.setColor(Color.WHITE);
-		path = new Path();
 	}
 
 	/** la boucle de jeu */
@@ -62,62 +100,59 @@ public class GameLoop extends Thread {
 				{ this.getSwidth() - (this.getSwidth() / 4), 900 },
 				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
-				{ this.getSwidth(), 500 }, 
-		};
+				{ this.getSwidth(), 500 }, };
+		
+		// Initialisation des premiers points
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
+			// this.ancienUpdate();
 			this.update();
 			Canvas canvas = null;
 			try {
-				canvas = holder.lockCanvas(null);
 				synchronized (this.holder) {
-
+					canvas = holder.lockCanvas(null);
 					// Clear
-					canvas.drawColor(0, Mode.CLEAR);
-					
-					
-					
+					if (canvas != null) {
+						canvas.drawColor(0, Mode.CLEAR);
 
-					// Generation
-
-					if ((this.position) >= (this.HAUTEUR )) {
-						genererNouveauTriangleGauche(this.pointsGauche
-								.get(pointsGauche.size() - 3));
-						genererNouveauTriangleDroite(pointsDroite
-								.get(pointsDroite.size() - 3));
-						Log.d("size sup " + pointsGauche.size(),
-								"size sup " + pointsGauche.size());
-						
-						
-						if(this.pointsDroite.size()>=this.MAX_SIZE_LIST || this.pointsGauche.size()>=this.MAX_SIZE_LIST){
-							cleanLast(this.pointsGauche);
-							cleanLast(this.pointsDroite);
+						// Generation
+						if ((this.position) >= (this.HAUTEUR)) {
+							genererNouveauTriangleGauche(this.pointsGauche
+									.get(pointsGauche.size() - 3));
+							genererNouveauTriangleDroite(pointsDroite
+									.get(pointsDroite.size() - 3));
+							Log.d("size sup " + pointsGauche.size(),
+									"size sup " + pointsGauche.size());
+							if (this.pointsDroite.size() >= this.MAX_SIZE_LIST
+									|| this.pointsGauche.size() >= this.MAX_SIZE_LIST) {
+								cleanLast(this.pointsGauche);
+								cleanLast(this.pointsDroite);
+							}
+							position = 0;
 						}
-						position = 0;
+						// Triangles
+						affichageDesPoints(path, p, canvas);
+						// Voiture
+						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
+								this.getSheight() - 310, null);
+					} else {
+						Log.d("canvas null", "canvass null");
 					}
-					// Triangles
-					affichageDesPoints(path, p, canvas);
-					// Voiture
-					Bitmap car = BitmapFactory.decodeResource(
-							context.getResources(), R.drawable.car);
-					canvas.drawBitmap(car, (this.getSwidth() / 2) - 80,
-							this.getSheight() - 310, null);
 				}
 			} finally {
 				if (canvas != null) {
 					holder.unlockCanvasAndPost(canvas);
 				}
 			}
-			try {
-				Thread.sleep(sleepTime);
-			} catch (Exception e) {
-				Log.d("Erreur sleep: " + e.getMessage(),
-						"Erreur sleep: " + e.getMessage());
-			}
+			/*
+			 * try { Thread.sleep(sleepTime); } catch (Exception e) {
+			 * Log.d("Erreur sleep: " + e.getMessage(), "Erreur sleep: " +
+			 * e.getMessage()); }
+			 */
 		}
 	}
 
@@ -134,9 +169,14 @@ public class GameLoop extends Thread {
 		points.remove(0);
 		points.remove(0);
 		points.remove(0);
-		
+
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
+	}
+
+	public int calculAvancement(int sspeed) {
+		delta = System.nanoTime() - lastUpdate;
+		return (int) (((delta * 1.0) / (Math.pow(10, 9))) * sspeed);
 	}
 
 	/**
@@ -144,21 +184,27 @@ public class GameLoop extends Thread {
 	 * vitesse vx S'il sort de l'écran, on le fait changer de direction
 	 * */
 	public void update() {
-		long delta = System.nanoTime()-lastUpdate;
-		int avancement = (int)((delta*1.0)/(Math.pow(10, 9))*speed);
-		Log.d("avancement "+avancement,"avancement "+avancement);
-		this.position+=avancement;
+		this.setAvancement(Math.min(calculAvancement(speed),100));
+		Log.d("avancement " + this.getAvancement(),
+				"avancement " + this.getAvancement());
 		
-		this.avancer(this.pointsGauche, avancement);
-		this.avancer(this.pointsDroite, avancement);
-		this.lastUpdate=System.nanoTime();
+		
+		
+		this.position += this.getAvancement();
+
+		this.avancer(this.pointsGauche, this.getAvancement());
+		this.avancer(this.pointsDroite, this.getAvancement());
+
+		Log.d("position " + position, "position " + position);
+		this.lastUpdate = System.nanoTime();
 	}
 
-	public void ancienUpdate(){
+	public void ancienUpdate() {
 		this.avancer(this.pointsGauche, this.FOOT);
 		this.avancer(this.pointsDroite, this.FOOT);
-		position+=this.FOOT;
+		position += this.FOOT;
 	}
+
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
 
 		for (int i = 0; i < points.length; i++) {
@@ -176,13 +222,14 @@ public class GameLoop extends Thread {
 		}
 	}
 
-	public void avancer(List<mPoint> points, int foot) {
+	public void avancer(List<mPoint> points, int footo) {
 		for (mPoint p : points) {
-			p.monte(foot);
+			p.monte(footo);
 		}
 	}
 
 	public void affichageDesPoints(Path path, Paint p, Canvas c) {
+		Log.d("affichage", "affichage");
 		for (int i = 0; i < pointsGauche.size(); i += 3) {
 			ajouterUnTriangle(pointsGauche.get(i), pointsGauche.get(i + 1),
 					pointsGauche.get(i + 2), path, p, c);
@@ -240,5 +287,5 @@ public class GameLoop extends Thread {
 	public void setRunning(boolean running) {
 		this.running = running;
 	}
-	
+
 }

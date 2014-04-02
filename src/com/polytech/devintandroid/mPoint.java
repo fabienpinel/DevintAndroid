@@ -18,8 +18,8 @@ public class mPoint {
 	public void setY(int y) {
 		this.y = y;
 	}
-	public void monte(int foot){
-		this.setY(this.getY()+foot);
+	public void monte(int footo){
+		this.setY(this.y+footo);
 	}
 	public void tourne(int i) {
 		this.setX(this.getX()+i);;
