@@ -26,18 +26,18 @@ public class VoiceActivity extends Activity implements OnInitListener {
 		playButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				play("coucou !");
-				
+				playThisText("Ceci est un test !");
+
 			}
 		});
 
 	}
-	public void init(){
+
+	public void init() {
 		Intent checkIntent = new Intent();
 		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
 		startActivityForResult(checkIntent, 0x01);
 
-		
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -60,6 +60,7 @@ public class VoiceActivity extends Activity implements OnInitListener {
 			} else {
 				// Echec, aucun moteur n'a été trouvé, on propose à
 				// l'utilisateur d'en installer un depuis le Market
+				
 				Intent installIntent = new Intent();
 				installIntent
 						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
@@ -70,17 +71,17 @@ public class VoiceActivity extends Activity implements OnInitListener {
 
 	public void onInit(int status) {
 		if (status == TextToSpeech.SUCCESS) {
-			Context context = getApplicationContext();
-			CharSequence text = "TTS ready";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
+			Toast toast = Toast.makeText(getApplicationContext(), "TTS ready",
+					Toast.LENGTH_SHORT);
 			toast.show();
 		}
 	}
 
-	public void play(String toPlay) {
+	public void playThisText(String toPlay) {
 		mTts.speak(toPlay, TextToSpeech.QUEUE_FLUSH, null);
+		Toast toast = Toast.makeText(getApplicationContext(), "playing",
+				Toast.LENGTH_SHORT);
+		toast.show();
 
 	}
 

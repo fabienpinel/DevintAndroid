@@ -2,28 +2,20 @@ package com.polytech.devintandroid;
 
 import java.util.Locale;
 
-import com.polytech.devintAndroid.voice.VoiceActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
-import android.support.v4.app.NavUtils;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
 
 public class HelpActivity extends Activity implements OnInitListener {
 	LinearLayout			layout	= null;
@@ -47,7 +39,7 @@ public class HelpActivity extends Activity implements OnInitListener {
 		playHelpButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				play(helptext.getText().toString());
+				playThisText(helptext.getText().toString());
 
 			}
 		});
@@ -110,16 +102,12 @@ public class HelpActivity extends Activity implements OnInitListener {
 
 	public void onInit(int status) {
 		if (status == TextToSpeech.SUCCESS) {
-			Context context = getApplicationContext();
-			CharSequence text = "TTS ready";
-			int duration = Toast.LENGTH_SHORT;
-
-			Toast toast = Toast.makeText(context, text, duration);
+			Toast toast = Toast.makeText(getApplicationContext(),  "TTS ready", Toast.LENGTH_SHORT);
 			toast.show();
 		}
 	}
 
-	public void play(String toPlay) {
+	public void playThisText(String toPlay) {
 		mTts.speak(toPlay, TextToSpeech.QUEUE_FLUSH, null);
 
 	}
