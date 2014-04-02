@@ -20,5 +20,5 @@
 	<color name="titreFond">#FF0000</color>
 	<dimen name="titreDimension">70sp</dimen>
 	<dimen name="menuDimension">50sp</dimen>
-	<dimen name="corpText">30sp</dimen>
+	<dimen name="corpText">40sp</dimen>
 </resources>
