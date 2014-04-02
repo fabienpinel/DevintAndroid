@@ -2,11 +2,7 @@ package com.polytech.devintandroid;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -23,7 +19,6 @@ public class Vue extends SurfaceView implements
 	private SurfaceHolder	holder;
 	Canvas					canvas;
 	GameLoop				game;
-	private int				car;
 	private boolean			pause	= false;
 
 	public Vue(Context context, int car) {

@@ -1,15 +1,23 @@
 package com.polytech.devintandroid;
 
+import java.io.IOException;
+
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.util.Log;
 import android.view.Display;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,40 +27,65 @@ import android.hardware.SensorManager;
 public class GameActivity extends Activity implements SensorEventListener {
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
-	// private Intent intent;
-	private TextView		view_x, view_y, view_z;
+	//private TextView		view_x, view_y, view_z;
 	private float			x, y, z;
 	private Display			display;
-	Vue						vue;
+	private Vue				vue;
 	private static int		majoration	= 6;
-	LinearLayout			layout		= null;
+	private LinearLayout	layout		= null;
 	private int				car;
+	private int				explosionId;
+	private SoundPool		soundPool;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		layout = (LinearLayout) LinearLayout.inflate(this,
-				R.layout.activity_game, null);
+		
+		layout = ((LinearLayout) LinearLayout.inflate(this,
+				R.layout.activity_game, null));
+		
 		loadSettings();
-
 		vue = new Vue(this, car);
-
-		// vue = new Vue(this, null);
 		gameActivityInit();
 		Log.d("init", "init");
+		
 		sensorManager.registerListener(this, accelerometer,
 				SensorManager.SENSOR_DELAY_UI);
-
-		// setContentView(R.layout.activity_game);
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
+		
+		
 
 		/*
-		 * view_x = (TextView) findViewById(R.id.textpos_x); view_y = (TextView)
-		 * findViewById(R.id.textpos_y); view_z = (TextView)
-		 * findViewById(R.id.textpos_z);
+		 * Lecture de fichier son
+		 */
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
+		AssetManager assetManager = getAssets();
+		AssetFileDescriptor descriptor = null;
+		try {
+			descriptor = assetManager.openFd("res/raw/songs/Indie_Romance.mp3");
+
+			explosionId = soundPool.load(descriptor, 1);
+
+			soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+				public void onLoadComplete(SoundPool soundPool, int sampleId,
+						int status) {
+					CharSequence text = "SoundPlayer ready";
+					Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+					toast.show();
+					
+				}
+			});
+
+		} catch (IOException e) {
+			Log.d("Erreur IO soundpool ", e.getMessage());
+		}
+		/*
+		 * Fin lecture de fichier son
 		 */
 		setContentView(vue);
+
 	}
 
 	public void gameActivityInit() {
@@ -137,14 +170,14 @@ public class GameActivity extends Activity implements SensorEventListener {
 				this.z = event.values[2];
 				if (x > 0) {
 					x *= majoration;
-					x+=1;
+					x += 1;
 				} else {
 					x *= majoration;
-					x-=1;
+					x -= 1;
 				}
-				
+
 				vue.game.updateOrientation((int) x);
-				// Log.d("x: "+x+" y: "+y+" z: "+z, "x: "+x+" y: "+y+" z: "+z);
+				soundPool.play(explosionId, 1, 1, 0, 0, 1);
 				/*
 				 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
 				 * this.getY()); view_z.setText("z: " + this.getZ());
@@ -159,5 +192,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 				Context.MODE_PRIVATE);
 		this.car = settings.getInt("car", 0);
 	}
+
+	
 
 }
