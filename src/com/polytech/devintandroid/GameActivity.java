@@ -170,13 +170,11 @@ public class GameActivity extends Activity implements SensorEventListener {
 				this.z = event.values[2];
 				if (x > 0) {
 					x *= majoration;
-					x += 1;
 				} else {
 					x *= majoration;
-					x -= 1;
 				}
 
-				vue.game.updateOrientation((int) x);
+				vue.game.updateOrientation((int)Math.round(x));
 				soundPool.play(explosionId, 1, 1, 0, 0, 1);
 				/*
 				 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +

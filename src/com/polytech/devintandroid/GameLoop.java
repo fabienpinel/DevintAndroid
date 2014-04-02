@@ -17,7 +17,7 @@ import android.view.SurfaceHolder;
 public class GameLoop extends Thread {
 
 	private static final int	HAUTEUR			= 400;
-	private static final int	MAX_SIZE_LIST	= 18;
+	private static final int	MAX_SIZE_LIST	= 15;
 
 	private boolean				running;
 	private List<mPoint>		pointsGauche	= new LinkedList<mPoint>();
@@ -84,11 +84,14 @@ public class GameLoop extends Thread {
 		int[][] pointsG = { { 0, 500 }, { this.getSwidth() / 4, 1200 },
 				{ 0, 1280 }, { 0, 300 }, { this.getSwidth() / 4, 500 },
 				{ 0, 1000 }, { 0, 0 }, { this.getSwidth() / 3, 0 }, { 0, 400 } };
-		int[][] pointsD = { { this.getSwidth(), 0 },
+		int[][] pointsD = { { this.getSwidth(), 300 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 900 },
-				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
+				{ this.getSwidth(), 1280 },
+				{ this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
-				{ this.getSwidth(), 500 }, };
+				{ this.getSwidth(), 500 }, { this.getSwidth(), 0 },
+				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
+				{ this.getSwidth(), 500 } };
 
 		// Initialisation des premiers points
 		chargementDesPoints(this.pointsGauche, pointsG);
@@ -153,14 +156,13 @@ public class GameLoop extends Thread {
 		points.remove(0);
 		points.remove(0);
 		points.remove(0);
-
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
 	}
 
 	public int calculAvancement(int sspeed) {
 		delta = System.nanoTime() - lastUpdate;
-		return (int) (((delta * 1.0) / (Math.pow(10, 9))) * sspeed);
+		return (int) Math.round((((delta * 1.0) / (Math.pow(10, 9))) * sspeed));
 	}
 
 	/**
@@ -169,16 +171,15 @@ public class GameLoop extends Thread {
 	 * */
 	public void update() {
 		this.setAvancement(Math.min(calculAvancement(speed), 100));
-		Log.d("avancement " + this.getAvancement(),
-				"avancement " + this.getAvancement());
+		/*Log.d("avancement " + this.getAvancement(),
+				"avancement " + this.getAvancement());*/
 
 		this.position += this.getAvancement();
-
 		this.avancer(this.pointsGauche, this.getAvancement());
 		this.avancer(this.pointsDroite, this.getAvancement());
-
-		Log.d("position " + position, "position " + position);
 		this.lastUpdate = System.nanoTime();
+		//Log.d("position " + position, "position " + position);
+		
 	}
 
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
@@ -190,13 +191,13 @@ public class GameLoop extends Thread {
 	}
 
 	public void updateOrientation(int x) {
-		for (mPoint p : this.pointsGauche) {
-			p.tourne(x);
+	
+		for(int i =0; i< this.pointsGauche.size(); i++){
+			this.pointsGauche.get(i).tourne(x);
+			this.pointsDroite.get(i).tourne(x);
+
 		}
-		for (mPoint p : this.pointsDroite) {
-			p.tourne(x);
-		}
-	}
+}
 
 	public void avancer(List<mPoint> points, int footo) {
 		for (mPoint p : points) {
