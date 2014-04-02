@@ -13,7 +13,9 @@ import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.View;
 import android.widget.Toast;
+import android.widget.TextView;
 
 public class GameLoop extends Thread {
 	/*
@@ -34,7 +36,7 @@ public class GameLoop extends Thread {
 	private int					sheight;
 	private SurfaceHolder		holder;
 	private int					position, positionx;
-	private int					speed			= 710;
+	private int					speed			= 1000;
 	private long				lastUpdate;
 	private Bitmap				myCar;
 	private int					avancement;
@@ -46,13 +48,12 @@ public class GameLoop extends Thread {
 		this.context = context;
 		this.holder = holder;
 		this.car = car;
+		
 		path = new Path();
 		p = new Paint();
 		loadMyCar(this.car);
 		loadPaint(p);
-
 		this.running = true;
-
 	}
 
 	public void loadMyCar(int car) {
@@ -81,6 +82,7 @@ public class GameLoop extends Thread {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
+		p.setTextSize((float)60.0);
 		p.setStrokeWidth(1);
 		p.setColor(Color.WHITE);
 	}
@@ -103,7 +105,7 @@ public class GameLoop extends Thread {
 		chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
 		this.positionx = 0;
-		this.score=0;
+		this.score = 0;
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
@@ -115,9 +117,13 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
-						if (this.positionx >= 200 || this.positionx <= -200) {
-							Log.d("collision", "collision");
-							this.score-=200;
+						if (this.positionx >= (this.getSwidth()/3) || this.positionx <= -(this.getSwidth()/3)) {
+							Log.d("collision", "collision: "+this.positionx);
+							if(this.positionx>0){
+								this.score -= (int)Math.round(positionx/100);
+							}else{
+								this.score += (int)Math.round(positionx/100);
+							}
 						}
 
 						// Generation
@@ -134,8 +140,8 @@ public class GameLoop extends Thread {
 								cleanLast(this.pointsDroite);
 							}
 							this.position -= GameLoop.HAUTEUR;
-
 						}
+						canvas.drawText("Score: "+score, 0, 100, p);
 						// Triangles
 						affichageDesPoints(path, p, canvas);
 						// Voiture
@@ -188,7 +194,7 @@ public class GameLoop extends Thread {
 		this.position += this.getAvancement();
 		this.avancer(this.pointsGauche, this.getAvancement());
 		this.avancer(this.pointsDroite, this.getAvancement());
-		this.score+=getAvancement();
+		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
 		// Log.d("position " + position, "position " + position);
 

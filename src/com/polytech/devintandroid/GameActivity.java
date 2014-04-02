@@ -177,8 +177,8 @@ public class GameActivity extends Activity implements SensorEventListener {
 				}
 
 				vue.game.updateOrientation((int)Math.round(x));
-				if(soundReady)
-					soundPool.play(explosionId, 1, 1, 0, 0, 1);
+				/*if(soundReady)
+					soundPool.play(explosionId, 1, 1, 0, 0, 1);*/
 				/*
 				 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
 				 * this.getY()); view_z.setText("z: " + this.getZ());

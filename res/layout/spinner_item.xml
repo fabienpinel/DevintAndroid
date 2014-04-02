@@ -1,7 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<TextView  
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="vertical"
+              >
+<ImageView
+        android:id="@+id/car"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bleu" />
+<TextView 
+    android:id="@+id/tvcar" 
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content"
     android:textSize="40dip"
@@ -9,3 +18,4 @@
     android:textStyle="bold"
    
     />
+</LinearLayout>
