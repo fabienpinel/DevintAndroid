@@ -1,12 +1,22 @@
 package com.polytech.devintandroid;
 
+import java.util.Locale;
+
+import com.polytech.devintAndroid.voice.VoiceActivity;
+
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.OnInitListener;
 import android.support.v4.app.NavUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -15,20 +25,39 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 
-public class HelpActivity extends Activity {
-	LinearLayout	layout	= null;
+public class HelpActivity extends Activity implements OnInitListener {
+	LinearLayout			layout	= null;
+	TextView				helptext;
+	private TextToSpeech	mTts;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		layout = (LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_help, null);
+
 		loadSettings();
 		setContentView(layout);
-		Intent intent = getIntent();
+		init();
+		
+		helptext = (TextView) findViewById(R.id.texthelp);
+		Button playHelpButton = (Button) layout
+				.findViewById(R.id.playHelpButton);
+		playHelpButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				play(helptext.getText().toString());
+
+			}
+		});
+		
+
 	}
+
 	public void loadSettings() {
-		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		SharedPreferences settings = getSharedPreferences("prefs",
+				Context.MODE_PRIVATE);
 		TextView titre = (TextView) layout.findViewById(R.id.titleHelp);
 		switch (settings.getInt("titreFond", 0)) {
 
@@ -42,8 +71,57 @@ public class HelpActivity extends Activity {
 			titre.setBackgroundColor(Color.parseColor("#0000FF"));
 
 		}
+	}
+
+	public void init() {
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, 0x01);
 
 	}
-	
+
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == 0x01) {
+			if (resultCode == TextToSpeech.Engine.CHECK_VOICE_DATA_PASS) {
+				// Succès, au moins un moteur de TTS à été trouvé, on
+				// l'instancie
+				mTts = new TextToSpeech(this, this);
+				if (mTts.isLanguageAvailable(Locale.FRANCE) == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
+					mTts.setLanguage(Locale.FRANCE);
+				}
+				mTts.setSpeechRate(1); // 1 est la valeur par défaut. Une valeur
+										// inférieure rendra l'énonciation plus
+										// lente, une valeur supérieure la
+										// rendra plus rapide.
+				mTts.setPitch(1); // 1 est la valeur par défaut. Une valeur
+									// inférieure rendra l'énonciation plus
+									// grave, une valeur supérieure la rendra
+									// plus aigue.
+			} else {
+				// Echec, aucun moteur n'a été trouvé, on propose à
+				// l'utilisateur d'en installer un depuis le Market
+				Intent installIntent = new Intent();
+				installIntent
+						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
+				startActivity(installIntent);
+			}
+		}
+	}
+
+	public void onInit(int status) {
+		if (status == TextToSpeech.SUCCESS) {
+			Context context = getApplicationContext();
+			CharSequence text = "TTS ready";
+			int duration = Toast.LENGTH_SHORT;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+		}
+	}
+
+	public void play(String toPlay) {
+		mTts.speak(toPlay, TextToSpeech.QUEUE_FLUSH, null);
+
+	}
 
 }

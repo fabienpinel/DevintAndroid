@@ -2,8 +2,6 @@ package com.polytech.devintAndroid.voice;
 
 import java.util.Locale;
 
-import com.polytech.devintandroid.HelpActivity;
-import com.polytech.devintandroid.MainActivity;
 import com.polytech.devintandroid.R;
 
 import android.os.Bundle;
@@ -23,18 +21,23 @@ public class VoiceActivity extends Activity implements OnInitListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_voice);
-		Intent checkIntent = new Intent();
-		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-		startActivityForResult(checkIntent, 0x01);
-
+		init();
 		Button playButton = (Button) findViewById(R.id.playButton);
 		playButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				play("Ceci est un test");
+				play("coucou !");
+				
 			}
 		});
 
+	}
+	public void init(){
+		Intent checkIntent = new Intent();
+		checkIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
+		startActivityForResult(checkIntent, 0x01);
+
+		
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

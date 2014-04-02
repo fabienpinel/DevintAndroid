@@ -34,5 +34,17 @@
         android:textColor="#000000"
         android:textSize="@dimen/corpText" />
 
+     <Button
+         android:id="@+id/playHelpButton"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignLeft="@+id/texthelp"
+         
+         android:layout_weight="0.1"
+         android:text="ECOUTER"
+         android:layout_below="@+id/texthelp"
+         android:textSize="@dimen/menuDimension"
+         android:textStyle="bold" />
+
 </RelativeLayout>
 </LinearLayout>
