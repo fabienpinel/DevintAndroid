@@ -46,7 +46,7 @@ public class OptionsActivity extends Activity {
 		Intent intent = getIntent();
 
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
-		themeSpinner.setAdapter(new MyAdapter(this, R.layout.spinner_item, getResources().getStringArray(R.array.choixCar)));
+		themeSpinner.setAdapter(new MyAdapter(this, R.id.tvcar, getResources().getStringArray(R.array.choixCar)));
 
 		themeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -57,7 +57,7 @@ public class OptionsActivity extends Activity {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parentView) {
-				Log.d("here", "here");
+				Log.d("Nothing selected", "Nothing selected");
 			}
 
 		});
@@ -127,7 +127,8 @@ public class OptionsActivity extends Activity {
 	public class MyAdapter extends ArrayAdapter<String> {
 		String[] spinnerValues;
 	    public MyAdapter(Context ctx, int txtViewResourceId, String[] objects) {
-	        super(ctx, txtViewResourceId, objects);
+	        super(ctx, R.layout.spinner_item, R.id.tvcar, objects);
+	        Log.d("test constructeur", "test constructeur");
 	        this.spinnerValues=objects;
 	    }
 
@@ -141,10 +142,8 @@ public class OptionsActivity extends Activity {
 	    }
 	    public View getCustomView(int position, View convertView,
 	            ViewGroup parent) {
-	        LayoutInflater inflater = getLayoutInflater();
 	        
-	        View mySpinner = inflater.inflate(R.layout.spinner_item, parent,
-	                false);
+	        View mySpinner = getLayoutInflater().inflate( R.layout.spinner_item, parent);
 	        TextView main_text = (TextView) mySpinner
 	                .findViewById(R.id.tvcar);
 	        main_text.setText(spinnerValues[position]);
@@ -155,7 +154,7 @@ public class OptionsActivity extends Activity {
 	                .findViewById(R.drawable.bleu);
 	        left_icon.setImageResource(R.drawable.bleu);
 
-	        return mySpinner;
+	        return findViewById(R.id.tvcar);
 	    }
 	}
 }
