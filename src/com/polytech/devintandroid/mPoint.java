@@ -34,13 +34,10 @@ public class mPoint {
 	}
 	public void tourne(int i) {
 		this.setX(this.getX()+i);
-<<<<<<< HEAD
-		
-=======
+
 	}
 	
 	public String toString() {
 		return "("+x+","+ y+")";
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 	}
 }

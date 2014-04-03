@@ -24,7 +24,6 @@ public class GameLoop extends Thread {
 	 * voiture /circuit plus changeant / afficher le score en live
 	 */
 
-<<<<<<< HEAD
 	private static final int	HAUTEUR			= 400;
 	private static final int	MAX_SIZE_LIST	= 15;
 
@@ -45,28 +44,7 @@ public class GameLoop extends Thread {
 	private long				delta;
 	private int					car;
 	private int					score;
-=======
-	private static final int HAUTEUR = 400;
-	private static final int MAX_SIZE_LIST = 18;
-
-	private boolean running;
-	private List<mPoint> pointsGauche = new LinkedList<mPoint>();
-	private List<mPoint> pointsDroite = new LinkedList<mPoint>();
-	private Context context;
-	private Paint p;
-	private Path path;
-	private int swidth;
-	private int sheight;
-	private SurfaceHolder holder;
-	private int position;
-	private int speed = 400;
-	private long lastUpdate;
-	private Bitmap myCar;
-	private int avancement;
-	private long delta;
-	private int car;
 	private List<GameShape> leftShapes, rightShapes;
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
@@ -77,13 +55,10 @@ public class GameLoop extends Thread {
 		p = new Paint();
 		loadMyCar(this.car);
 		loadPaint(p);
-<<<<<<< HEAD
-=======
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
 		
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 		this.running = true;
 	}
 
@@ -156,9 +131,6 @@ public class GameLoop extends Thread {
 							}
 						}
 
-<<<<<<< HEAD
-						// Generation
-=======
 						Log.d("debug", "==============================");
 						Log.d("debug", "position : "+position);
 						
@@ -202,7 +174,6 @@ public class GameLoop extends Thread {
 							generateNewShapes(missingShapes);
 						}
 						
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							/*genererNouveauTriangleGauche(this.pointsGauche
 									.get(pointsGauche.size() - 3));
@@ -217,10 +188,6 @@ public class GameLoop extends Thread {
 								cleanLast(this.pointsDroite);
 							}
 							this.position -= GameLoop.HAUTEUR;
-<<<<<<< HEAD
-=======
-
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 						}
 						canvas.drawText("Score: "+score, 0, 100, p);
 						// Triangles
@@ -321,10 +288,7 @@ public class GameLoop extends Thread {
 	private void cleanLast(List<mPoint> points) {
 		/*points.remove(0);
 		points.remove(0);
-<<<<<<< HEAD
-		points.remove(0);
-		points.remove(0);
-=======
+
 		points.remove(0);*/
 		
 		for (int i = 0; i < points.size(); ++i) {//mPoint p : points) {
@@ -335,7 +299,6 @@ public class GameLoop extends Thread {
 			}
 		}
 
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
 	}
@@ -360,10 +323,7 @@ public class GameLoop extends Thread {
 		this.avancer(this.pointsDroite, this.getAvancement());
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
-<<<<<<< HEAD
-		// Log.d("position " + position, "position " + position);
 
-=======
 		
 		// DEBUG!!
 		this.updateOrientation(5);
@@ -378,7 +338,6 @@ public class GameLoop extends Thread {
 		for (GameShape s : shapes) {
 			s.translate(0, deltaY);
 		}
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 	}
 
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
@@ -390,14 +349,6 @@ public class GameLoop extends Thread {
 	}
 
 	public void updateOrientation(int x) {
-<<<<<<< HEAD
-
-		for (int i = 0; i < this.pointsGauche.size(); i++) {
-			this.pointsGauche.get(i).tourne(x);
-			this.pointsDroite.get(i).tourne(x);
-			this.positionx += x;
-
-=======
 		updateOrientation(leftShapes, x);
 		updateOrientation(rightShapes, x);
 	}
@@ -405,7 +356,6 @@ public class GameLoop extends Thread {
 	private void updateOrientation(List<GameShape> shapesList, int dX) {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
->>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 		}
 	}
 
