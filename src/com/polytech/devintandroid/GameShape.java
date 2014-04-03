@@ -46,11 +46,21 @@ public class GameShape {
 		// do nothing for point1[0]
 		points1.get(0).translate(0, y);
 		points1.get(1).translate(x, y);
-		points1.get(2).translate(0, y);
+		points1.get(2).translate(x, y);
 		
-		points2.get(0).translate(x, y);
-		points2.get(1).translate(0, y);
-		points2.get(2).translate(x, y);
+		points2.get(0).translate(0, y);
+		points2.get(1).translate(x, y);
+		points2.get(2).translate(0, y);
+		
+		if (leftSide) {
+			width += x;
+			previousWidth += x;
+		}
+		else {
+			width -= x;
+			previousWidth -= x;
+		}
+		
 	}
 
 	public int getWidth() {

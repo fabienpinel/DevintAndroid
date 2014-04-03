@@ -30,7 +30,7 @@ public class GameLoop extends Thread {
 	private int sheight;
 	private SurfaceHolder holder;
 	private int position;
-	private int speed = 100;
+	private int speed = 400;
 	private long lastUpdate;
 	private Bitmap myCar;
 	private int avancement;
@@ -102,7 +102,6 @@ public class GameLoop extends Thread {
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
-			this.update();
 			Canvas canvas = null;
 			try {
 				synchronized (this.holder) {
@@ -116,6 +115,8 @@ public class GameLoop extends Thread {
 						
 						// Clean unused shapes
 						cleanShapes();
+						
+						this.update();
 						
 						// Check if generation is needed ?
 						int generatedHeight = 0;
@@ -151,6 +152,7 @@ public class GameLoop extends Thread {
 						if (missingShapes > 0) {
 							generateNewShapes(missingShapes);
 						}
+						
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							/*genererNouveauTriangleGauche(this.pointsGauche
 									.get(pointsGauche.size() - 3));
@@ -205,9 +207,14 @@ public class GameLoop extends Thread {
 		}
 	}
 
-	private void displayShapes(Path path2, Paint p2, Canvas canvas) {
+	private void displayShapes(Path path, Paint p2, Canvas canvas) {
 		Log.d("affichage", "affichage");
-		for (GameShape s : leftShapes) {
+		displayShapes(leftShapes, path, p2, canvas);
+		displayShapes(rightShapes, path, p2, canvas);
+	}
+	
+	private void displayShapes(List<GameShape> shapesList, Path path2, Paint p2, Canvas canvas) {
+		for (GameShape s : shapesList) {
 			List<Triangle> tris = s.getTriangles();
 			for (Triangle t : tris) {
 				ajouterUnTriangle(t, path, p, canvas);
@@ -217,35 +224,35 @@ public class GameLoop extends Thread {
 
 	private void generateNewShapes(int count) {
 		for (int i = 0; i < count; ++i) {
-			generateNewShape();
+			Log.d("debug", "=== left Shapes");
+			generateNewShape(leftShapes, true);
+			Log.d("debug", "=== right Shapes");
+			generateNewShape(rightShapes, false);
 		}
 	}
 	
-	private void generateNewShape() {
+	private void generateNewShape(List<GameShape> shapeList, boolean isLeft) {
 		int previousWidth = 100;
 		int 	originX = 0,
 				originY = sheight;
-		if (leftShapes.size() > 0) {
-			GameShape previousShape = leftShapes.get(leftShapes.size() - 1);
+		
+		if (!isLeft) {
+			originX = swidth;
+		}
+		
+		if (shapeList.size() > 0) {
+			GameShape previousShape = shapeList.get(shapeList.size() - 1);
 			if (previousShape != null) {
 				previousWidth = previousShape.getWidth();
 				originY = previousShape.getOriginY() - previousShape.getHeight();
 			}
 		}
 		
-		/*
-		int newWidth;
-		if (previousWidth == 300) {
-			newWidth = 150;
-		}
-		else {
-			newWidth = 300;
-		}*/
 		int newWidth = Math.min(400, previousWidth + (int) ((0.5-Math.random())*600));
 		if (newWidth < 10) newWidth = 10;
-		GameShape s = new GameShape(newWidth, previousWidth, originX, originY, GameLoop.HAUTEUR, true);
+		GameShape s = new GameShape(newWidth, previousWidth, originX, originY, GameLoop.HAUTEUR, isLeft);
 		Log.d("debug", "Generated Shape:"+s);
-		leftShapes.add(s);
+		shapeList.add(s);
 	}
 	
 	/** Dessiner les composant du jeu sur le buffer de l'écran */
@@ -296,12 +303,13 @@ public class GameLoop extends Thread {
 		Log.d("position " + position, "position " + position);
 		this.lastUpdate = System.nanoTime();
 		
+		// DEBUG!!
+		this.updateOrientation(5);
+		
 		// Update des nouveaux points
-		updateLeftShapes(getAvancement());
-	}
-	
-	private void updateLeftShapes(int deltaY) {
+		int deltaY = getAvancement();
 		updateShapes(leftShapes, deltaY);
+		updateShapes(rightShapes, deltaY);
 	}
 	
 	private void updateShapes(List<GameShape> shapes, int deltaY) {
@@ -319,11 +327,13 @@ public class GameLoop extends Thread {
 	}
 
 	public void updateOrientation(int x) {
-		for (mPoint p : this.pointsGauche) {
-			p.tourne(x);
-		}
-		for (mPoint p : this.pointsDroite) {
-			p.tourne(x);
+		updateOrientation(leftShapes, x);
+		updateOrientation(rightShapes, x);
+	}
+	
+	private void updateOrientation(List<GameShape> shapesList, int dX) {
+		for (GameShape s : shapesList) {
+			s.translate(dX, 0);
 		}
 	}
 
@@ -350,7 +360,6 @@ public class GameLoop extends Thread {
 		ppath.moveTo(origin.getX(), origin.getY());
 		ppath.lineTo(line1.getX(), line1.getY());
 		ppath.lineTo(line2.getX(), line2.getY());
-		Log.d("debug","Orig:"+origin+" , line1: "+line1+", line2: "+line2);
 		ppath.close();
 		ppath.offset(0, 0);
 		ca.drawPath(ppath, pp);
