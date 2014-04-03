@@ -1,5 +1,6 @@
 package com.polytech.devintandroid;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class GameLoop extends Thread {
 	 * voiture /circuit plus changeant / afficher le score en live
 	 */
 
+<<<<<<< HEAD
 	private static final int	HAUTEUR			= 400;
 	private static final int	MAX_SIZE_LIST	= 15;
 
@@ -43,6 +45,28 @@ public class GameLoop extends Thread {
 	private long				delta;
 	private int					car;
 	private int					score;
+=======
+	private static final int HAUTEUR = 400;
+	private static final int MAX_SIZE_LIST = 18;
+
+	private boolean running;
+	private List<mPoint> pointsGauche = new LinkedList<mPoint>();
+	private List<mPoint> pointsDroite = new LinkedList<mPoint>();
+	private Context context;
+	private Paint p;
+	private Path path;
+	private int swidth;
+	private int sheight;
+	private SurfaceHolder holder;
+	private int position;
+	private int speed = 400;
+	private long lastUpdate;
+	private Bitmap myCar;
+	private int avancement;
+	private long delta;
+	private int car;
+	private List<GameShape> leftShapes, rightShapes;
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
@@ -53,6 +77,13 @@ public class GameLoop extends Thread {
 		p = new Paint();
 		loadMyCar(this.car);
 		loadPaint(p);
+<<<<<<< HEAD
+=======
+
+		leftShapes = new ArrayList<GameShape>();
+		rightShapes = new ArrayList<GameShape>();
+		
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 		this.running = true;
 	}
 
@@ -101,15 +132,14 @@ public class GameLoop extends Thread {
 				{ this.getSwidth(), 500 } };
 
 		// Initialisation des premiers points
-		chargementDesPoints(this.pointsGauche, pointsG);
-		chargementDesPoints(this.pointsDroite, pointsD);
+		//chargementDesPoints(this.pointsGauche, pointsG);
+		//chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
 		this.positionx = 0;
 		this.score = 0;
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
-			this.update();
 			Canvas canvas = null;
 			try {
 				synchronized (this.holder) {
@@ -126,24 +156,76 @@ public class GameLoop extends Thread {
 							}
 						}
 
+<<<<<<< HEAD
 						// Generation
+=======
+						Log.d("debug", "==============================");
+						Log.d("debug", "position : "+position);
+						
+						// Clean unused shapes
+						cleanShapes();
+						
+						this.update();
+						
+						// Check if generation is needed ?
+						int generatedHeight = 0;
+						for (GameShape shape : leftShapes) {
+							generatedHeight += shape.getHeight();
+						}
+						
+						int firstElementY = sheight;
+
+						if (leftShapes.size() > 0 && leftShapes.get(0) != null) {
+							firstElementY = leftShapes.get(0).getOriginY();
+						}
+						Log.d("debug", "firstElementY : "+firstElementY);
+						
+						int lastElementY = sheight;
+						if (leftShapes.size() > 0) {
+							GameShape last = leftShapes.get(leftShapes.size() - 1); 
+							lastElementY = last.getOriginY() - last.getHeight(); 
+						}
+						Log.d("debug", "lastElementY (missing pixels): "+lastElementY);
+						
+						//int 	heightDelta = sheight - generatedHeight,
+						int missingPixels = lastElementY;
+						/*int 	heightDelta = lastEl- generatedHeight,
+								missingShapes = (int) Math.ceil(heightDelta*1.0 / GameLoop.HAUTEUR);*/
+						int missingShapes = (int) Math.ceil(missingPixels*1.0 / GameLoop.HAUTEUR);
+						
+						Log.d("debug", "leftShapes:"+ leftShapes.size());
+						//Log.d("debug", "generatedHeight:"+ generatedHeight);
+						//Log.d("debug", "heightDelta:"+ heightDelta + " (sHeight:"+sheight+")");
+						Log.d("debug", "Missing shapes : "+missingShapes);
+						
+						if (missingShapes > 0) {
+							generateNewShapes(missingShapes);
+						}
+						
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
-							genererNouveauTriangleGauche(this.pointsGauche
+							/*genererNouveauTriangleGauche(this.pointsGauche
 									.get(pointsGauche.size() - 3));
 							genererNouveauTriangleDroite(pointsDroite
-									.get(pointsDroite.size() - 3));
+									.get(pointsDroite.size() - 3));*/
 							Log.d("size sup " + pointsGauche.size(),
 									"size sup " + pointsGauche.size());
+							
 							if (this.pointsDroite.size() >= GameLoop.MAX_SIZE_LIST
 									|| this.pointsGauche.size() >= GameLoop.MAX_SIZE_LIST) {
 								cleanLast(this.pointsGauche);
 								cleanLast(this.pointsDroite);
 							}
 							this.position -= GameLoop.HAUTEUR;
+<<<<<<< HEAD
+=======
+
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 						}
 						canvas.drawText("Score: "+score, 0, 100, p);
 						// Triangles
-						affichageDesPoints(path, p, canvas);
+						//affichageDesPoints(path, p, canvas);
+						displayShapes(path, p, canvas);
 						// Voiture
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
@@ -159,6 +241,74 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	/**
+	 * Removes the shapes that are now invisible
+	 */
+	private void cleanShapes() {
+		if (leftShapes.size() > 0) {
+			GameShape shape = null;
+			for (int i = 0; i < leftShapes.size(); ++i) {
+				shape = leftShapes.get(i);
+				int shapeTop = shape.getOriginY() - shape.getHeight();
+				if (shapeTop > sheight) {
+					leftShapes.remove(i);
+					i--;
+				}
+				else {
+					break;
+				}
+			}
+		}
+	}
+
+	private void displayShapes(Path path, Paint p2, Canvas canvas) {
+		Log.d("affichage", "affichage");
+		displayShapes(leftShapes, path, p2, canvas);
+		displayShapes(rightShapes, path, p2, canvas);
+	}
+	
+	private void displayShapes(List<GameShape> shapesList, Path path2, Paint p2, Canvas canvas) {
+		for (GameShape s : shapesList) {
+			List<Triangle> tris = s.getTriangles();
+			for (Triangle t : tris) {
+				ajouterUnTriangle(t, path, p, canvas);
+			}
+		}
+	}
+
+	private void generateNewShapes(int count) {
+		for (int i = 0; i < count; ++i) {
+			Log.d("debug", "=== left Shapes");
+			generateNewShape(leftShapes, true);
+			Log.d("debug", "=== right Shapes");
+			generateNewShape(rightShapes, false);
+		}
+	}
+	
+	private void generateNewShape(List<GameShape> shapeList, boolean isLeft) {
+		int previousWidth = 100;
+		int 	originX = 0,
+				originY = sheight;
+		
+		if (!isLeft) {
+			originX = swidth;
+		}
+		
+		if (shapeList.size() > 0) {
+			GameShape previousShape = shapeList.get(shapeList.size() - 1);
+			if (previousShape != null) {
+				previousWidth = previousShape.getWidth();
+				originY = previousShape.getOriginY() - previousShape.getHeight();
+			}
+		}
+		
+		int newWidth = Math.min(400, previousWidth + (int) ((0.5-Math.random())*600));
+		if (newWidth < 10) newWidth = 10;
+		GameShape s = new GameShape(newWidth, previousWidth, originX, originY, GameLoop.HAUTEUR, isLeft);
+		Log.d("debug", "Generated Shape:"+s);
+		shapeList.add(s);
+	}
+	
 	/** Dessiner les composant du jeu sur le buffer de l'écran */
 	/*
 	 * public void render() { this.screen.canvas.drawPaint(p);
@@ -169,9 +319,23 @@ public class GameLoop extends Thread {
 	 */
 
 	private void cleanLast(List<mPoint> points) {
+		/*points.remove(0);
+		points.remove(0);
+<<<<<<< HEAD
 		points.remove(0);
 		points.remove(0);
-		points.remove(0);
+=======
+		points.remove(0);*/
+		
+		for (int i = 0; i < points.size(); ++i) {//mPoint p : points) {
+			mPoint p = points.get(i);
+			if (p.getY() > sheight) {
+				points.remove(i);
+				--i;
+			}
+		}
+
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
 	}
@@ -196,8 +360,25 @@ public class GameLoop extends Thread {
 		this.avancer(this.pointsDroite, this.getAvancement());
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
+<<<<<<< HEAD
 		// Log.d("position " + position, "position " + position);
 
+=======
+		
+		// DEBUG!!
+		this.updateOrientation(5);
+		
+		// Update des nouveaux points
+		int deltaY = getAvancement();
+		updateShapes(leftShapes, deltaY);
+		updateShapes(rightShapes, deltaY);
+	}
+	
+	private void updateShapes(List<GameShape> shapes, int deltaY) {
+		for (GameShape s : shapes) {
+			s.translate(0, deltaY);
+		}
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 	}
 
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
@@ -209,12 +390,22 @@ public class GameLoop extends Thread {
 	}
 
 	public void updateOrientation(int x) {
+<<<<<<< HEAD
 
 		for (int i = 0; i < this.pointsGauche.size(); i++) {
 			this.pointsGauche.get(i).tourne(x);
 			this.pointsDroite.get(i).tourne(x);
 			this.positionx += x;
 
+=======
+		updateOrientation(leftShapes, x);
+		updateOrientation(rightShapes, x);
+	}
+	
+	private void updateOrientation(List<GameShape> shapesList, int dX) {
+		for (GameShape s : shapesList) {
+			s.translate(dX, 0);
+>>>>>>> dfaa6bfed6a47b1228a5d1759b6f893582b88c8c
 		}
 	}
 
@@ -244,6 +435,11 @@ public class GameLoop extends Thread {
 		ppath.close();
 		ppath.offset(0, 0);
 		ca.drawPath(ppath, pp);
+	}
+	
+	public void ajouterUnTriangle(Triangle t, Path path, Paint paint, Canvas canvas) {
+		List<mPoint> points = t.getPoints();
+		ajouterUnTriangle(points.get(0), points.get(1), points.get(2), path, paint, canvas);
 	}
 
 	public void genererNouveauTriangleGauche(mPoint p) {
