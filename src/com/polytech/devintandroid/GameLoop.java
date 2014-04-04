@@ -202,17 +202,22 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	public void cleanShapes() {
+		cleanShapes(leftShapes);
+		cleanShapes(rightShapes);
+	}
+	
 	/**
 	 * Removes the shapes that are now invisible
 	 */
-	private void cleanShapes() {
-		if (leftShapes.size() > 0) {
+	private void cleanShapes(List<GameShape> shapesList) {
+		if (shapesList.size() > 0) {
 			GameShape shape = null;
-			for (int i = 0; i < leftShapes.size(); ++i) {
-				shape = leftShapes.get(i);
+			for (int i = 0; i < shapesList.size(); ++i) {
+				shape = shapesList.get(i);
 				int shapeTop = shape.getOriginY() - shape.getHeight();
 				if (shapeTop > sheight) {
-					leftShapes.remove(i);
+					shapesList.remove(i);
 					i--;
 				} else {
 					break;
