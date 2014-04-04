@@ -44,13 +44,13 @@ public class GameLoop extends Thread {
 	private long				delta;
 	private int					car;
 	private int					score;
-	private List<GameShape> leftShapes, rightShapes;
+	private List<GameShape>		leftShapes, rightShapes;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.holder = holder;
 		this.car = car;
-		
+
 		path = new Path();
 		p = new Paint();
 		loadMyCar(this.car);
@@ -58,7 +58,7 @@ public class GameLoop extends Thread {
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
-		
+
 		this.running = true;
 	}
 
@@ -88,7 +88,7 @@ public class GameLoop extends Thread {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
-		p.setTextSize((float)60.0);
+		p.setTextSize((float) 60.0);
 		p.setStrokeWidth(1);
 		p.setColor(Color.WHITE);
 	}
@@ -107,8 +107,8 @@ public class GameLoop extends Thread {
 				{ this.getSwidth(), 500 } };
 
 		// Initialisation des premiers points
-		//chargementDesPoints(this.pointsGauche, pointsG);
-		//chargementDesPoints(this.pointsDroite, pointsD);
+		// chargementDesPoints(this.pointsGauche, pointsG);
+		// chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
 		this.positionx = 0;
 		this.score = 0;
@@ -122,76 +122,70 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
-						if (this.positionx >= (this.getSwidth()/3) || this.positionx <= -(this.getSwidth()/3)) {
-							Log.d("collision", "collision: "+this.positionx);
-							if(this.positionx>0){
-								this.score -= (int)Math.round(positionx/100);
-							}else{
-								this.score += (int)Math.round(positionx/100);
+						if (this.positionx >= (this.getSwidth() / 3)
+								|| this.positionx <= -(this.getSwidth() / 3)) {
+							Log.d("collision", "collision: " + this.positionx);
+							if (this.positionx > 0) {
+								this.score -= (int) Math.round(positionx / 100);
+							} else {
+								this.score += (int) Math.round(positionx / 100);
 							}
 						}
 
 						Log.d("debug", "==============================");
-						Log.d("debug", "position : "+position);
-						
+						Log.d("debug", "position : " + position);
+
 						// Clean unused shapes
 						cleanShapes();
-						
-						this.update();
-						
+
 						// Check if generation is needed ?
 						int generatedHeight = 0;
 						for (GameShape shape : leftShapes) {
 							generatedHeight += shape.getHeight();
 						}
-						
+
 						int firstElementY = sheight;
 
 						if (leftShapes.size() > 0 && leftShapes.get(0) != null) {
 							firstElementY = leftShapes.get(0).getOriginY();
 						}
-						Log.d("debug", "firstElementY : "+firstElementY);
-						
+						Log.d("debug", "firstElementY : " + firstElementY);
+
 						int lastElementY = sheight;
 						if (leftShapes.size() > 0) {
-							GameShape last = leftShapes.get(leftShapes.size() - 1); 
-							lastElementY = last.getOriginY() - last.getHeight(); 
+							GameShape last = leftShapes
+									.get(leftShapes.size() - 1);
+							lastElementY = last.getOriginY() - last.getHeight();
 						}
-						Log.d("debug", "lastElementY (missing pixels): "+lastElementY);
-						
-						//int 	heightDelta = sheight - generatedHeight,
+						Log.d("debug", "lastElementY (missing pixels): "
+								+ lastElementY);
+
+						// int heightDelta = sheight - generatedHeight,
 						int missingPixels = lastElementY;
-						/*int 	heightDelta = lastEl- generatedHeight,
-								missingShapes = (int) Math.ceil(heightDelta*1.0 / GameLoop.HAUTEUR);*/
-						int missingShapes = (int) Math.ceil(missingPixels*1.0 / GameLoop.HAUTEUR);
-						
-						Log.d("debug", "leftShapes:"+ leftShapes.size());
-						//Log.d("debug", "generatedHeight:"+ generatedHeight);
-						//Log.d("debug", "heightDelta:"+ heightDelta + " (sHeight:"+sheight+")");
-						Log.d("debug", "Missing shapes : "+missingShapes);
-						
+						/*
+						 * int heightDelta = lastEl- generatedHeight,
+						 * missingShapes = (int) Math.ceil(heightDelta*1.0 /
+						 * GameLoop.HAUTEUR);
+						 */
+						int missingShapes = (int) Math.ceil(missingPixels * 1.0
+								/ GameLoop.HAUTEUR);
+
+						Log.d("debug", "leftShapes:" + leftShapes.size());
+						// Log.d("debug", "generatedHeight:"+ generatedHeight);
+						// Log.d("debug", "heightDelta:"+ heightDelta +
+						// " (sHeight:"+sheight+")");
+						Log.d("debug", "Missing shapes : " + missingShapes);
+
 						if (missingShapes > 0) {
 							generateNewShapes(missingShapes);
 						}
-						
+						this.update();
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
-							/*genererNouveauTriangleGauche(this.pointsGauche
-									.get(pointsGauche.size() - 3));
-							genererNouveauTriangleDroite(pointsDroite
-									.get(pointsDroite.size() - 3));*/
-							Log.d("size sup " + pointsGauche.size(),
-									"size sup " + pointsGauche.size());
-							
-							if (this.pointsDroite.size() >= GameLoop.MAX_SIZE_LIST
-									|| this.pointsGauche.size() >= GameLoop.MAX_SIZE_LIST) {
-								cleanLast(this.pointsGauche);
-								cleanLast(this.pointsDroite);
-							}
 							this.position -= GameLoop.HAUTEUR;
 						}
-						canvas.drawText("Score: "+score, 0, 100, p);
+						canvas.drawText("Score: " + score, 0, 100, p);
 						// Triangles
-						//affichageDesPoints(path, p, canvas);
+						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
 						// Voiture
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
@@ -220,8 +214,7 @@ public class GameLoop extends Thread {
 				if (shapeTop > sheight) {
 					leftShapes.remove(i);
 					i--;
-				}
-				else {
+				} else {
 					break;
 				}
 			}
@@ -233,8 +226,9 @@ public class GameLoop extends Thread {
 		displayShapes(leftShapes, path, p2, canvas);
 		displayShapes(rightShapes, path, p2, canvas);
 	}
-	
-	private void displayShapes(List<GameShape> shapesList, Path path2, Paint p2, Canvas canvas) {
+
+	private void displayShapes(List<GameShape> shapesList, Path path2,
+			Paint p2, Canvas canvas) {
 		for (GameShape s : shapesList) {
 			List<Triangle> tris = s.getTriangles();
 			for (Triangle t : tris) {
@@ -251,31 +245,34 @@ public class GameLoop extends Thread {
 			generateNewShape(rightShapes, false);
 		}
 	}
-	
+
 	private void generateNewShape(List<GameShape> shapeList, boolean isLeft) {
 		int previousWidth = 100;
-		int 	originX = 0,
-				originY = sheight;
-		
+		int originX = 0, originY = sheight;
+
 		if (!isLeft) {
 			originX = swidth;
 		}
-		
+
 		if (shapeList.size() > 0) {
 			GameShape previousShape = shapeList.get(shapeList.size() - 1);
 			if (previousShape != null) {
 				previousWidth = previousShape.getWidth();
-				originY = previousShape.getOriginY() - previousShape.getHeight();
+				originY = previousShape.getOriginY()
+						- previousShape.getHeight();
 			}
 		}
-		
-		int newWidth = Math.min(400, previousWidth + (int) ((0.5-Math.random())*600));
-		if (newWidth < 10) newWidth = 10;
-		GameShape s = new GameShape(newWidth, previousWidth, originX, originY, GameLoop.HAUTEUR, isLeft);
-		Log.d("debug", "Generated Shape:"+s);
+
+		int newWidth = Math.min(400,
+				previousWidth + (int) ((0.5 - Math.random()) * 600));
+		if (newWidth < 10)
+			newWidth = 10;
+		GameShape s = new GameShape(newWidth, previousWidth, originX, originY,
+				GameLoop.HAUTEUR, isLeft);
+		Log.d("debug", "Generated Shape:" + s);
 		shapeList.add(s);
 	}
-	
+
 	/** Dessiner les composant du jeu sur le buffer de l'écran */
 	/*
 	 * public void render() { this.screen.canvas.drawPaint(p);
@@ -286,12 +283,13 @@ public class GameLoop extends Thread {
 	 */
 
 	private void cleanLast(List<mPoint> points) {
-		/*points.remove(0);
-		points.remove(0);
+		/*
+		 * points.remove(0); points.remove(0);
+		 * 
+		 * points.remove(0);
+		 */
 
-		points.remove(0);*/
-		
-		for (int i = 0; i < points.size(); ++i) {//mPoint p : points) {
+		for (int i = 0; i < points.size(); ++i) {// mPoint p : points) {
 			mPoint p = points.get(i);
 			if (p.getY() > sheight) {
 				points.remove(i);
@@ -324,16 +322,15 @@ public class GameLoop extends Thread {
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
 
-		
 		// DEBUG!!
 		this.updateOrientation(5);
-		
+
 		// Update des nouveaux points
 		int deltaY = getAvancement();
 		updateShapes(leftShapes, deltaY);
 		updateShapes(rightShapes, deltaY);
 	}
-	
+
 	private void updateShapes(List<GameShape> shapes, int deltaY) {
 		for (GameShape s : shapes) {
 			s.translate(0, deltaY);
@@ -352,7 +349,7 @@ public class GameLoop extends Thread {
 		updateOrientation(leftShapes, x);
 		updateOrientation(rightShapes, x);
 	}
-	
+
 	private void updateOrientation(List<GameShape> shapesList, int dX) {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
@@ -386,10 +383,12 @@ public class GameLoop extends Thread {
 		ppath.offset(0, 0);
 		ca.drawPath(ppath, pp);
 	}
-	
-	public void ajouterUnTriangle(Triangle t, Path path, Paint paint, Canvas canvas) {
+
+	public void ajouterUnTriangle(Triangle t, Path path, Paint paint,
+			Canvas canvas) {
 		List<mPoint> points = t.getPoints();
-		ajouterUnTriangle(points.get(0), points.get(1), points.get(2), path, paint, canvas);
+		ajouterUnTriangle(points.get(0), points.get(1), points.get(2), path,
+				paint, canvas);
 	}
 
 	public void genererNouveauTriangleGauche(mPoint p) {
