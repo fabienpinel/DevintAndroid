@@ -31,7 +31,7 @@ public class GameLoop extends Thread {
 	private List<mPoint>		pointsGauche	= new LinkedList<mPoint>();
 	private List<mPoint>		pointsDroite	= new LinkedList<mPoint>();
 	private Context				context;
-	private Paint				p;
+	private Paint				p,pscore;
 	private Path				path;
 	private int					swidth;
 	private int					sheight;
@@ -53,6 +53,7 @@ public class GameLoop extends Thread {
 
 		path = new Path();
 		p = new Paint();
+		pscore = new Paint();
 		loadMyCar(this.car);
 		loadPaint(p);
 
@@ -90,7 +91,10 @@ public class GameLoop extends Thread {
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
 		p.setTextSize((float) 60.0);
 		p.setStrokeWidth(1);
-		p.setColor(Color.WHITE);
+
+		
+		pscore.setColor(Color.BLUE);
+		pscore.setTextSize((float) 60.0);
 	}
 
 	/** la boucle de jeu */
@@ -183,11 +187,12 @@ public class GameLoop extends Thread {
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
-						canvas.drawText("Score: " + score, 0, 100, p);
+						
 						// Triangles
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
 						// Voiture
+						canvas.drawText("Score: " + score, 0, 100, pscore);
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
 					} else {
@@ -359,6 +364,7 @@ public class GameLoop extends Thread {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
 		}
+		positionx+=dX;
 	}
 
 	public void avancer(List<mPoint> points, int footo) {

@@ -38,7 +38,7 @@ public final class R {
         public static final int vert=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0012;
+        public static final int action_settings=0x7f0a0013;
         public static final int applyOptions=0x7f0a000d;
         public static final int backOptions=0x7f0a000e;
         public static final int car=0x7f0a0010;
@@ -53,6 +53,7 @@ public final class R {
         public static final int textpos_x=0x7f0a0000;
         public static final int textpos_y=0x7f0a0001;
         public static final int textpos_z=0x7f0a0002;
+        public static final int themetexte=0x7f0a0012;
         public static final int title=0x7f0a0006;
         public static final int titleHelp=0x7f0a0003;
         public static final int tvcar=0x7f0a0011;
@@ -65,6 +66,7 @@ public final class R {
         public static final int activity_options=0x7f030003;
         public static final int activity_voice=0x7f030004;
         public static final int spinner_item=0x7f030005;
+        public static final int spinner_theme=0x7f030006;
     }
     public static final class menu {
         public static final int main=0x7f090000;
