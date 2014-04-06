@@ -26,16 +26,17 @@ import android.graphics.Color;
 public class OptionsActivity extends Activity {
 	public static final int	THEME_BLEU	= 0;
 	public static final int	THEME_ROUGE	= 1;
-	//CARS
-	public static final int RED_CAR=0;
-	public static final int POLICE_CAR=1;
-	public static final int BLUE_CAR=2;
-	public static final int GREEN_CAR=3;
-	
+	// CARS
+	public static final int	RED_CAR		= 0;
+	public static final int	POLICE_CAR	= 1;
+	public static final int	BLUE_CAR	= 2;
+	public static final int	GREEN_CAR	= 3;
+
 	Spinner					themeSpinner;
 	Spinner					carSpinner;
-	LinearLayout	layout	= null;
-	int pos, posCar;
+	LinearLayout			layout		= null;
+	int						pos, posCar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,13 +47,14 @@ public class OptionsActivity extends Activity {
 		Intent intent = getIntent();
 
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
-		themeSpinner.setAdapter(new MyAdapter(this, R.id.tvcar, getResources().getStringArray(R.array.choixCar)));
+		themeSpinner.setAdapter(new MyAdapter(this, R.id.tvcar, getResources()
+				.getStringArray(R.array.choixCar)));
 
 		themeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView,
 					View selectedItemView, int position, long id) {
-					pos=position;
+				pos = position;
 			}
 
 			@Override
@@ -61,15 +63,16 @@ public class OptionsActivity extends Activity {
 			}
 
 		});
-		
+
 		carSpinner = (Spinner) findViewById(R.id.selectionCar);
-		carSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.choixCar, R.layout.spinner_item));
+		carSpinner.setAdapter(ArrayAdapter.createFromResource(this,
+				R.array.choixCar, R.layout.spinner_item));
 
 		carSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView,
 					View selectedItemView, int position, long id) {
-					posCar=position;
+				posCar = position;
 			}
 
 			@Override
@@ -78,7 +81,6 @@ public class OptionsActivity extends Activity {
 			}
 
 		});
-		
 
 		/*
 		 * Ajout du listener sur le bouton appliquer pour charger l'activité
@@ -107,8 +109,10 @@ public class OptionsActivity extends Activity {
 			}
 		});
 	}
+
 	public void loadSettings() {
-		SharedPreferences settings = getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		SharedPreferences settings = getSharedPreferences("prefs",
+				Context.MODE_PRIVATE);
 		TextView titre = (TextView) layout.findViewById(R.id.texthelp);
 		switch (settings.getInt("titreFond", 0)) {
 
@@ -124,37 +128,39 @@ public class OptionsActivity extends Activity {
 		}
 
 	}
+
 	public class MyAdapter extends ArrayAdapter<String> {
-		String[] spinnerValues;
-	    public MyAdapter(Context ctx, int txtViewResourceId, String[] objects) {
-	        super(ctx, R.layout.spinner_item, R.id.tvcar, objects);
-	        Log.d("test constructeur", "test constructeur");
-	        this.spinnerValues=objects;
-	    }
+		String[]	spinnerValues;
 
-	    @Override
-	    public View getDropDownView(int position, View cnvtView, ViewGroup prnt) {
-	        return getCustomView(position, cnvtView, prnt);
-	    }
-	    @Override
-	    public View getView(int pos, View cnvtView, ViewGroup prnt) {
-	        return getCustomView(pos, cnvtView, prnt);
-	    }
-	    public View getCustomView(int position, View convertView,
-	            ViewGroup parent) {
-	        
-	        View mySpinner = getLayoutInflater().inflate( R.layout.spinner_item, parent);
-	        TextView main_text = (TextView) mySpinner
-	                .findViewById(R.id.tvcar);
-	        main_text.setText(spinnerValues[position]);
+		public MyAdapter(Context ctx, int txtViewResourceId, String[] objects) {
+			super(ctx, R.layout.spinner_item, R.id.tvcar, objects);
+			Log.d("test constructeur", "test constructeur");
+			this.spinnerValues = objects;
+		}
 
-	       
+		@Override
+		public View getDropDownView(int position, View cnvtView, ViewGroup prnt) {
+			return getCustomView(position, cnvtView, prnt);
+		}
 
-	        ImageView left_icon = (ImageView) mySpinner
-	                .findViewById(R.drawable.bleu);
-	        left_icon.setImageResource(R.drawable.bleu);
+		@Override
+		public View getView(int pos, View cnvtView, ViewGroup prnt) {
+			return getCustomView(pos, cnvtView, prnt);
+		}
 
-	        return findViewById(R.id.tvcar);
-	    }
+		public View getCustomView(int position, View convertView,
+				ViewGroup parent) {
+
+			View mySpinner = getLayoutInflater().inflate(R.layout.spinner_item,
+					parent);
+			TextView main_text = (TextView) mySpinner.findViewById(R.id.tvcar);
+			main_text.setText(spinnerValues[position]);
+
+			ImageView left_icon = (ImageView) mySpinner
+					.findViewById(R.drawable.bleu);
+			left_icon.setImageResource(R.drawable.bleu);
+
+			return findViewById(R.id.tvcar);
+		}
 	}
 }
