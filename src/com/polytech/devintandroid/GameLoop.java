@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -24,38 +25,44 @@ public class GameLoop extends Thread {
 	 * voiture /circuit plus changeant / afficher le score en live
 	 */
 
-	private static final int	HAUTEUR			= 400;
-	private static final int	MAX_SIZE_LIST	= 15;
+	private static final int			HAUTEUR			= 400;
+	private static final int			MAX_SIZE_LIST	= 15;
 
-	private boolean				running;
-	private List<mPoint>		pointsGauche	= new LinkedList<mPoint>();
-	private List<mPoint>		pointsDroite	= new LinkedList<mPoint>();
-	private Context				context;
-	private Paint				p,pscore;
-	private Path				path;
-	private int					swidth;
-	private int					sheight;
-	private SurfaceHolder		holder;
-	private int					position, positionx;
-	private int					speed			= 1000;
-	private long				lastUpdate;
-	private Bitmap				myCar;
-	private int					avancement;
-	private long				delta;
-	private int					car;
-	private int					score;
-	private List<GameShape>		leftShapes, rightShapes;
+	private boolean						running;
+	private List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
+	private List<mPoint>				pointsDroite	= new LinkedList<mPoint>();
+	private Context						context;
+	private Paint						p, pscore;
+	private Path						path;
+	private int							swidth;
+	private int							sheight;
+	private SurfaceHolder				holder;
+	private int							position, positionx;
+	private int							speed			= 1000;
+	private long						lastUpdate;
+	private Bitmap						myCar;
+	private int							avancement;
+	private long						delta;
+	private int							car;
+	private int							score, bestScore;
+	private List<GameShape>				leftShapes, rightShapes;
+	private Canvas						canvas;
+	private SharedPreferences			settings;
+	private SharedPreferences.Editor	editor;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
-		this.holder = holder;
+		this.setHolder(holder);
 		this.car = car;
+		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+		editor = settings.edit();
 
 		path = new Path();
 		p = new Paint();
 		pscore = new Paint();
 		loadMyCar(this.car);
 		loadPaint(p);
+		loadScore();
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
@@ -92,9 +99,12 @@ public class GameLoop extends Thread {
 		p.setTextSize((float) 60.0);
 		p.setStrokeWidth(1);
 
-		
 		pscore.setColor(Color.BLUE);
 		pscore.setTextSize((float) 60.0);
+	}
+
+	public void loadScore() {
+		this.bestScore = settings.getInt("bestScore", 0);
 	}
 
 	/** la boucle de jeu */
@@ -119,10 +129,10 @@ public class GameLoop extends Thread {
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
-			Canvas canvas = null;
+			canvas = null;
 			try {
-				synchronized (this.holder) {
-					canvas = holder.lockCanvas(null);
+				synchronized (this.getHolder()) {
+					canvas = getHolder().lockCanvas(null);
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
@@ -133,6 +143,11 @@ public class GameLoop extends Thread {
 								this.score -= (int) Math.round(positionx / 100);
 							} else {
 								this.score += (int) Math.round(positionx / 100);
+							}
+							if (this.score > this.bestScore) {
+								editor.putInt("bestScore", this.score);
+								editor.commit();
+								loadScore();
 							}
 						}
 
@@ -187,12 +202,13 @@ public class GameLoop extends Thread {
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
-						
+
 						// Triangles
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
 						// Voiture
-						canvas.drawText("Score: " + score, 0, 100, pscore);
+						canvas.drawText("Best: " + bestScore, 0, 70, pscore);
+						canvas.drawText("Score: " + score, 0, 150, pscore);
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
 					} else {
@@ -201,7 +217,7 @@ public class GameLoop extends Thread {
 				}
 			} finally {
 				if (canvas != null) {
-					holder.unlockCanvasAndPost(canvas);
+					getHolder().unlockCanvasAndPost(canvas);
 				}
 			}
 		}
@@ -211,7 +227,7 @@ public class GameLoop extends Thread {
 		cleanShapes(leftShapes);
 		cleanShapes(rightShapes);
 	}
-	
+
 	/**
 	 * Removes the shapes that are now invisible
 	 */
@@ -333,7 +349,7 @@ public class GameLoop extends Thread {
 		this.lastUpdate = System.nanoTime();
 
 		// DEBUG!!
-		this.updateOrientation(5);
+		// this.updateOrientation(5);
 
 		// Update des nouveaux points
 		int deltaY = getAvancement();
@@ -364,7 +380,7 @@ public class GameLoop extends Thread {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
 		}
-		positionx+=dX;
+		positionx += dX;
 	}
 
 	public void avancer(List<mPoint> points, int footo) {
@@ -450,6 +466,14 @@ public class GameLoop extends Thread {
 
 	public void setAvancement(int avancement) {
 		this.avancement = avancement;
+	}
+
+	public SurfaceHolder getHolder() {
+		return holder;
+	}
+
+	public void setHolder(SurfaceHolder holder) {
+		this.holder = holder;
 	}
 
 }

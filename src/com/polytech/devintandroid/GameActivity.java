@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -27,7 +28,7 @@ import android.hardware.SensorManager;
 public class GameActivity extends Activity implements SensorEventListener {
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
-	//private TextView		view_x, view_y, view_z;
+	// private TextView view_x, view_y, view_z;
 	private float			x, y, z;
 	private Display			display;
 	private Vue				vue;
@@ -36,26 +37,25 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private int				car;
 	private int				explosionId;
 	private SoundPool		soundPool;
-	boolean soundReady =false;
+	boolean					soundReady	= false;
+	Canvas					canvas;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		layout = ((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null));
-		
+
 		loadSettings();
 		vue = new Vue(this, car);
 		gameActivityInit();
 		Log.d("init", "init");
-		
+
 		sensorManager.registerListener(this, accelerometer,
 				SensorManager.SENSOR_DELAY_UI);
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
-		
-		
 
 		/*
 		 * Lecture de fichier son
@@ -74,9 +74,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 						int status) {
 					soundReady = true;
 					CharSequence text = "SoundPlayer ready";
-					Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(getApplicationContext(), text,
+							Toast.LENGTH_SHORT);
 					toast.show();
-					
+
 				}
 			});
 
@@ -176,14 +177,13 @@ public class GameActivity extends Activity implements SensorEventListener {
 					x *= majoration;
 				}
 
-
 				vue.game.updateOrientation((int) Math.round(x));
 				soundPool.play(explosionId, 1, 1, 0, 0, 1);
-				/*
-				 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
-				 * this.getY()); view_z.setText("z: " + this.getZ());
-				 */
 			}
+			/*
+			 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
+			 * this.getY()); view_z.setText("z: " + this.getZ());
+			 */
 		}
 
 	}
@@ -193,7 +193,5 @@ public class GameActivity extends Activity implements SensorEventListener {
 				Context.MODE_PRIVATE);
 		this.car = settings.getInt("car", 0);
 	}
-
-	
 
 }
