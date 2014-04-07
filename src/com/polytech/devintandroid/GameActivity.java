@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.util.Log;
@@ -56,6 +57,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 				SensorManager.SENSOR_DELAY_UI);
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
+		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		/*
 		 * Lecture de fichier son

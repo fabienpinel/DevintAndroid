@@ -1,6 +1,7 @@
 package com.polytech.devintandroid;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
@@ -58,6 +59,7 @@ public class Vue extends SurfaceView implements
 			int height) {
 		Log.d("mg", "Surface changed, width = [" + width + "], height = ["
 				+ height + "]");
+		
 		game.setSwidth(width);
 		game.setSheight(height);
 		this.invalidate(holder);
