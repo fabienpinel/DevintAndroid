@@ -21,8 +21,7 @@ import android.widget.TextView;
 
 public class GameLoop extends Thread {
 	/*
-	 * TO CHANGE : collision , couleur teexte dans options / présentation choix
-	 * voiture /circuit plus changeant / afficher le score en live
+	 * TO CHANGE : collision // sons lors du jeu
 	 */
 
 	private static final int			HAUTEUR			= 400;
@@ -98,8 +97,17 @@ public class GameLoop extends Thread {
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
 		p.setTextSize((float) 60.0);
 		p.setStrokeWidth(1);
+		switch (settings.getInt("titreFond", 0)) {
+		case OptionsActivity.THEME_BLEU:
+			pscore.setColor(Color.BLUE);
+			break;
+		case OptionsActivity.THEME_ROUGE:
+			pscore.setColor(Color.RED);
+			break;
+		default:
+			pscore.setColor(Color.BLUE);
 
-		pscore.setColor(Color.BLUE);
+		}
 		pscore.setTextSize((float) 60.0);
 	}
 

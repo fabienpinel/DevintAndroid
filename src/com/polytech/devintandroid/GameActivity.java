@@ -3,6 +3,9 @@ package com.polytech.devintandroid;
 import java.io.IOException;
 
 import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
+import android.media.MediaPlayer.OnPreparedListener;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
@@ -48,6 +51,61 @@ public class GameActivity extends Activity implements SensorEventListener {
 		layout = ((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null));
 
+		/*
+		 * Lecture de fichier son
+		 */
+		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
+		AssetManager assetManager = getAssets();
+		AssetFileDescriptor descriptor = null;
+        try {
+        	// Chargement du fichier musique.mp3 qui se trouve sous assets de notre projet
+			descriptor = assetManager.openFd("file:///res/raw/songs/bip.ogg");
+			
+			MediaPlayer mediaPlayer = new MediaPlayer ();
+			
+			Log.d("testMediaPlayer", "setDataSource du mediaPlayer" + descriptor);
+			mediaPlayer.setDataSource(descriptor.getFileDescriptor());
+
+			// Listener pour être prévenu lorsque la musique se termine
+			mediaPlayer.setOnCompletionListener(new OnCompletionListener()
+			{
+				// Libérons les ressources lorsque la musique est terminée
+				@Override
+				public void onCompletion(MediaPlayer mediaPlayer) {
+					// TODO Auto-generated method stub
+					Log.d("testMediaPlayer", "etat:completed");
+					Log.d("testMediaPlayer", "release en cours...");
+					mediaPlayer.release();
+				}
+			});
+			
+			// Listener afin de lancer la musique lors le mediaPlayer est prêt
+			mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+
+				@Override
+				public void onPrepared(MediaPlayer mediaPlayer) {
+					Log.d("testMediaPlayer", "etat:prepared");
+					Log.d("testMediaPlayer", "Zou, jouons la musique !");
+					mediaPlayer.start();
+				}
+			});
+
+			Log.d("testMediaPlayer", "préparation du mediaPlayer");
+			mediaPlayer.prepareAsync(); // Lancement de la préparation du mediaPlayer...
+			
+
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	
+		
+		
+		
+		
+		
+		
 		loadSettings();
 		vue = new Vue(this, car);
 		gameActivityInit();
@@ -59,33 +117,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 				.getDefaultDisplay();
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-		/*
-		 * Lecture de fichier son
-		 */
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-		AssetManager assetManager = getAssets();
-		AssetFileDescriptor descriptor = null;
-		try {
-			descriptor = assetManager.openFd("res/raw/songs/bip.ogg");
-
-			explosionId = soundPool.load(descriptor, 1);
-
-			soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-				public void onLoadComplete(SoundPool soundPool1, int sampleId,
-						int status) {
-					soundReady = true;
-					CharSequence text = "SoundPlayer ready";
-					Toast toast = Toast.makeText(getApplicationContext(), text,
-							Toast.LENGTH_SHORT);
-					toast.show();
-
-				}
-			});
-
-		} catch (IOException e) {
-			Log.d("Erreur IO soundpool ", e.getMessage());
-		}
+		
 		/*
 		 * Fin lecture de fichier son
 		 */
