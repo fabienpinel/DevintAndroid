@@ -17,6 +17,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -39,10 +40,11 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private static int		majoration	= 6;
 	private LinearLayout	layout		= null;
 	private int				car;
+	boolean					soundReady	= false;
+	private Canvas			canvas;
 	private int				explosionId;
 	private SoundPool		soundPool;
-	boolean					soundReady	= false;
-	Canvas					canvas;
+	private boolean			loaded		= false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -55,56 +57,20 @@ public class GameActivity extends Activity implements SensorEventListener {
 		 * Lecture de fichier son
 		 */
 		setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
+
 		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-		AssetManager assetManager = getAssets();
-		AssetFileDescriptor descriptor = null;
-        try {
-        	// Chargement du fichier musique.mp3 qui se trouve sous assets de notre projet
-			descriptor = assetManager.openFd("file://raw/songs/bip.ogg");
-			MediaPlayer mediaPlayer = new MediaPlayer ();
-			
-			Log.d("testMediaPlayer", "setDataSource du mediaPlayer" + descriptor);
-			mediaPlayer.setDataSource(descriptor.getFileDescriptor());
 
-			// Listener pour être prévenu lorsque la musique se termine
-			mediaPlayer.setOnCompletionListener(new OnCompletionListener()
-			{
-				// Libérons les ressources lorsque la musique est terminée
-				@Override
-				public void onCompletion(MediaPlayer mediaPlayer) {
-					// TODO Auto-generated method stub
-					Log.d("testMediaPlayer", "etat:completed");
-					Log.d("testMediaPlayer", "release en cours...");
-					mediaPlayer.release();
-				}
-			});
-			
-			// Listener afin de lancer la musique lors le mediaPlayer est prêt
-			mediaPlayer.setOnPreparedListener(new OnPreparedListener() {
+		explosionId = soundPool.load(this, R.drawable.bip, 1);
 
-				@Override
-				public void onPrepared(MediaPlayer mediaPlayer) {
-					Log.d("testMediaPlayer", "etat:prepared");
-					Log.d("testMediaPlayer", "Zou, jouons la musique !");
-					mediaPlayer.start();
-				}
-			});
+		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			public void onLoadComplete(SoundPool soundPool, int sampleId,
+					int status) {
+				loaded = true;
 
-			Log.d("testMediaPlayer", "préparation du mediaPlayer");
-			mediaPlayer.prepareAsync(); // Lancement de la préparation du mediaPlayer...
-			
+			}
+		});
 
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-	
-		
-		
-		
-		
-		
-		
 		loadSettings();
 		vue = new Vue(this, car);
 		gameActivityInit();
@@ -116,7 +82,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 				.getDefaultDisplay();
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-		
 		/*
 		 * Fin lecture de fichier son
 		 */
@@ -134,7 +99,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 	@Override
 	protected void onPause() {
-
 		super.onPause();
 	}
 
@@ -210,7 +174,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 					x *= majoration;
 				}
 				vue.game.addOrientationGap((int) Math.round(x));
-				soundPool.play(explosionId, 1, 1, 0, 0, 1);
+
 			}
 			/*
 			 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
@@ -218,6 +182,19 @@ public class GameActivity extends Activity implements SensorEventListener {
 			 */
 		}
 
+	}
+
+	private void playSound(int resId) {
+		if (loaded) {
+			soundPool.play(explosionId, 1, 1, 0, 0, 1);
+		}
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+		Log.d("RunGameActivity", "OnTouchEvent");
+		playSound(R.drawable.bip);
+		return true;
 	}
 
 	public void loadSettings() {

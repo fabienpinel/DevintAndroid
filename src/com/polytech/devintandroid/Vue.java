@@ -32,14 +32,6 @@ public class Vue extends SurfaceView implements
 		mLinearLayout = new LinearLayout(context);
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		Log.d("RunGameActivity", "OnTouchEvent");
-		synchronized (this.game) {
-
-		}
-		return true;
-	}
 
 	/** Rafraichir l'écran */
 	public void invalidate(SurfaceHolder holder) {
