@@ -55,7 +55,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
 
 		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-
 		explosionId = soundPool.load(this, R.drawable.bip, 1);
 
 		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
@@ -181,7 +180,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 	private void playSound(int resId) {
 		if (loaded) {
-			soundPool.play(explosionId, 1, 1, 0, 0, 1);
+			soundPool.play(explosionId, (float)0.5, (float)0.5, 0, 0, 1);
 		}
 	}
 
@@ -189,7 +188,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
 		playSound(R.drawable.bip);
-		this.vibreur.vibrate(1000);
+		this.vibreur.vibrate(100);
 		return true;
 	}
 
