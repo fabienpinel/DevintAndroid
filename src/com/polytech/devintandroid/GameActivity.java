@@ -9,6 +9,7 @@ import android.media.MediaPlayer.OnPreparedListener;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -45,6 +46,8 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private int				explosionId;
 	private SoundPool		soundPool;
 	private boolean			loaded		= false;
+	private Vibrator vibreur;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +55,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 		layout = ((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null));
+		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 		/*
 		 * Lecture de fichier son
@@ -194,6 +198,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
 		playSound(R.drawable.bip);
+		this.vibreur.vibrate(1000);
 		return true;
 	}
 

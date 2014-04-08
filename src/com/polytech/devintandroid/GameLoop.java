@@ -150,9 +150,9 @@ public class GameLoop extends Thread {
 								|| this.positionx <= -(this.getSwidth() / 3)) {
 							Log.d("collision", "collision: " + this.positionx);
 							if (this.positionx > 0) {
-								this.score -= (int) Math.round(positionx / 100);
+								this.score -= (int) Math.round(positionx / 150);
 							} else {
-								this.score += (int) Math.round(positionx / 100);
+								this.score += (int) Math.round(positionx / 150);
 							}
 							if (this.score > this.bestScore) {
 								editor.putInt("bestScore", this.score);
