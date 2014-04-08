@@ -1,6 +1,5 @@
 package com.polytech.devintandroid;
 
-import com.polytech.devintAndroid.voice.VoiceActivity;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -37,19 +36,7 @@ public class MainActivity extends Activity{
 				startActivity(gameView);
 			}
 		});
-		/*
-		 * Ajout du listener sur le bouton opengltest pour charger l'activité
-		 * OpenglActivity
-		 */
-		Button voiceButton = (Button) findViewById(R.id.voiceButton);
-		voiceButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent voiceact = new Intent(MainActivity.this,
-						VoiceActivity.class);
-				startActivity(voiceact);
-			}
-		});
+		
 		/*
 		 * Ajout du listener sur le bouton Options pour charger l'activité
 		 * OptionsActivity

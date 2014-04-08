@@ -1,12 +1,9 @@
 package com.polytech.devintandroid;
 
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PorterDuff.Mode;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.LinearLayout;
@@ -16,11 +13,9 @@ public class Vue extends SurfaceView implements
 
 	LinearLayout			mLinearLayout;
 
-	private Bitmap			buffer;			// pixel buffer
 	private SurfaceHolder	holder;
 	Canvas					canvas;
 	GameLoop				game;
-	private boolean			pause	= false;
 
 	public Vue(Context context, int car) {
 		super(context);
@@ -67,7 +62,7 @@ public class Vue extends SurfaceView implements
 	}
 
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		Log.d("mg", "Surface destroyed");
+		//Log.d("mg", "Surface destroyed");
 		game.setRunning(false);
 		boolean alive = true;
 		while (alive) {
