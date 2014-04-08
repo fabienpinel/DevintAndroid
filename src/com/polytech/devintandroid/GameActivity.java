@@ -60,8 +60,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 		AssetFileDescriptor descriptor = null;
         try {
         	// Chargement du fichier musique.mp3 qui se trouve sous assets de notre projet
-			descriptor = assetManager.openFd("file:///res/raw/songs/bip.ogg");
-			
+			descriptor = assetManager.openFd("file://raw/songs/bip.ogg");
 			MediaPlayer mediaPlayer = new MediaPlayer ();
 			
 			Log.d("testMediaPlayer", "setDataSource du mediaPlayer" + descriptor);
@@ -210,8 +209,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 				} else {
 					x *= majoration;
 				}
-
-				vue.game.updateOrientation((int) Math.round(x));
+				vue.game.addOrientationGap((int) Math.round(x));
 				soundPool.play(explosionId, 1, 1, 0, 0, 1);
 			}
 			/*

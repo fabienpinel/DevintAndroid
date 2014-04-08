@@ -48,6 +48,8 @@ public class GameLoop extends Thread {
 	private Canvas						canvas;
 	private SharedPreferences			settings;
 	private SharedPreferences.Editor	editor;
+	private int orientationGap;
+	
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
@@ -210,7 +212,8 @@ public class GameLoop extends Thread {
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
-
+						this.updateOrientation(this.getOrientationGap());
+						this.setOrientationGap(0);
 						// Triangles
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
@@ -482,6 +485,16 @@ public class GameLoop extends Thread {
 
 	public void setHolder(SurfaceHolder holder) {
 		this.holder = holder;
+	}
+	public int getOrientationGap() {
+		return orientationGap;
+	}
+
+	public void addOrientationGap(int orientationGap) {
+		this.orientationGap += orientationGap;
+	}
+	public void setOrientationGap(int orientationGap) {
+		this.orientationGap = orientationGap;
 	}
 
 }
