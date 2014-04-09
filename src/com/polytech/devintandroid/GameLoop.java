@@ -354,7 +354,6 @@ public class GameLoop extends Thread {
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
 
-		// DEBUG!!
 		// this.updateOrientation(5);
 
 		// Update des nouveaux points

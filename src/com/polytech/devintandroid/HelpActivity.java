@@ -2,7 +2,6 @@ package com.polytech.devintandroid;
 
 import java.util.Locale;
 
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.View;
@@ -20,11 +19,11 @@ import android.graphics.Color;
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
 public class HelpActivity extends Activity implements OnInitListener {
-	LinearLayout			layout	= null;
-	TextView				helptext;
+	private LinearLayout	layout	= null;
+	private TextView		helptext;
 	private TextToSpeech	mTts;
 
 	@Override
@@ -37,7 +36,7 @@ public class HelpActivity extends Activity implements OnInitListener {
 		loadSettings();
 		setContentView(layout);
 		init();
-		
+
 		helptext = (TextView) findViewById(R.id.texthelp);
 		Button playHelpButton = (Button) layout
 				.findViewById(R.id.playHelpButton);
@@ -48,7 +47,6 @@ public class HelpActivity extends Activity implements OnInitListener {
 
 			}
 		});
-		
 
 	}
 
@@ -86,17 +84,23 @@ public class HelpActivity extends Activity implements OnInitListener {
 				if (mTts.isLanguageAvailable(Locale.FRANCE) == TextToSpeech.LANG_COUNTRY_AVAILABLE) {
 					mTts.setLanguage(Locale.FRANCE);
 				}
-				mTts.setSpeechRate(1); // 1 est la valeur par défaut. Une valeur
-										// inférieure rendra l'énonciation plus
-										// lente, une valeur supérieure la
-										// rendra plus rapide.
-				mTts.setPitch(1); // 1 est la valeur par défaut. Une valeur
-									// inférieure rendra l'énonciation plus
-									// grave, une valeur supérieure la rendra
-									// plus aigue.
+				mTts.setSpeechRate(1);
+				/*
+				 * 1 est la valeur par défaut. Une valeurinférieure rendra
+				 * l'énonciation plus lente, une valeur supérieure la rendra
+				 * plus rapide.
+				 */
+				mTts.setPitch(1);
+				/*
+				 * 1 est la valeur par défaut. Une valeur inférieure rendra
+				 * l'énonciation plus grave, une valeur supérieure la rendra
+				 * plus aigue.
+				 */
 			} else {
-				// Echec, aucun moteur n'a été trouvé, on propose à
-				// l'utilisateur d'en installer un depuis le Market
+				/*
+				 * Echec, aucun moteur n'a été trouvé, on propose à
+				 * l'utilisateur d'en installer un depuis le Market
+				 */
 				Intent installIntent = new Intent();
 				installIntent
 						.setAction(TextToSpeech.Engine.ACTION_INSTALL_TTS_DATA);
@@ -107,7 +111,8 @@ public class HelpActivity extends Activity implements OnInitListener {
 
 	public void onInit(int status) {
 		if (status == TextToSpeech.SUCCESS) {
-			Toast toast = Toast.makeText(getApplicationContext(),  "TTS ready", Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(getApplicationContext(), "TTS ready",
+					Toast.LENGTH_SHORT);
 			toast.show();
 		}
 	}

@@ -70,7 +70,9 @@ public class MainActivity extends Activity{
 		});
 
 	}
-
+	/**
+	 * Chargement des options et notamment du thème
+	 */
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);

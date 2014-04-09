@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
 public class Vue extends SurfaceView implements
 		android.view.SurfaceHolder.Callback {
@@ -32,7 +32,6 @@ public class Vue extends SurfaceView implements
 		mLinearLayout = new LinearLayout(context);
 	}
 
-
 	/** Rafraichir l'écran */
 	public void invalidate(SurfaceHolder holder) {
 		if (holder != null) {
@@ -46,12 +45,13 @@ public class Vue extends SurfaceView implements
 
 	/**
 	 * callback lorsque la surface est chargée, donc démarrer la boucle de jeu
+	 * et renseigner les dimensions de l'écran
 	 */
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
 		Log.d("mg", "Surface changed, width = [" + width + "], height = ["
 				+ height + "]");
-		
+
 		game.setSwidth(width);
 		game.setSheight(height);
 		this.invalidate(holder);
@@ -66,8 +66,10 @@ public class Vue extends SurfaceView implements
 		game.start();
 	}
 
+	/**
+	 * Arrêt du jeu et join des threads
+	 */
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		//Log.d("mg", "Surface destroyed");
 		game.setRunning(false);
 		boolean alive = true;
 		while (alive) {
@@ -75,6 +77,7 @@ public class Vue extends SurfaceView implements
 				game.join();
 				alive = false;
 			} catch (InterruptedException e) {
+				e.getStackTrace();
 			}
 		}
 	}

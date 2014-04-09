@@ -26,9 +26,10 @@ import android.graphics.Color;
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
 public class OptionsActivity extends Activity {
+	// THEMES
 	public static final int	THEME_BLEU	= 0;
 	public static final int	THEME_ROUGE	= 1;
 	// CARS
@@ -36,11 +37,12 @@ public class OptionsActivity extends Activity {
 	public static final int	POLICE_CAR	= 1;
 	public static final int	BLUE_CAR	= 2;
 	public static final int	GREEN_CAR	= 3;
+	// SPINNERS
+	private Spinner			themeSpinner;
+	private Spinner			carSpinner;
 
-	Spinner					themeSpinner;
-	Spinner					carSpinner;
-	LinearLayout			layout		= null;
-	int						pos, posCar;
+	private LinearLayout	layout		= null;
+	private int				posTheme, posCar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,13 +54,14 @@ public class OptionsActivity extends Activity {
 		Intent intent = getIntent();
 
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
-		themeSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.choixTheme, R.layout.spinner_theme));
+		themeSpinner.setAdapter(ArrayAdapter.createFromResource(this,
+				R.array.choixTheme, R.layout.spinner_theme));
 
 		themeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView,
 					View selectedItemView, int position, long id) {
-				pos = position;
+				posTheme = position;
 			}
 
 			@Override
@@ -69,9 +72,9 @@ public class OptionsActivity extends Activity {
 		});
 
 		carSpinner = (Spinner) findViewById(R.id.selectionCar);
-		carSpinner.setAdapter(new MyCustomAdapter(OptionsActivity.this, R.layout.spinner_item, getResources()
-				.getStringArray(R.array.choixCar)));
-		
+		carSpinner.setAdapter(new MyCustomAdapter(OptionsActivity.this,
+				R.layout.spinner_item, getResources().getStringArray(
+						R.array.choixCar)));
 
 		carSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -88,8 +91,8 @@ public class OptionsActivity extends Activity {
 		});
 
 		/*
-		 * Ajout du listener sur le bouton appliquer pour charger l'activité
-		 * MainActivity
+		 * Ajout du listener sur le bouton appliquer pour enregistrer les
+		 * options choisies
 		 */
 		Button applyOption = (Button) findViewById(R.id.applyOptions);
 		applyOption.setOnClickListener(new View.OnClickListener() {
@@ -97,7 +100,7 @@ public class OptionsActivity extends Activity {
 				SharedPreferences settings = getSharedPreferences("prefs",
 						Context.MODE_PRIVATE);
 				SharedPreferences.Editor editor = settings.edit();
-				editor.putInt("titreFond", pos);
+				editor.putInt("titreFond", posTheme);
 				editor.putInt("car", posCar);
 				editor.commit();
 				Intent main = new Intent(OptionsActivity.this,
@@ -105,6 +108,9 @@ public class OptionsActivity extends Activity {
 				startActivity(main);
 			}
 		});
+		/*
+		 * Ajout du listener sur le bouton retour pour revenir à MainActivity
+		 */
 		Button backOption = (Button) findViewById(R.id.backOptions);
 		backOption.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
@@ -115,6 +121,9 @@ public class OptionsActivity extends Activity {
 		});
 	}
 
+	/**
+	 * Chargement de la couleur du thème choisi pour la couleur de fond du titre
+	 */
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);
@@ -134,32 +143,33 @@ public class OptionsActivity extends Activity {
 
 	}
 
+	/**
+	 * 
+	 * @author Fabien Pinel
+	 * Custom adapter pour le spinner contenant les voitures
+	 *
+	 */
 	public class MyCustomAdapter extends ArrayAdapter<String> {
 
 		public MyCustomAdapter(Context context, int textViewResourceId,
 				String[] objects) {
 			super(context, textViewResourceId, objects);
-			// TODO Auto-generated constructor stub
 		}
 
 		@Override
 		public View getDropDownView(int position, View convertView,
 				ViewGroup parent) {
-			// TODO Auto-generated method stub
 			return getCustomView(position, convertView, parent);
 		}
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			// TODO Auto-generated method stub
 			return getCustomView(position, convertView, parent);
 		}
 
 		public View getCustomView(int position, View convertView,
 				ViewGroup parent) {
-			// TODO Auto-generated method stub
-			// return super.getView(position, convertView, parent);
-			String[] donnees =  getResources().getStringArray(R.array.choixCar);
+			String[] donnees = getResources().getStringArray(R.array.choixCar);
 			LayoutInflater inflater = getLayoutInflater();
 			View row = inflater.inflate(R.layout.spinner_item, parent, false);
 			TextView label = (TextView) row.findViewById(R.id.tvcar);
@@ -167,7 +177,7 @@ public class OptionsActivity extends Activity {
 
 			ImageView icon = (ImageView) row.findViewById(R.id.car);
 
-			switch(position){
+			switch (position) {
 			case RED_CAR:
 				icon.setImageResource(R.drawable.redcar);
 				break;
@@ -183,7 +193,7 @@ public class OptionsActivity extends Activity {
 			default:
 				icon.setImageResource(R.drawable.bleu);
 			}
-				
+
 			return row;
 		}
 	}
