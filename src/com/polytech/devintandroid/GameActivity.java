@@ -78,7 +78,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 				SensorManager.SENSOR_DELAY_UI);
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
-		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		//this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
 		/*
 		 * Fin lecture de fichier son

@@ -51,6 +51,8 @@ public class GameLoop extends Thread {
 	private SharedPreferences			settings;
 	private SharedPreferences.Editor	editor;
 	private int							orientationGap;
+	
+	private int 						lastRoadWidth = 100;
 
 	
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
@@ -205,8 +207,6 @@ public class GameLoop extends Thread {
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
-						this.updateOrientation(this.getOrientationGap());
-						this.setOrientationGap(0);
 						// Triangles
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
@@ -270,20 +270,65 @@ public class GameLoop extends Thread {
 	private void generateNewShapes(int count) {
 		for (int i = 0; i < count; ++i) {
 			// Log.d("debug", "=== left Shapes");
-			generateNewShape(leftShapes, true);
+			generateNewShapes();
 			// Log.d("debug", "=== right Shapes");
-			generateNewShape(rightShapes, false);
 		}
 	}
+	
+	public static int randomInt(int min, int max) {
+		return min + (int)(Math.random() * ((max - min) + 1));
+	}
 
-	private void generateNewShape(List<GameShape> shapeList, boolean isLeft) {
+	private void generateNewShapes() {
+		int carSize = 160;
+	
+		int margin = 20;
+		
+		int minimumRoadWidth = carSize + 60,
+				maximumRoadWidth = Math.min(swidth - 4*margin, 4 * carSize);
+		
+		int randomRoadWidthMin = lastRoadWidth - carSize * 2,
+				randomRoadWidthMax = lastRoadWidth + carSize * 2;
+		randomRoadWidthMin = Math.max(randomRoadWidthMin, minimumRoadWidth);
+		randomRoadWidthMin = Math.min(randomRoadWidthMax, maximumRoadWidth);
+		
+		int randomRoadWidth = randomInt(randomRoadWidthMin, randomRoadWidthMax);
+		
+		//randomRoadWidth = 200;
+		
+		lastRoadWidth = randomRoadWidth;
+		
+		
+		int maxLeft = swidth - randomRoadWidth - margin;
+		int minLeft = margin;
+
+		int randomLeft = randomInt(minLeft, maxLeft);
+		int randomRight = swidth - randomRoadWidth - randomLeft;
+		
+/*		int newWidth = Math.min(400,
+				previousWidth + (int) ((0.5 - Math.random()) * 600));
+*/		
+		/*GameShape s = new GameShape(newWidth, previousWidth, originX, originY,
+				GameLoop.HAUTEUR, isLeft);
+		// Log.d("debug", "Generated Shape:" + s);
+		shapeList.add(s);*/
+		
+		addShape(randomLeft, leftShapes, true);
+		addShape(randomRight, rightShapes, false);
+		
+		/*GameShape leftShape = new GameShape(newWidth, previousWidth, originX, originY,
+				GameLoop.HAUTEUR, true),
+				rightShape = new GameShape(newWidth, previousWidth, originX, originY,
+						GameLoop.HAUTEUR, false);
+		
+		leftShapes.add(leftShape);
+		rightShapes.add(rightShape);*/
+	}
+	
+	private void addShape(int borderDistance, List<GameShape> shapeList, boolean isLeft) {
 		int previousWidth = 100;
 		int originX = 0, originY = sheight;
-
-		if (!isLeft) {
-			originX = swidth;
-		}
-
+		
 		if (shapeList.size() > 0) {
 			GameShape previousShape = shapeList.get(shapeList.size() - 1);
 			if (previousShape != null) {
@@ -293,13 +338,13 @@ public class GameLoop extends Thread {
 			}
 		}
 
-		int newWidth = Math.min(400,
-				previousWidth + (int) ((0.5 - Math.random()) * 600));
-		if (newWidth < 10)
-			newWidth = 10;
-		GameShape s = new GameShape(newWidth, previousWidth, originX, originY,
+		if (!isLeft) {
+			originX = swidth;
+		}
+		
+		GameShape s = new GameShape(borderDistance, previousWidth, originX, originY,
 				GameLoop.HAUTEUR, isLeft);
-		// Log.d("debug", "Generated Shape:" + s);
+		
 		shapeList.add(s);
 	}
 
@@ -354,6 +399,8 @@ public class GameLoop extends Thread {
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
 
+		this.updateOrientation(this.getOrientationGap());
+		this.setOrientationGap(0);
 		// this.updateOrientation(5);
 
 		// Update des nouveaux points
@@ -379,13 +426,13 @@ public class GameLoop extends Thread {
 	public void updateOrientation(int x) {
 		updateOrientation(leftShapes, x);
 		updateOrientation(rightShapes, x);
+		positionx += x;
 	}
 
 	private void updateOrientation(List<GameShape> shapesList, int dX) {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
 		}
-		positionx += dX;
 	}
 
 	public void avancer(List<mPoint> points, int footo) {

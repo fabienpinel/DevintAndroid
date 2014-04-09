@@ -49,13 +49,13 @@ public class GameShape {
 		List<mPoint> points1 = t1.getPoints(),
 				points2 = t2.getPoints();
 		// do nothing for point1[0]
-		points1.get(0).translate(0, y);
+		points1.get(0).translate(0, y); // 0
 		points1.get(1).translate(x, y);
 		points1.get(2).translate(x, y);
 		
-		points2.get(0).translate(0, y);
+		points2.get(0).translate(0, y);	// 0
 		points2.get(1).translate(x, y);
-		points2.get(2).translate(0, y);
+		points2.get(2).translate(0, y);	// 0
 		
 		if (leftSide) {
 			width += x;
