@@ -3,6 +3,11 @@ package com.polytech.devintandroid;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class GameShape {
 	
 	private Triangle t1, t2;

@@ -8,6 +8,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.LinearLayout;
 
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class Vue extends SurfaceView implements
 		android.view.SurfaceHolder.Callback {
 

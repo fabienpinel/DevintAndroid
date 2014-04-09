@@ -16,6 +16,11 @@ import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class GameLoop extends Thread {
 	/*
 	 * TO CHANGE : collision // sons lors du jeu
@@ -47,6 +52,7 @@ public class GameLoop extends Thread {
 	private SharedPreferences.Editor	editor;
 	private int							orientationGap;
 
+	
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.setHolder(holder);

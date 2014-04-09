@@ -17,6 +17,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class HelpActivity extends Activity implements OnInitListener {
 	LinearLayout			layout	= null;
 	TextView				helptext;

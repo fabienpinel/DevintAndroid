@@ -1,5 +1,10 @@
 package com.polytech.devintandroid;
 
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class mPoint {
 	private int x,y;
 	public mPoint(int x, int y){

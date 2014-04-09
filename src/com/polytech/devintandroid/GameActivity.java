@@ -21,7 +21,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class GameActivity extends Activity implements SensorEventListener {
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;

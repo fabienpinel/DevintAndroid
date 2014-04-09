@@ -23,6 +23,11 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Color;
 
+/**
+ * 
+ * @author Fabien Pinel
+ *
+ */
 public class OptionsActivity extends Activity {
 	public static final int	THEME_BLEU	= 0;
 	public static final int	THEME_ROUGE	= 1;
