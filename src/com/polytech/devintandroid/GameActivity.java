@@ -36,6 +36,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private int				car;
 	private int				explosionId;
 	private SoundPool		soundPool;
+	boolean soundReady =false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +65,14 @@ public class GameActivity extends Activity implements SensorEventListener {
 		AssetManager assetManager = getAssets();
 		AssetFileDescriptor descriptor = null;
 		try {
-			descriptor = assetManager.openFd("res/raw/songs/Indie_Romance.mp3");
+			descriptor = assetManager.openFd("res/raw/songs/bip.ogg");
 
 			explosionId = soundPool.load(descriptor, 1);
 
 			soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-				public void onLoadComplete(SoundPool soundPool, int sampleId,
+				public void onLoadComplete(SoundPool soundPool1, int sampleId,
 						int status) {
+					soundReady = true;
 					CharSequence text = "SoundPlayer ready";
 					Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_SHORT);
 					toast.show();
@@ -170,14 +172,13 @@ public class GameActivity extends Activity implements SensorEventListener {
 				this.z = event.values[2];
 				if (x > 0) {
 					x *= majoration;
-					x += 1;
 				} else {
 					x *= majoration;
-					x -= 1;
 				}
 
-				vue.game.updateOrientation((int) x);
-				soundPool.play(explosionId, 1, 1, 0, 0, 1);
+				vue.game.updateOrientation((int)Math.round(x));
+				/*if(soundReady)
+					soundPool.play(explosionId, 1, 1, 0, 0, 1);*/
 				/*
 				 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
 				 * this.getY()); view_z.setText("z: " + this.getZ());

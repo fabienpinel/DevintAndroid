@@ -22,7 +22,7 @@ public class mPoint {
 		this.setY(this.y+footo);
 	}
 	public void tourne(int i) {
-		this.setX(this.getX()+i);;
+		this.setX(this.getX()+i);
 		
 	}
 }

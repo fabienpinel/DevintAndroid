@@ -7,10 +7,12 @@ import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -44,7 +46,7 @@ public class OptionsActivity extends Activity {
 		Intent intent = getIntent();
 
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
-		themeSpinner.setAdapter(ArrayAdapter.createFromResource(this, R.array.choixTheme, R.layout.spinner_item));
+		themeSpinner.setAdapter(new MyAdapter(this, R.id.tvcar, getResources().getStringArray(R.array.choixCar)));
 
 		themeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
@@ -55,7 +57,7 @@ public class OptionsActivity extends Activity {
 
 			@Override
 			public void onNothingSelected(AdapterView<?> parentView) {
-				Log.d("here", "here");
+				Log.d("Nothing selected", "Nothing selected");
 			}
 
 		});
@@ -121,5 +123,38 @@ public class OptionsActivity extends Activity {
 
 		}
 
+	}
+	public class MyAdapter extends ArrayAdapter<String> {
+		String[] spinnerValues;
+	    public MyAdapter(Context ctx, int txtViewResourceId, String[] objects) {
+	        super(ctx, R.layout.spinner_item, R.id.tvcar, objects);
+	        Log.d("test constructeur", "test constructeur");
+	        this.spinnerValues=objects;
+	    }
+
+	    @Override
+	    public View getDropDownView(int position, View cnvtView, ViewGroup prnt) {
+	        return getCustomView(position, cnvtView, prnt);
+	    }
+	    @Override
+	    public View getView(int pos, View cnvtView, ViewGroup prnt) {
+	        return getCustomView(pos, cnvtView, prnt);
+	    }
+	    public View getCustomView(int position, View convertView,
+	            ViewGroup parent) {
+	        
+	        View mySpinner = getLayoutInflater().inflate( R.layout.spinner_item, parent);
+	        TextView main_text = (TextView) mySpinner
+	                .findViewById(R.id.tvcar);
+	        main_text.setText(spinnerValues[position]);
+
+	       
+
+	        ImageView left_icon = (ImageView) mySpinner
+	                .findViewById(R.drawable.bleu);
+	        left_icon.setImageResource(R.drawable.bleu);
+
+	        return findViewById(R.id.tvcar);
+	    }
 	}
 }

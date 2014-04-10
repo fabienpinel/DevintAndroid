@@ -13,11 +13,18 @@ import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.SurfaceHolder;
+import android.view.View;
+import android.widget.Toast;
+import android.widget.TextView;
 
 public class GameLoop extends Thread {
+	/*
+	 * TO CHANGE : collision , couleur teexte dans options / présentation choix
+	 * voiture /circuit plus changeant / afficher le score en live
+	 */
 
 	private static final int	HAUTEUR			= 400;
-	private static final int	MAX_SIZE_LIST	= 18;
+	private static final int	MAX_SIZE_LIST	= 15;
 
 	private boolean				running;
 	private List<mPoint>		pointsGauche	= new LinkedList<mPoint>();
@@ -28,25 +35,25 @@ public class GameLoop extends Thread {
 	private int					swidth;
 	private int					sheight;
 	private SurfaceHolder		holder;
-	private int					position;
-	private int					speed			= 710;
+	private int					position, positionx;
+	private int					speed			= 1000;
 	private long				lastUpdate;
 	private Bitmap				myCar;
 	private int					avancement;
 	private long				delta;
 	private int					car;
+	private int					score;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.holder = holder;
 		this.car = car;
+		
 		path = new Path();
 		p = new Paint();
 		loadMyCar(this.car);
 		loadPaint(p);
-
 		this.running = true;
-
 	}
 
 	public void loadMyCar(int car) {
@@ -75,6 +82,7 @@ public class GameLoop extends Thread {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
 		p.setStyle(Paint.Style.FILL_AND_STROKE);
+		p.setTextSize((float)60.0);
 		p.setStrokeWidth(1);
 		p.setColor(Color.WHITE);
 	}
@@ -84,16 +92,20 @@ public class GameLoop extends Thread {
 		int[][] pointsG = { { 0, 500 }, { this.getSwidth() / 4, 1200 },
 				{ 0, 1280 }, { 0, 300 }, { this.getSwidth() / 4, 500 },
 				{ 0, 1000 }, { 0, 0 }, { this.getSwidth() / 3, 0 }, { 0, 400 } };
-		int[][] pointsD = { { this.getSwidth(), 0 },
+		int[][] pointsD = { { this.getSwidth(), 300 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 900 },
 				{ this.getSwidth(), 1280 }, { this.getSwidth(), 0 },
 				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
-				{ this.getSwidth(), 500 }, };
+				{ this.getSwidth(), 500 }, { this.getSwidth(), 0 },
+				{ this.getSwidth() - (this.getSwidth() / 4), 0 },
+				{ this.getSwidth(), 500 } };
 
 		// Initialisation des premiers points
 		chargementDesPoints(this.pointsGauche, pointsG);
 		chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
+		this.positionx = 0;
+		this.score = 0;
 		while (this.running) {
 			Log.d("running", "running");
 			path = new Path();
@@ -105,8 +117,15 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
+						if (this.positionx >= (this.getSwidth()/3) || this.positionx <= -(this.getSwidth()/3)) {
+							Log.d("collision", "collision: "+this.positionx);
+							if(this.positionx>0){
+								this.score -= (int)Math.round(positionx/100);
+							}else{
+								this.score += (int)Math.round(positionx/100);
+							}
+						}
 
-						
 						// Generation
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							genererNouveauTriangleGauche(this.pointsGauche
@@ -120,9 +139,9 @@ public class GameLoop extends Thread {
 								cleanLast(this.pointsGauche);
 								cleanLast(this.pointsDroite);
 							}
-							this.position-=GameLoop.HAUTEUR;
-							
+							this.position -= GameLoop.HAUTEUR;
 						}
+						canvas.drawText("Score: "+score, 0, 100, p);
 						// Triangles
 						affichageDesPoints(path, p, canvas);
 						// Voiture
@@ -153,14 +172,13 @@ public class GameLoop extends Thread {
 		points.remove(0);
 		points.remove(0);
 		points.remove(0);
-
 		Log.d("apres clean " + pointsGauche.size(), "apres clean "
 				+ pointsGauche.size());
 	}
 
 	public int calculAvancement(int sspeed) {
 		delta = System.nanoTime() - lastUpdate;
-		return (int) (((delta * 1.0) / (Math.pow(10, 9))) * sspeed);
+		return (int) Math.round((((delta * 1.0) / (Math.pow(10, 9))) * sspeed));
 	}
 
 	/**
@@ -169,16 +187,17 @@ public class GameLoop extends Thread {
 	 * */
 	public void update() {
 		this.setAvancement(Math.min(calculAvancement(speed), 100));
-		Log.d("avancement " + this.getAvancement(),
-				"avancement " + this.getAvancement());
-
+		/*
+		 * Log.d("avancement " + this.getAvancement(), "avancement " +
+		 * this.getAvancement());
+		 */
 		this.position += this.getAvancement();
-
 		this.avancer(this.pointsGauche, this.getAvancement());
 		this.avancer(this.pointsDroite, this.getAvancement());
-
-		Log.d("position " + position, "position " + position);
+		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
+		// Log.d("position " + position, "position " + position);
+
 	}
 
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
@@ -190,11 +209,12 @@ public class GameLoop extends Thread {
 	}
 
 	public void updateOrientation(int x) {
-		for (mPoint p : this.pointsGauche) {
-			p.tourne(x);
-		}
-		for (mPoint p : this.pointsDroite) {
-			p.tourne(x);
+
+		for (int i = 0; i < this.pointsGauche.size(); i++) {
+			this.pointsGauche.get(i).tourne(x);
+			this.pointsDroite.get(i).tourne(x);
+			this.positionx += x;
+
 		}
 	}
 
