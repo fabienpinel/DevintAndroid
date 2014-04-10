@@ -2,7 +2,11 @@ package com.polytech.devintandroid;
 
 import java.util.LinkedList;
 import java.util.List;
-
+/**
+ * 
+ * @author Tom Guillermin
+ *
+ */
 public class Triangle {
 	private mPoint p1, p2, p3;
 	private List<mPoint> points;

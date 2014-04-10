@@ -48,8 +48,8 @@ public class GameActivity extends Activity implements SensorEventListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		layout = ((LinearLayout) LinearLayout.inflate(this,
-				R.layout.activity_game, null));
+		setLayout(((LinearLayout) LinearLayout.inflate(this,
+				R.layout.activity_game, null)));
 		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
 		/*
@@ -200,6 +200,22 @@ public class GameActivity extends Activity implements SensorEventListener {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);
 		this.car = settings.getInt("car", 0);
+	}
+
+	public LinearLayout getLayout() {
+		return layout;
+	}
+
+	public void setLayout(LinearLayout layout) {
+		this.layout = layout;
+	}
+
+	public Canvas getCanvas() {
+		return canvas;
+	}
+
+	public void setCanvas(Canvas canvas) {
+		this.canvas = canvas;
 	}
 
 }

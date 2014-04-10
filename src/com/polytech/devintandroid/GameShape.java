@@ -5,7 +5,7 @@ import java.util.List;
 
 /**
  * 
- * @author Fabien Pinel
+ * @author Tom Guillermin
  *
  */
 public class GameShape {

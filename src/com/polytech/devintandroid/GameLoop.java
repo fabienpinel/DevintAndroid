@@ -27,7 +27,6 @@ public class GameLoop extends Thread {
 	 */
 
 	private static final int			HAUTEUR			= 400;
-	private static final int			MAX_SIZE_LIST	= 15;
 
 	private boolean						running;
 	private List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
@@ -313,12 +312,6 @@ public class GameLoop extends Thread {
 	 */
 
 	private void cleanLast(List<mPoint> points) {
-		/*
-		 * points.remove(0); points.remove(0);
-		 * 
-		 * points.remove(0);
-		 */
-
 		for (int i = 0; i < points.size(); ++i) {// mPoint p : points) {
 			mPoint p = points.get(i);
 			if (p.getY() > sheight) {
