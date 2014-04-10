@@ -191,8 +191,8 @@ public class GameActivity extends Activity implements SensorEventListener {
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
-		playSound(R.drawable.bip);
-		this.vibreur.vibrate(100);
+		//playSound(R.drawable.bip);
+		//this.vibreur.vibrate(100);
 		return true;
 	}
 
