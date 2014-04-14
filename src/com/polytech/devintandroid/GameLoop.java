@@ -214,6 +214,7 @@ public class GameLoop extends Thread {
 						canvas.drawText("Score: " + score, 0, 150, pscore);
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
+						this.speed+=1;
 					} else {
 						Log.d("canvas null", "canvass null");
 					}
