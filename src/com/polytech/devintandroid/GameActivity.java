@@ -14,6 +14,8 @@ import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Surface;
+import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.graphics.Canvas;
@@ -80,6 +82,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		
 
 		/*
 		 * Fin lecture de fichier son
@@ -194,8 +197,17 @@ public class GameActivity extends Activity implements SensorEventListener {
 		Log.d("RunGameActivity", "OnTouchEvent");
 		//playSound(R.drawable.bip);
 		//this.vibreur.vibrate(100);
+		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+		      Log.d("TouchTest", "Touch down");
+		      this.vue.speedBoostOnTouch();
+		    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+		      Log.d("TouchTest", "Touch up");
+		      this.vue.speedBoostOnRelease();
+		    }
+		
 		return true;
 	}
+	
 
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",

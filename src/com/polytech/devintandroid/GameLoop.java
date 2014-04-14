@@ -39,6 +39,8 @@ public class GameLoop extends Thread {
 	private SurfaceHolder				holder;
 	private int							position, positionx;
 	private int							speed			= 1000;
+
+
 	private long						lastUpdate;
 	private Bitmap						myCar;
 	private int							avancement;
@@ -487,5 +489,13 @@ public class GameLoop extends Thread {
 	public void setOrientationGap(int orientationGap) {
 		this.orientationGap = orientationGap;
 	}
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	}
+	
 
 }
