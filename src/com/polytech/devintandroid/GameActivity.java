@@ -51,7 +51,8 @@ public class GameActivity extends Activity implements SensorEventListener {
 		setLayout(((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null)));
 		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
+		//empecher la mise en veille de l'écran
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		/*
 		 * Lecture de fichier son
 		 */
