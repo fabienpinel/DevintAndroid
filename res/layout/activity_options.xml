@@ -47,17 +47,6 @@
         android:entries="@array/choixCar" />
 
      <Button
-         android:id="@+id/applyOptions"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         android:layout_alignLeft="@+id/selectionCar"
-         android:layout_below="@+id/selectionCar"
-         android:layout_marginTop="36dp"
-         android:layout_weight="0.20"
-         android:text="Appliquer"
-         android:textSize="@dimen/menuDimension"
-         android:textStyle="bold" />
-     <Button
          android:id="@+id/backOptions"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"

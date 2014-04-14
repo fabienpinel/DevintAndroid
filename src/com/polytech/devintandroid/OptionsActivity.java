@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 /**
@@ -56,12 +57,15 @@ public class OptionsActivity extends Activity {
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
 		themeSpinner.setAdapter(ArrayAdapter.createFromResource(this,
 				R.array.choixTheme, R.layout.spinner_theme));
+		Log.d("debug setelection", "setselection "+posCar);
+		themeSpinner.setSelection(this.posTheme);
 
 		themeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView,
 					View selectedItemView, int position, long id) {
 				posTheme = position;
+				saveSettings();
 			}
 
 			@Override
@@ -75,12 +79,14 @@ public class OptionsActivity extends Activity {
 		carSpinner.setAdapter(new MyCustomAdapter(OptionsActivity.this,
 				R.layout.spinner_item, getResources().getStringArray(
 						R.array.choixCar)));
+		carSpinner.setSelection(this.posCar);
 
 		carSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parentView,
 					View selectedItemView, int position, long id) {
 				posCar = position;
+				saveSettings();
 			}
 
 			@Override
@@ -90,24 +96,7 @@ public class OptionsActivity extends Activity {
 
 		});
 
-		/*
-		 * Ajout du listener sur le bouton appliquer pour enregistrer les
-		 * options choisies
-		 */
-		Button applyOption = (Button) findViewById(R.id.applyOptions);
-		applyOption.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				SharedPreferences settings = getSharedPreferences("prefs",
-						Context.MODE_PRIVATE);
-				SharedPreferences.Editor editor = settings.edit();
-				editor.putInt("titreFond", posTheme);
-				editor.putInt("car", posCar);
-				editor.commit();
-				Intent main = new Intent(OptionsActivity.this,
-						MainActivity.class);
-				startActivity(main);
-			}
-		});
+		
 		/*
 		 * Ajout du listener sur le bouton retour pour revenir à MainActivity
 		 */
@@ -128,7 +117,8 @@ public class OptionsActivity extends Activity {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);
 		TextView titre = (TextView) layout.findViewById(R.id.texthelp);
-		switch (settings.getInt("titreFond", 0)) {
+		this.posTheme = settings.getInt("titreFond", 0);
+		switch (this.posTheme) {
 
 		case OptionsActivity.THEME_BLEU:
 			titre.setBackgroundColor(Color.parseColor("#0000FF"));
@@ -140,9 +130,17 @@ public class OptionsActivity extends Activity {
 			titre.setBackgroundColor(Color.parseColor("#0000FF"));
 
 		}
+		this.posCar = settings.getInt("car", 0);
 
 	}
-
+	public void saveSettings(){
+		SharedPreferences settings = getSharedPreferences("prefs",
+				Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = settings.edit();
+		editor.putInt("titreFond", posTheme);
+		editor.putInt("car", posCar);
+		editor.commit();
+	}
 	/**
 	 * 
 	 * @author Fabien Pinel
