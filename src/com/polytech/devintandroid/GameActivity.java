@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.util.Log;
@@ -205,6 +206,10 @@ public class GameActivity extends Activity implements SensorEventListener {
 		      this.vue.speedBoostOnRelease();
 		    }
 		
+		//Test de la page de gameOver
+		/*Intent main = new Intent(GameActivity.this,
+				GameOverActivity.class);
+		startActivity(main);*/
 		return true;
 	}
 	

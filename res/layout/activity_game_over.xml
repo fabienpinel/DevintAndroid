@@ -1,0 +1,33 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#FFFFFF"
+    tools:context=".GameOverActivity" >
+
+    <TextView
+        android:id="@+id/gameOverTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/game_over" 
+        android:textColor="#000000"
+        android:textSize="@dimen/titreDimension"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:textStyle="bold"/>
+     <Button
+         android:id="@+id/playAgain"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:layout_below="@+id/gameOverTitle"
+         android:layout_marginTop="22dp"
+         android:layout_weight="0.20"
+         android:text="Rejouer"
+         android:textSize="@dimen/menuDimension"
+         android:textStyle="bold" />
+
+</RelativeLayout>

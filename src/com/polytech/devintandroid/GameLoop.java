@@ -52,8 +52,10 @@ public class GameLoop extends Thread {
 	private SharedPreferences			settings;
 	private SharedPreferences.Editor	editor;
 	private int							orientationGap;
+	private boolean isInBoost;
 
 	
+
 	public GameLoop(Context context, SurfaceHolder holder, int car) {
 		this.context = context;
 		this.setHolder(holder);
@@ -495,6 +497,14 @@ public class GameLoop extends Thread {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public boolean isInBoost() {
+		return isInBoost;
+	}
+
+	public void setInBoost(boolean isInBoost) {
+		this.isInBoost = isInBoost;
 	}
 	
 

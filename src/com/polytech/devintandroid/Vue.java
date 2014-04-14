@@ -82,10 +82,17 @@ public class Vue extends SurfaceView implements
 		}
 	}
 	public void speedBoostOnTouch(){
-		this.game.setSpeed(this.game.getSpeed()+1000);
+		if(!this.game.isInBoost()){
+			this.game.setSpeed(this.game.getSpeed()+1000);
+			this.game.setInBoost(true);
+		}
+		
 	}
 	public void speedBoostOnRelease(){
-		this.game.setSpeed(this.game.getSpeed()-1000);
+		if(this.game.isInBoost()){
+			this.game.setSpeed(this.game.getSpeed()-1000);
+			this.game.setInBoost(false);
+		}
 	}
 
 }
