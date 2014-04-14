@@ -136,6 +136,7 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
+						//A REVOIR
 						if (this.positionx >= (this.getSwidth() / 3)
 								|| this.positionx <= -(this.getSwidth() / 3)) {
 							Log.d("collision", "collision: " + this.positionx);
@@ -210,7 +211,7 @@ public class GameLoop extends Thread {
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
 						// Voiture
-						canvas.drawText("Best: " + bestScore, 0, 70, pscore);
+						canvas.drawText("Meilleur: " + bestScore, 0, 70, pscore);
 						canvas.drawText("Score: " + score, 0, 150, pscore);
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
