@@ -22,6 +22,12 @@
         <item>Voiture Bleue</item>
         <item>Voiture Verte</item>
     </string-array>
+    <string-array name="choixdifficulte">
+        <item>Facile</item>
+        <item>Normal</item>
+        <item>Difficile</item>
+        <item>Hardcore</item>
+    </string-array>
 
     <string name="title_activity_voice">VoiceActivity</string>
     <string name="title_activity_game_over">GameOverActivity</string>

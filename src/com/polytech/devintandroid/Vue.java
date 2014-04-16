@@ -22,13 +22,13 @@ public class Vue extends SurfaceView implements
 	Canvas					canvas;
 	GameLoop				game;
 
-	public Vue(Context context, int car) {
+	public Vue(Context context, int car, int level) {
 		super(context);
 		this.holder = getHolder();
 		this.holder.addCallback(this);
 		setFocusable(true);
 		canvas = new Canvas();
-		this.game = new GameLoop(context, holder, car);
+		this.game = new GameLoop(context, holder, car, level);
 		mLinearLayout = new LinearLayout(context);
 	}
 

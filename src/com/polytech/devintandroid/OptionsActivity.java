@@ -38,12 +38,17 @@ public class OptionsActivity extends Activity {
 	public static final int	POLICE_CAR	= 1;
 	public static final int	BLUE_CAR	= 2;
 	public static final int	GREEN_CAR	= 3;
+
+	// LEVELS
+	public static final int	FACILE		= 0;
+	public static final int	NORMAL		= 1;
+	public static final int	DIFFICILE	= 2;
+	public static final int	HARDCORE	= 3;
 	// SPINNERS
-	private Spinner			themeSpinner;
-	private Spinner			carSpinner;
+	private Spinner			themeSpinner, carSpinner, levelSpinner;
 
 	private LinearLayout	layout		= null;
-	private int				posTheme, posCar;
+	private int				posTheme, posCar, posLevel;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,7 @@ public class OptionsActivity extends Activity {
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
 		themeSpinner.setAdapter(ArrayAdapter.createFromResource(this,
 				R.array.choixTheme, R.layout.spinner_theme));
-		Log.d("debug setelection", "setselection "+posCar);
+		Log.d("debug setelection", "setselection " + posCar);
 		themeSpinner.setSelection(this.posTheme);
 
 		themeSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -96,7 +101,26 @@ public class OptionsActivity extends Activity {
 
 		});
 
-		
+		levelSpinner = (Spinner) findViewById(R.id.selectionDifficulte);
+		levelSpinner.setAdapter(ArrayAdapter.createFromResource(this,
+				R.array.choixdifficulte, R.layout.spinner_theme));
+		levelSpinner.setSelection(this.posLevel);
+
+		levelSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parentView,
+					View selectedItemView, int position, long id) {
+				posLevel = position;
+				saveSettings();
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parentView) {
+				Log.d("Nothing selected", "Nothing selected");
+			}
+
+		});
+
 		/*
 		 * Ajout du listener sur le bouton retour pour revenir à MainActivity
 		 */
@@ -131,21 +155,25 @@ public class OptionsActivity extends Activity {
 
 		}
 		this.posCar = settings.getInt("car", 0);
+		this.posLevel = settings.getInt("level", 0);
 
 	}
-	public void saveSettings(){
+
+	public void saveSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);
 		SharedPreferences.Editor editor = settings.edit();
 		editor.putInt("titreFond", posTheme);
 		editor.putInt("car", posCar);
+		editor.putInt("level", posLevel);
 		editor.commit();
 	}
+
 	/**
 	 * 
-	 * @author Fabien Pinel
-	 * Custom adapter pour le spinner contenant les voitures
-	 *
+	 * @author Fabien Pinel Custom adapter pour le spinner contenant les
+	 *         voitures
+	 * 
 	 */
 	public class MyCustomAdapter extends ArrayAdapter<String> {
 

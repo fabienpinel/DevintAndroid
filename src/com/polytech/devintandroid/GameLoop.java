@@ -19,7 +19,7 @@ import android.view.SurfaceHolder;
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
 public class GameLoop extends Thread {
 	/*
@@ -38,9 +38,7 @@ public class GameLoop extends Thread {
 	private int							sheight;
 	private SurfaceHolder				holder;
 	private int							position, positionx;
-	private int							speed			= 1000;
-
-
+	private int							speed;
 	private long						lastUpdate;
 	private Bitmap						myCar;
 	private int							avancement;
@@ -52,14 +50,18 @@ public class GameLoop extends Thread {
 	private SharedPreferences			settings;
 	private SharedPreferences.Editor	editor;
 	private int							orientationGap;
-	private boolean isInBoost;
+	private boolean						isInBoost;
+	private int							generatedHeight;
+	private int							firstElementY;
+	private int level;
 
-	
 
-	public GameLoop(Context context, SurfaceHolder holder, int car) {
+
+	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
 		this.setHolder(holder);
 		this.car = car;
+		this.setLevel(level);
 		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 		editor = settings.edit();
 
@@ -69,6 +71,7 @@ public class GameLoop extends Thread {
 		loadMyCar(this.car);
 		loadPaint(p);
 		loadScore();
+		loadLevel();
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
@@ -76,6 +79,11 @@ public class GameLoop extends Thread {
 		this.running = true;
 	}
 
+	/**
+	 * Chargement de la bonne voiture en fonction de la valeur de "car"
+	 * 
+	 * @param car
+	 */
 	public void loadMyCar(int car) {
 		switch (car) {
 		case OptionsActivity.RED_CAR:
@@ -98,6 +106,11 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	/**
+	 * Chargement du paramètre paint en fonction du thème choisit
+	 * 
+	 * @param p
+	 */
 	public void loadPaint(Paint p) {
 		p.setColor(Color.WHITE);
 		p.setStyle(Paint.Style.FILL);
@@ -118,6 +131,26 @@ public class GameLoop extends Thread {
 		pscore.setTextSize((float) 60.0);
 	}
 
+	public void loadLevel() {
+		switch (this.getLevel()) {
+		case OptionsActivity.FACILE:
+			this.setSpeed(800);
+			break;
+		case OptionsActivity.NORMAL:
+			this.setSpeed(1000);
+			break;
+
+		case OptionsActivity.DIFFICILE:
+			this.setSpeed(1500);
+			break;
+		case OptionsActivity.HARDCORE:
+			this.setSpeed(2500);
+			break;
+		}
+	}
+	/**
+	 * Chargement de la valeur du Meilleur Score enregistré
+	 */
 	public void loadScore() {
 		this.bestScore = settings.getInt("bestScore", 0);
 	}
@@ -140,7 +173,7 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
-						//A REVOIR
+						// A REVOIR
 						if (this.positionx >= (this.getSwidth() / 3)
 								|| this.positionx <= -(this.getSwidth() / 3)) {
 							Log.d("collision", "collision: " + this.positionx);
@@ -157,21 +190,22 @@ public class GameLoop extends Thread {
 						}
 
 						Log.d("debug", "==============================");
-						//Log.d("debug", "position : " + position);
+						// Log.d("debug", "position : " + position);
 
 						// Clean unused shapes
 						cleanShapes();
 
 						// Check if generation is needed ?
-						int generatedHeight = 0;
+						this.generatedHeight = 0;
 						for (GameShape shape : leftShapes) {
-							generatedHeight += shape.getHeight();
+							this.generatedHeight += shape.getHeight();
 						}
 
-						int firstElementY = sheight;
+						this.setFirstElementY(sheight);
 
 						if (leftShapes.size() > 0 && leftShapes.get(0) != null) {
-							firstElementY = leftShapes.get(0).getOriginY();
+							this.setFirstElementY(leftShapes.get(0)
+									.getOriginY());
 						}
 						// Log.d("debug", "firstElementY : " + firstElementY);
 
@@ -219,7 +253,7 @@ public class GameLoop extends Thread {
 						canvas.drawText("Score: " + score, 0, 150, pscore);
 						canvas.drawBitmap(myCar, (this.getSwidth() / 2) - 80,
 								this.getSheight() - 310, null);
-						this.speed+=1;
+						this.speed += 1;
 					} else {
 						Log.d("canvas null", "canvass null");
 					}
@@ -232,6 +266,25 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	public int getGeneratedHeight() {
+		return generatedHeight;
+	}
+
+	public void setGeneratedHeight(int generatedHeight) {
+		this.generatedHeight = generatedHeight;
+	}
+
+	public int getFirstElementY() {
+		return firstElementY;
+	}
+
+	public void setFirstElementY(int firstElementY) {
+		this.firstElementY = firstElementY;
+	}
+
+	/**
+	 * Nettoyage des formes (du décor)
+	 */
 	public void cleanShapes() {
 		cleanShapes(leftShapes);
 		cleanShapes(rightShapes);
@@ -256,6 +309,13 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	/**
+	 * Affichage des formes (du décor)
+	 * 
+	 * @param path
+	 * @param p2
+	 * @param canvas
+	 */
 	private void displayShapes(Path path, Paint p2, Canvas canvas) {
 		// Log.d("affichage", "affichage");
 		displayShapes(leftShapes, path, p2, canvas);
@@ -353,7 +413,12 @@ public class GameLoop extends Thread {
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
 
-		// this.updateOrientation(5);
+		// Décommenter la ligne en dessous pour augmenter la difficultée
+		// (changement de direction a chaque update)
+		/*
+		 * int orientationRandom = (int)Math.round((Math.random()*30)-15);
+		 * this.updateOrientation(orientationRandom);
+		 */
 
 		// Update des nouveaux points
 		int deltaY = getAvancement();
@@ -367,19 +432,38 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	/**
+	 * Chargement des poinbts contenus dans le tableau passé en paramètre dans
+	 * la liste de tous les points
+	 * 
+	 * @param tlp
+	 * @param points
+	 */
 	public void chargementDesPoints(List<mPoint> tlp, int[][] points) {
-
 		for (int i = 0; i < points.length; i++) {
 			tlp.add(new mPoint(points[i][0], points[i][1]));
 		}
-
 	}
 
+	/**
+	 * Mise à jour de l'orientation en fonction du capteur du téléphone
+	 * 
+	 * @param x
+	 *            : valeur de l'orientation
+	 */
 	public void updateOrientation(int x) {
 		updateOrientation(leftShapes, x);
 		updateOrientation(rightShapes, x);
 	}
 
+	/**
+	 * Mise à jour de l'orientation en fonction du capteur du téléphone
+	 * 
+	 * @param shapesList
+	 *            liste des triangles à mettre à jour
+	 * @param dX
+	 *            facteur de l'orientation
+	 */
 	private void updateOrientation(List<GameShape> shapesList, int dX) {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
@@ -387,12 +471,29 @@ public class GameLoop extends Thread {
 		positionx += dX;
 	}
 
+	/**
+	 * Avancer tous les points du facteur footo
+	 * 
+	 * @param points
+	 *            : Liste de points à mettre à jour
+	 * @param footo
+	 *            : facteur d'avancement
+	 */
 	public void avancer(List<mPoint> points, int footo) {
 		for (mPoint p : points) {
 			p.monte(footo);
 		}
 	}
 
+	/**
+	 * Affichage des points sur le canvas
+	 * 
+	 * @param path
+	 * @param p
+	 *            options de l'affichage
+	 * @param c
+	 *            canvas sur lequel afficher
+	 */
 	public void affichageDesPoints(Path path, Paint p, Canvas c) {
 		// Log.d("affichage", "affichage");
 		for (int i = 0; i < pointsGauche.size(); i += 3) {
@@ -405,6 +506,21 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	/**
+	 * Ecriture du triangle sur le canvas
+	 * 
+	 * @param origin
+	 *            : point 1
+	 * @param line1
+	 *            point 2
+	 * @param line2
+	 *            point 3
+	 * @param ppath
+	 * @param pp
+	 *            options paint
+	 * @param ca
+	 *            canvas
+	 */
 	public void ajouterUnTriangle(mPoint origin, mPoint line1, mPoint line2,
 			Path ppath, Paint pp, Canvas ca) {
 		ppath.moveTo(origin.getX(), origin.getY());
@@ -422,6 +538,11 @@ public class GameLoop extends Thread {
 				paint, canvas);
 	}
 
+	/**
+	 * Génération de la prochaine forme à gauche
+	 * 
+	 * @param p
+	 */
 	public void genererNouveauTriangleGauche(mPoint p) {
 		this.pointsGauche
 				.add(new mPoint(p.getX(), p.getY() - GameLoop.HAUTEUR));
@@ -431,6 +552,11 @@ public class GameLoop extends Thread {
 				.add(new mPoint(p.getX(), p.getY() + GameLoop.HAUTEUR));
 	}
 
+	/**
+	 * Génération de la prochaine forme à droite
+	 * 
+	 * @param p
+	 */
 	public void genererNouveauTriangleDroite(mPoint p) {
 		this.pointsDroite
 				.add(new mPoint(p.getX(), p.getY() - GameLoop.HAUTEUR));
@@ -491,6 +617,7 @@ public class GameLoop extends Thread {
 	public void setOrientationGap(int orientationGap) {
 		this.orientationGap = orientationGap;
 	}
+
 	public int getSpeed() {
 		return speed;
 	}
@@ -506,6 +633,12 @@ public class GameLoop extends Thread {
 	public void setInBoost(boolean isInBoost) {
 		this.isInBoost = isInBoost;
 	}
-	
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
 
 }

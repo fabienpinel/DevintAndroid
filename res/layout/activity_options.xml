@@ -45,12 +45,22 @@
         android:textSize="@dimen/menuDimension"
         android:textStyle="bold"
         android:entries="@array/choixCar" />
+        <Spinner
+        android:id="@+id/selectionDifficulte"
+        android:layout_width="match_parent"
+        android:layout_height="80dip"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/selectionCar"
+        android:layout_marginTop="24dp"
+        android:textSize="@dimen/menuDimension"
+        android:textStyle="bold"
+        android:entries="@array/choixdifficulte" />
 
      <Button
          android:id="@+id/backOptions"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_below="@+id/selectionCar"
+         android:layout_below="@+id/selectionDifficulte"
          android:layout_marginTop="22dp"
          android:layout_weight="0.20"
          android:text="Retour"

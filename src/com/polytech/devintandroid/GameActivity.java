@@ -38,7 +38,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private Vue				vue;
 	private static int		majoration	= 6;
 	private LinearLayout	layout		= null;
-	private int				car;
+	private int				car, level;
 	boolean					soundReady	= false;
 	private Canvas			canvas;
 	private int				explosionId;
@@ -74,7 +74,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 		});
 
 		loadSettings();
-		vue = new Vue(this, car);
+		vue = new Vue(this, car, level);
 		gameActivityInit();
 		Log.d("init", "init");
 
@@ -218,6 +218,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);
 		this.car = settings.getInt("car", 0);
+		this.level = settings.getInt("level", OptionsActivity.NORMAL);
 	}
 
 	public LinearLayout getLayout() {
