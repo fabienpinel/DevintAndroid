@@ -14,6 +14,10 @@
         android:textSize="@dimen/titreDimension"
         android:textStyle="bold"
          />
+ <ScrollView android:id="@+id/ScrollView01"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+ android:background="#FFFFFF">
 <RelativeLayout 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,4 +51,5 @@
          android:textStyle="bold" />
 
 </RelativeLayout>
+</ScrollView>
 </LinearLayout>

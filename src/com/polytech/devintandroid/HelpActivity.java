@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -122,4 +123,39 @@ public class HelpActivity extends Activity implements OnInitListener {
 
 	}
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		// Log.d("debug pause", "pause isSpeaking"+mTts.isSpeaking());
+		if (mTts != null) {
+			if (mTts.isSpeaking()) {
+
+				Log.d("debug stopetShutdown", "stop+shutdown");
+				mTts.stop();
+				mTts.shutdown();
+			}
+		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		Log.d("debug destroy", "destroy isSpeaking" + mTts.isSpeaking());
+		if (mTts.isSpeaking()) {
+			Log.d("debug stopetShutdown", "stop+shutdown");
+			mTts.stop();
+			mTts.shutdown();
+		}
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Log.d("debug stop", "stop isSpeaking" + mTts.isSpeaking());
+		if (mTts.isSpeaking()) {
+			Log.d("debug stopetShutdown", "stop+shutdown");
+			mTts.stop();
+			mTts.shutdown();
+		}
+	}
 }
