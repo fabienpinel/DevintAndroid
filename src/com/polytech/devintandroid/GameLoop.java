@@ -26,40 +26,42 @@ public class GameLoop extends Thread {
 	 * TO CHANGE : collision // sons lors du jeu
 	 */
 
-	private static final int			HAUTEUR			= 400;
+	private static final int HAUTEUR = 400;
 
-	private boolean						running;
-	private List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
-	private List<mPoint>				pointsDroite	= new LinkedList<mPoint>();
-	private Context						context;
-	private Paint						p, pscore;
-	private Path						path;
-	private int							swidth;
-	private int							sheight;
-	private SurfaceHolder				holder;
-	private int							position, positionx;
-	private int							speed;
-	private long						lastUpdate;
-	private Bitmap						myCar;
-	private int							avancement;
-	private long						delta;
-	private int							car;
-	private int							score, bestScore;
-	private List<GameShape>				leftShapes, rightShapes;
-	private Canvas						canvas;
-	private SharedPreferences			settings;
-	private SharedPreferences.Editor	editor;
-	private int							orientationGap;
-	private boolean						isInBoost;
-	private int							generatedHeight;
-	private int							firstElementY;
-	private int							level;
+	private boolean running;
+	private List<mPoint> pointsGauche = new LinkedList<mPoint>();
+	private List<mPoint> pointsDroite = new LinkedList<mPoint>();
+	private Context context;
+	private Paint p, pscore;
+	private Path path;
+	private int swidth;
+	private int sheight;
+	private SurfaceHolder holder;
+	private int position, positionx;
+	private int speed;
+	private long lastUpdate;
+	private Bitmap myCar;
+	private int avancement;
+	private long delta;
+	private int car;
+	private int score, bestScore;
+	private List<GameShape> leftShapes, rightShapes;
+	private Canvas canvas;
+	private SharedPreferences settings;
+	private SharedPreferences.Editor editor;
+	private int orientationGap;
+	private boolean isInBoost;
+	private int generatedHeight;
+	private int firstElementY;
+	private int level;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
 		this.setHolder(holder);
 		this.car = car;
-		this.setLevel(level);
+		// TODO : put this back
+		//this.setLevel(level);
+		this.setLevel(OptionsActivity.FACILE);
 		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 		editor = settings.edit();
 
@@ -124,7 +126,6 @@ public class GameLoop extends Thread {
 			break;
 		default:
 			pscore.setColor(Color.BLUE);
-
 		}
 		pscore.setTextSize((float) 60.0);
 	}
@@ -132,7 +133,7 @@ public class GameLoop extends Thread {
 	public void loadLevel() {
 		switch (this.getLevel()) {
 		case OptionsActivity.FACILE:
-			this.setSpeed(800);
+			this.setSpeed(1);
 			break;
 		case OptionsActivity.NORMAL:
 			this.setSpeed(1000);
@@ -265,7 +266,6 @@ public class GameLoop extends Thread {
 		}
 	}
 
-
 	/**
 	 * Nettoyage des formes (du décor)
 	 */
@@ -304,14 +304,29 @@ public class GameLoop extends Thread {
 		// Log.d("affichage", "affichage");
 		displayShapes(leftShapes, path, p2, canvas);
 		displayShapes(rightShapes, path, p2, canvas);
+		
+		Log.d("toms", "X="+this.positionx);
+		leftShapes.get(0);
 	}
 
 	private void displayShapes(List<GameShape> shapesList, Path path2,
 			Paint p2, Canvas canvas) {
+		boolean colorSwitch = false;
+		Log.d("toms", "Number of shapes:"+shapesList.size());
 		for (GameShape s : shapesList) {
 			List<Triangle> tris = s.getTriangles();
+			Path path = new Path();
+			if (colorSwitch) {
+				p2.setColor(Color.WHITE);
+				Log.d("toms","Using color blue !");
+			} else {
+				p2.setColor(Color.RED);
+				Log.d("toms","Using color yellow !");
+			}
+			colorSwitch = ! colorSwitch;
 			for (Triangle t : tris) {
-				ajouterUnTriangle(t, path, p, canvas);
+				colorSwitch = ! colorSwitch;
+				ajouterUnTriangle(t, path, p2, canvas);
 			}
 		}
 	}
@@ -509,6 +524,7 @@ public class GameLoop extends Thread {
 	 */
 	public void ajouterUnTriangle(mPoint origin, mPoint line1, mPoint line2,
 			Path ppath, Paint pp, Canvas ca) {
+		Log.d("toms", "Drawing triangle with "+pp.getColor()+" (yellow:"+Color.YELLOW+", blue:"+Color.BLUE);
 		ppath.moveTo(origin.getX(), origin.getY());
 		ppath.lineTo(line1.getX(), line1.getY());
 		ppath.lineTo(line2.getX(), line2.getY());
@@ -554,6 +570,7 @@ public class GameLoop extends Thread {
 
 	/**
 	 * Getters et Setters
+	 * 
 	 * @return
 	 */
 	public int getSwidth() {
@@ -631,6 +648,7 @@ public class GameLoop extends Thread {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+
 	public int getGeneratedHeight() {
 		return generatedHeight;
 	}
@@ -646,6 +664,5 @@ public class GameLoop extends Thread {
 	public void setFirstElementY(int firstElementY) {
 		this.firstElementY = firstElementY;
 	}
-
 
 }
