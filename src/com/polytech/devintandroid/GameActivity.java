@@ -1,6 +1,5 @@
 package com.polytech.devintandroid;
 
-
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
@@ -24,12 +23,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
 public class GameActivity extends Activity implements SensorEventListener {
+	
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
 	// private TextView view_x, view_y, view_z;
@@ -44,8 +45,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private int				explosionId;
 	private SoundPool		soundPool;
 	private boolean			loaded		= false;
-	private Vibrator vibreur;
-	
+	private Vibrator		vibreur;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class GameActivity extends Activity implements SensorEventListener {
 		setLayout(((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null)));
 		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		//empecher la mise en veille de l'écran
+		// empecher la mise en veille de l'écran
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		/*
 		 * Lecture de fichier son
@@ -83,7 +83,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		
 
 		/*
 		 * Fin lecture de fichier son
@@ -189,30 +188,30 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 	private void playSound(int resId) {
 		if (loaded) {
-			soundPool.play(explosionId, (float)0.5, (float)0.5, 0, 0, 1);
+			soundPool.play(explosionId, (float) 0.5, (float) 0.5, 0, 0, 1);
 		}
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
-		//playSound(R.drawable.bip);
-		//this.vibreur.vibrate(100);
+		// playSound(R.drawable.bip);
+		// this.vibreur.vibrate(100);
 		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-		      Log.d("TouchTest", "Touch down");
-		      this.vue.speedBoostOnTouch();
-		    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-		      Log.d("TouchTest", "Touch up");
-		      this.vue.speedBoostOnRelease();
-		    }
-		
-		//Test de la page de gameOver
-		/*Intent main = new Intent(GameActivity.this,
-				GameOverActivity.class);
-		startActivity(main);*/
+			Log.d("TouchTest", "Touch down");
+			this.vue.speedBoostOnTouch();
+		} else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+			Log.d("TouchTest", "Touch up");
+			this.vue.speedBoostOnRelease();
+		}
+
+		// Test de la page de gameOver
+		/*
+		 * Intent main = new Intent(GameActivity.this, GameOverActivity.class);
+		 * startActivity(main);
+		 */
 		return true;
 	}
-	
 
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",
