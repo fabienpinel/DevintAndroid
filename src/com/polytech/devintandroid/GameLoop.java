@@ -53,9 +53,7 @@ public class GameLoop extends Thread {
 	private boolean						isInBoost;
 	private int							generatedHeight;
 	private int							firstElementY;
-	private int level;
-
-
+	private int							level;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
@@ -144,10 +142,11 @@ public class GameLoop extends Thread {
 			this.setSpeed(1500);
 			break;
 		case OptionsActivity.HARDCORE:
-			this.setSpeed(2500);
+			this.setSpeed(3000);
 			break;
 		}
 	}
+
 	/**
 	 * Chargement de la valeur du Meilleur Score enregistré
 	 */
@@ -266,21 +265,6 @@ public class GameLoop extends Thread {
 		}
 	}
 
-	public int getGeneratedHeight() {
-		return generatedHeight;
-	}
-
-	public void setGeneratedHeight(int generatedHeight) {
-		this.generatedHeight = generatedHeight;
-	}
-
-	public int getFirstElementY() {
-		return firstElementY;
-	}
-
-	public void setFirstElementY(int firstElementY) {
-		this.firstElementY = firstElementY;
-	}
 
 	/**
 	 * Nettoyage des formes (du décor)
@@ -413,8 +397,10 @@ public class GameLoop extends Thread {
 		this.score += getAvancement();
 		this.lastUpdate = System.nanoTime();
 
-		// Décommenter la ligne en dessous pour augmenter la difficultée
-		// (changement de direction a chaque update)
+		/*
+		 * Décommenter la ligne en dessous pour augmenter la difficultée
+		 * (changement de direction a chaque update)
+		 */
 		/*
 		 * int orientationRandom = (int)Math.round((Math.random()*30)-15);
 		 * this.updateOrientation(orientationRandom);
@@ -566,6 +552,10 @@ public class GameLoop extends Thread {
 				.add(new mPoint(p.getX(), p.getY() + GameLoop.HAUTEUR));
 	}
 
+	/**
+	 * Getters et Setters
+	 * @return
+	 */
 	public int getSwidth() {
 		return swidth;
 	}
@@ -633,6 +623,7 @@ public class GameLoop extends Thread {
 	public void setInBoost(boolean isInBoost) {
 		this.isInBoost = isInBoost;
 	}
+
 	public int getLevel() {
 		return level;
 	}
@@ -640,5 +631,21 @@ public class GameLoop extends Thread {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+	public int getGeneratedHeight() {
+		return generatedHeight;
+	}
+
+	public void setGeneratedHeight(int generatedHeight) {
+		this.generatedHeight = generatedHeight;
+	}
+
+	public int getFirstElementY() {
+		return firstElementY;
+	}
+
+	public void setFirstElementY(int firstElementY) {
+		this.firstElementY = firstElementY;
+	}
+
 
 }
