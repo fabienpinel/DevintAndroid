@@ -184,13 +184,13 @@ public class GameLoop extends Thread {
 							} else {
 								this.score += (int) Math.round(positionx / 150);
 							}
-							if (this.score > this.bestScore) {
-								editor.putInt("bestScore", this.score);
-								editor.commit();
-								loadScore();
-							}
+							
 						}
-
+						if (this.score > this.bestScore) {
+							editor.putInt("bestScore", this.score);
+							editor.commit();
+							loadScore();
+						}
 						Log.d("debug", "==============================");
 						// Log.d("debug", "position : " + position);
 
