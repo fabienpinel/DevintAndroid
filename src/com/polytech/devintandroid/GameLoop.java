@@ -145,6 +145,8 @@ public class GameLoop extends Thread {
 		case OptionsActivity.HARDCORE:
 			this.setSpeed(3000);
 			break;
+		default:
+			this.setSpeed(1000);
 		}
 	}
 

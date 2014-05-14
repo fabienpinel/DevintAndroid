@@ -1,6 +1,5 @@
 package com.polytech.devintandroid;
 
-
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
@@ -11,11 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.text.Editable;
+import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -24,12 +27,14 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
-public class GameActivity extends Activity implements SensorEventListener {
+public class GameActivity extends Activity implements SensorEventListener, KeyListener {
+	
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
 	// private TextView view_x, view_y, view_z;
@@ -44,17 +49,15 @@ public class GameActivity extends Activity implements SensorEventListener {
 	private int				explosionId;
 	private SoundPool		soundPool;
 	private boolean			loaded		= false;
-	private Vibrator vibreur;
-	
+	private Vibrator		vibreur;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setLayout(((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null)));
 		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-		//empecher la mise en veille de l'écran
+		// empecher la mise en veille de l'écran
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		/*
 		 * Lecture de fichier son
@@ -83,7 +86,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-		
 
 		/*
 		 * Fin lecture de fichier son
@@ -189,30 +191,30 @@ public class GameActivity extends Activity implements SensorEventListener {
 
 	private void playSound(int resId) {
 		if (loaded) {
-			soundPool.play(explosionId, (float)0.5, (float)0.5, 0, 0, 1);
+			soundPool.play(explosionId, (float) 0.5, (float) 0.5, 0, 0, 1);
 		}
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
-		//playSound(R.drawable.bip);
-		//this.vibreur.vibrate(100);
+		// playSound(R.drawable.bip);
+		// this.vibreur.vibrate(100);
 		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-		      Log.d("TouchTest", "Touch down");
-		      this.vue.speedBoostOnTouch();
-		    } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-		      Log.d("TouchTest", "Touch up");
-		      this.vue.speedBoostOnRelease();
-		    }
-		
-		//Test de la page de gameOver
-		/*Intent main = new Intent(GameActivity.this,
-				GameOverActivity.class);
-		startActivity(main);*/
+			Log.d("TouchTest", "Touch down");
+			this.vue.speedBoostOnTouch();
+		} else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+			Log.d("TouchTest", "Touch up");
+			this.vue.speedBoostOnRelease();
+		}
+
+		// Test de la page de gameOver
+		/*
+		 * Intent main = new Intent(GameActivity.this, GameOverActivity.class);
+		 * startActivity(main);
+		 */
 		return true;
 	}
-	
 
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",
@@ -237,4 +239,51 @@ public class GameActivity extends Activity implements SensorEventListener {
 		this.canvas = canvas;
 	}
 
+	
+
+	@Override
+	public void clearMetaKeyState(View view, Editable content, int states) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getInputType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean onKeyDown(View view, Editable text, int keyCode,
+			KeyEvent event) {
+	
+		
+		return true;
+	}
+
+	@Override
+	public boolean onKeyOther(View view, Editable text, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+	    int keyCode = event.getKeyCode();
+	        switch (keyCode) {
+	        case KeyEvent.KEYCODE_VOLUME_UP:
+	        	vue.game.addOrientationGap(50);
+	            return true;
+	        case KeyEvent.KEYCODE_VOLUME_DOWN:
+	        	vue.game.addOrientationGap(-50);
+	            return true;
+	        default:
+	            return super.dispatchKeyEvent(event);
+	        }
+	    }
 }
