@@ -10,11 +10,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.text.Editable;
+import android.text.method.KeyListener;
 import android.util.Log;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
@@ -29,7 +33,7 @@ import android.hardware.SensorManager;
  * @author Fabien Pinel
  * 
  */
-public class GameActivity extends Activity implements SensorEventListener {
+public class GameActivity extends Activity implements SensorEventListener, KeyListener {
 	
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
@@ -50,7 +54,6 @@ public class GameActivity extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		setLayout(((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null)));
 		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -236,4 +239,51 @@ public class GameActivity extends Activity implements SensorEventListener {
 		this.canvas = canvas;
 	}
 
+	
+
+	@Override
+	public void clearMetaKeyState(View view, Editable content, int states) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getInputType() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean onKeyDown(View view, Editable text, int keyCode,
+			KeyEvent event) {
+	
+		
+		return true;
+	}
+
+	@Override
+	public boolean onKeyOther(View view, Editable text, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+	@Override
+	public boolean dispatchKeyEvent(KeyEvent event) {
+	    int keyCode = event.getKeyCode();
+	        switch (keyCode) {
+	        case KeyEvent.KEYCODE_VOLUME_UP:
+	        	vue.game.addOrientationGap(50);
+	            return true;
+	        case KeyEvent.KEYCODE_VOLUME_DOWN:
+	        	vue.game.addOrientationGap(-50);
+	            return true;
+	        default:
+	            return super.dispatchKeyEvent(event);
+	        }
+	    }
 }
