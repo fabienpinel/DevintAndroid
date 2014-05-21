@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,6 +18,7 @@ import android.graphics.PorterDuff.Mode;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.media.SoundPool.OnLoadCompleteListener;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -26,9 +28,6 @@ import android.view.SurfaceHolder;
  * 
  */
 public class GameLoop extends Thread {
-	/*
-	 * TO CHANGE : collision // sons lors du jeu
-	 */
 
 	private static final int			HAUTEUR			= 400;
 
@@ -62,14 +61,12 @@ public class GameLoop extends Thread {
 	private SoundPool					soundPool;
 	private boolean						loaded			= false;
 	private int							nbCollision		= 0;
-
+	private Vibrator		vibreur;
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
 		this.setHolder(holder);
 		this.car = car;
-		// TODO : put this back
-		// this.setLevel(level);
-		this.setLevel(OptionsActivity.FACILE);
+		this.setLevel(level);
 		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 		editor = settings.edit();
 
@@ -84,7 +81,9 @@ public class GameLoop extends Thread {
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
-
+		
+		vibreur = (Vibrator) this.context.getSystemService(this.context.VIBRATOR_SERVICE);
+		
 		this.running = true;
 	}
 
@@ -142,7 +141,7 @@ public class GameLoop extends Thread {
 	public void loadLevel() {
 		switch (this.getLevel()) {
 		case OptionsActivity.FACILE:
-			this.setSpeed(0);
+			this.setSpeed(800);
 			break;
 		case OptionsActivity.NORMAL:
 			this.setSpeed(1000);
@@ -203,22 +202,14 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
-						// A REVOIR
-						if (this.positionx >= (this.getSwidth() / 3)
-								|| this.positionx <= -(this.getSwidth() / 3)) {
-							Log.d("collision", "collision: " + this.positionx);
-							if (this.positionx > 0) {
-								this.score -= (int) Math.round(positionx / 150);
-							} else {
-								this.score += (int) Math.round(positionx / 150);
-							}
-						}
+						
+						
 						if (this.score > this.bestScore) {
 							editor.putInt("bestScore", this.score);
 							editor.commit();
 							loadScore();
 						}
-						Log.d("toms", "==============================");
+						//Log.d("toms", "==============================");
 
 						// Clean unused shapes
 						cleanShapes();
@@ -256,20 +247,22 @@ public class GameLoop extends Thread {
 						}
 						this.updateOrientation(this.getOrientationGap());
 						this.setOrientationGap(0);
-						// Triangles
+
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
 
-						// Voiture
-						canvas.drawText("Meilleur: " + bestScore, 0, 70, pscore);
-						canvas.drawText("Score: " + score, 0, 150, pscore);
+						// Textes , scores et points de vie
+						canvas.drawText("Meilleur: " + bestScore, 0, 50, pscore);
+						canvas.drawText("Score: " + score, 0, 100, pscore);
+						canvas.drawText("Points de vie restants: "+(100-this.getNbCollision()), 0, 150, pscore);
 						canvas.drawBitmap(myCar, getCarX(), getCarY(), null);
 
-						int dist[] = getWallDistances(getCarY());
+						//Gestion des collisions
+						this.singTheDistance(getWallDistances(getCarY()));
 
-						canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
+						/*canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
 								250, pscore);
-						canvas.drawCircle(getCarX(), getCarY(), 3, pscore);
+						canvas.drawCircle(getCarX(), getCarY(), 3, pscore);*/
 
 						/*Log.d("toms","y = "+getCarY());
 						Log.d("toms","oY = "+leftShapes.get(0).getOriginY()+", h="+leftShapes.get(0).getHeight()+"/"+leftShapes.get(0).getPoints2());
@@ -296,6 +289,44 @@ public class GameLoop extends Thread {
 					getHolder().unlockCanvasAndPost(canvas);
 				}
 			}
+		}
+	}
+	public boolean singTheDistance(int[] dist){
+		if(dist[0] <= 0 || dist[1]<=0){
+			//jouer pleine balle !!
+			this.playSound(R.drawable.bip, 0.5, 0.5);
+			this.vibreur.vibrate(100);
+			this.setNbCollision(this.getNbCollision()+1);
+			this.score -= 50;
+			if(this.getNbCollision()>=100){
+				 Intent go = new Intent(this.context, GameOverActivity.class);
+				 this.context.startActivity(go);
+			}
+			return true;
+		}
+		//côté gauche
+		else if(dist[0] <= 50){
+			this.playSound(R.drawable.bip, 1.0, 0.0);
+			return true;
+		}//côté droit
+		else if(dist[1] <= 50){
+			this.playSound(R.drawable.bip, 0.0, 1.0);
+			return true;
+		}
+		//cote gauche
+		else if(dist[0] <= 150){
+			//jouer moyen
+			this.playSound(R.drawable.bip, 0.8,0.2);
+			return true;
+		}//cote droit
+		else if(dist[1] <= 150){
+			//jouer moyen
+			this.playSound(R.drawable.bip, 0.2,0.8);
+			return true;
+		}
+		
+		else{
+			return true;
 		}
 	}
 
@@ -325,27 +356,7 @@ public class GameLoop extends Thread {
 		cleanShapes(rightShapes);
 	}
 
-	public void singTheDistance(int[] p) {
-		/*
-		 * p[0] -> distance entre la voiture et le mur a gauche p[1] ->
-		 * distancec entre la voiture et le mur à droite
-		 */
-		if (p[0] == 0 || p[1] == 0) {
-			// collision
-			this.playSound(R.drawable.bip);
-			this.setNbCollision(this.getNbCollision()+1);
-			Log.d("collision", "collision");
 
-		}
-	}
-
-	public int getNbCollision() {
-		return nbCollision;
-	}
-
-	public void setNbCollision(int nbCollision) {
-		this.nbCollision = nbCollision;
-	}
 
 
 	/**
@@ -441,7 +452,7 @@ public class GameLoop extends Thread {
 	}
 
 	private List<GameShape> getShapesForY(int y) {
-		List<GameShape> result = new LinkedList();
+		List<GameShape> result = new LinkedList<GameShape>();
 		result.add(getShapeForY(y, leftShapes));
 		result.add(getShapeForY(y, rightShapes));
 		return result;
@@ -707,9 +718,9 @@ public class GameLoop extends Thread {
 				.add(new mPoint(p.getX(), p.getY() + GameLoop.HAUTEUR));
 	}
 
-	private void playSound(int resId) {
+	private void playSound(int resId, double left, double right) {
 		if (loaded) {
-			soundPool.play(explosionId, (float) 0.5, (float) 0.5, 0, 0, 1);
+			soundPool.play(explosionId, (float)left, (float)right, 0, 0, 2);
 		}
 	}
 
@@ -807,6 +818,13 @@ public class GameLoop extends Thread {
 
 	public void setFirstElementY(int firstElementY) {
 		this.firstElementY = firstElementY;
+	}
+	public int getNbCollision() {
+		return nbCollision;
+	}
+
+	public void setNbCollision(int nbCollision) {
+		this.nbCollision = nbCollision;
 	}
 
 }
