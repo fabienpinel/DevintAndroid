@@ -141,6 +141,6 @@ public class GameShape {
 				points.get(1).getY() - points.get(0).getY()
 		};
 		double yPercentage = (y - points.get(0).getY()) * 1.0 /vector[1]; 
-		return points.get(0).getY() + (int) Math.round(vector[0] *  yPercentage);
+		return points.get(0).getX() + (int) Math.round(vector[0] *  yPercentage);
 	}
 }

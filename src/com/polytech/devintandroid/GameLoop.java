@@ -269,15 +269,24 @@ public class GameLoop extends Thread {
 
 						canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
 								250, pscore);
+						canvas.drawCircle(getCarX(), getCarY(), 3, pscore);
 
-						Log.d("toms","oY = "+leftShapes.get(0).getOriginY()+", h="+leftShapes.get(0).getHeight());
+						/*Log.d("toms","y = "+getCarY());
+						Log.d("toms","oY = "+leftShapes.get(0).getOriginY()+", h="+leftShapes.get(0).getHeight()+"/"+leftShapes.get(0).getPoints2());
+						Log.d("toms","oY2 = "+leftShapes.get(1).getOriginY()+", h2="+leftShapes.get(1).getHeight()+"/"+leftShapes.get(1).getPoints2());*/
 						GameShape testshape = getShapeForY(getCarY(), leftShapes);
-						Log.d("toms", "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight());
+						//Log.d("toms", "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight()+":"+testshape);
 						//Log.d("toms", "shape("+getCarY()+")="+getShapeForY(getCarY(), leftShapes));
 						
 						if (level != OptionsActivity.FACILE) {
 							this.speed += 1;
 						}
+						// For debugging
+						/*try {
+				            Thread.sleep(500);
+				        } catch (InterruptedException e) {
+				            e.printStackTrace();
+				        }*/
 					} else {
 						Log.d("canvas null", "canvass null");
 					}
@@ -358,49 +367,6 @@ public class GameLoop extends Thread {
 		}
 	}
 
-	/**
-	 * Affichage des formes (du décor)
-	 * 
-	 * @param path
-	 * @param p2
-	 * @param canvas
-	 */
-	private void displayShapes(Path path, Paint p2, Canvas canvas) {
-		// Log.d("affichage", "affichage");
-		displayShapes(leftShapes, path, p2, canvas, true);
-		displayShapes(rightShapes, path, p2, canvas, false);
-	}
-
-	private void displayShapes(List<GameShape> shapesList, Path path,
-			Paint paint, Canvas canvas, boolean left) {
-		for (GameShape s : shapesList) {
-			boolean colorSwitch = false;
-
-			paint.setColor(Color.WHITE);
-			Log.d("toms-walls",
-					"(" + getCarY() + ")="
-							+ getShapesForY(getCarY()).toString());
-			if (s == getShapesForY(getCarY()).get(0)) {
-				// Log.d("toms-walls",
-				// s+" == "+getShapesForY(getCarY()).get(0));
-				// p2 = new Paint();
-				// p2.setColor(Color.RED);
-			} else {
-				paint.setColor(Color.GREEN);
-			}
-			// p2.setColor(Color.RED);
-
-			drawGameShape(s, path, paint, canvas, left);
-			/*
-			 * if (true) continue; List<Triangle> tris = s.getTriangles(); for
-			 * (Triangle t : tris) { Path path = new Path(); if (colorSwitch) {
-			 * paint.setColor(Color.WHITE); } else { paint.setColor(Color.RED);
-			 * } colorSwitch = ! colorSwitch; ajouterUnTriangle(t, path, paint,
-			 * canvas); }
-			 */
-		}
-	}
-
 	private void generateNewShapes(int count) {
 		for (int i = 0; i < count; ++i) {
 			// Log.d("debug", "=== left Shapes");
@@ -464,16 +430,12 @@ public class GameLoop extends Thread {
 	private int[] getWallDistances(int y) {
 		int result[] = new int[2];
 		List<GameShape> shapes = getShapesForY(y);
-		// Log.d("toms-walls", "Left Shape: "+shapes.get(0));
-		canvas.drawText("left(" + y + "):" + shapes.get(0), 0, 450, pscore);
+		
 		// Left side
 		result[0] = getCarX() - shapes.get(0).getXForY(y);
-
+		
 		// Right side
 		result[1] = shapes.get(1).getXForY(y) - (getCarX() + getCarWidth());
-
-		// canvas.drawText("xFor("+y+"):"+shapes.get(0).getXForY(y), 0, 450,
-		// pscore);
 
 		return result;
 	}
@@ -487,7 +449,8 @@ public class GameLoop extends Thread {
 
 	private GameShape getShapeForY(int y, List<GameShape> list) {
 		for (GameShape p : list) {
-			if (p.getOriginY() <= y && y <= (p.getOriginY() + p.getHeight())) {
+			//if (p.getOriginY() <= y && y <= (p.getOriginY() + p.getHeight())) {
+			if (p.getOriginY() - p.getHeight() <= y && y <= p.getOriginY()) {
 				return p;
 			}
 		}
@@ -642,15 +605,42 @@ public class GameLoop extends Thread {
 		ajouterUnTriangle(points.get(0), points.get(1), points.get(2), path,
 				paint, canvas);
 	}
+	
+	/**
+	 * Affichage des formes (du décor)
+	 * 
+	 * @param path
+	 * @param p2
+	 * @param canvas
+	 */
+	private void displayShapes(Path path, Paint p2, Canvas canvas) {
+		// Log.d("affichage", "affichage");
+		displayShapes(leftShapes, path, p2, canvas, true);
+		displayShapes(rightShapes, path, p2, canvas, false);
+	}
+
+	private void displayShapes(List<GameShape> shapesList, Path path,
+			Paint paint, Canvas canvas, boolean left) {
+		for (GameShape s : shapesList) {
+			// TODO : remove the red painting!
+			if (getShapesForY(getCarY()).contains(s)) {
+				paint.setColor(Color.RED);
+			} else {
+				paint.setColor(Color.WHITE);
+			}
+			drawGameShape(s, path, paint, canvas, left);
+		}
+	}
 
 	public void drawGameShape(GameShape t, Path path, Paint paint,
 			Canvas canvas, boolean left) {
+		//path = new Path();
 		mPoint p1 = t.getPoints2().get(0), p2 = t.getPoints2().get(1);
 
 		// Dessin du point aligné horizontalement avec p1
 		path.moveTo(p1.getX(), p1.getY());
-		drawCorrespondingPoint(p1, left);
-		drawCorrespondingPoint(p2, left);
+		drawCorrespondingPoint(path, p1, left);
+		drawCorrespondingPoint(path, p2, left);
 		path.lineTo(p2.getX(), p2.getY());
 
 		/*
@@ -674,9 +664,10 @@ public class GameLoop extends Thread {
 		path.close();
 		path.offset(0, 0);
 		canvas.drawPath(path, paint);
+		path.rewind();
 	}
 
-	public void drawCorrespondingPoint(mPoint p1, boolean left) {
+	public void drawCorrespondingPoint(Path path, mPoint p1, boolean left) {
 		if (p1.getX() < 0) {
 			// Le point 1 est passé à gauche de l'écran, du coup, on dessine le
 			// point homologue au même endroit
