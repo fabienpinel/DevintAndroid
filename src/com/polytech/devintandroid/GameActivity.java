@@ -46,9 +46,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	private int				car, level;
 	boolean					soundReady	= false;
 	private Canvas			canvas;
-	private int				explosionId;
-	private SoundPool		soundPool;
-	private boolean			loaded		= false;
 	private Vibrator		vibreur;
 
 	@Override
@@ -62,20 +59,7 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 		/*
 		 * Lecture de fichier son
 		 */
-		setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
-
-		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-		explosionId = soundPool.load(this, R.drawable.bip, 1);
-
-		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
-			public void onLoadComplete(SoundPool soundPool, int sampleId,
-					int status) {
-				loaded = true;
-
-			}
-		});
-
+		
 		loadSettings();
 		vue = new Vue(this, car, level);
 		gameActivityInit();
@@ -189,16 +173,9 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 
 	}
 
-	private void playSound(int resId) {
-		if (loaded) {
-			soundPool.play(explosionId, (float) 0.5, (float) 0.5, 0, 0, 1);
-		}
-	}
-
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
-		// playSound(R.drawable.bip);
 		// this.vibreur.vibrate(100);
 		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
 			Log.d("TouchTest", "Touch down");
