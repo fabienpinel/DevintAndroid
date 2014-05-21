@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -13,6 +14,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff.Mode;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.media.SoundPool.OnLoadCompleteListener;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
@@ -26,34 +30,38 @@ public class GameLoop extends Thread {
 	 * TO CHANGE : collision // sons lors du jeu
 	 */
 
-	private static final int HAUTEUR = 400;
+	private static final int			HAUTEUR			= 400;
 
-	private boolean running;
-	private List<mPoint> pointsGauche = new LinkedList<mPoint>();
-	private List<mPoint> pointsDroite = new LinkedList<mPoint>();
-	private Context context;
-	private Paint p, pscore;
-	private Path path;
-	private int swidth;
-	private int sheight;
-	private SurfaceHolder holder;
-	private int position, positionx;
-	private int speed;
-	private long lastUpdate;
-	private Bitmap myCar;
-	private int avancement;
-	private long delta;
-	private int car;
-	private int score, bestScore;
-	private List<GameShape> leftShapes, rightShapes;
-	private Canvas canvas;
-	private SharedPreferences settings;
-	private SharedPreferences.Editor editor;
-	private int orientationGap;
-	private boolean isInBoost;
-	private int generatedHeight;
-	private int firstElementY;
-	private int level;
+	private boolean						running;
+	private List<mPoint>				pointsGauche	= new LinkedList<mPoint>();
+	private List<mPoint>				pointsDroite	= new LinkedList<mPoint>();
+	private Context						context;
+	private Paint						p, pscore;
+	private Path						path;
+	private int							swidth;
+	private int							sheight;
+	private SurfaceHolder				holder;
+	private int							position, positionx;
+	private int							speed;
+	private long						lastUpdate;
+	private Bitmap						myCar;
+	private int							avancement;
+	private long						delta;
+	private int							car;
+	private int							score, bestScore;
+	private List<GameShape>				leftShapes, rightShapes;
+	private Canvas						canvas;
+	private SharedPreferences			settings;
+	private SharedPreferences.Editor	editor;
+	private int							orientationGap;
+	private boolean						isInBoost;
+	private int							generatedHeight;
+	private int							firstElementY;
+	private int							level;
+	private int							explosionId;
+	private SoundPool					soundPool;
+	private boolean						loaded			= false;
+	private int							nbCollision		= 0;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
@@ -72,6 +80,7 @@ public class GameLoop extends Thread {
 		loadPaint(p);
 		loadScore();
 		loadLevel();
+		loadSong();
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
@@ -157,6 +166,26 @@ public class GameLoop extends Thread {
 		this.bestScore = settings.getInt("bestScore", 0);
 	}
 
+	public void loadSong() {
+		/*
+		 * Lecture de fichier son
+		 */
+
+		((Activity) context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
+		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
+
+		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
+		explosionId = soundPool.load(this.context, R.drawable.bip, 1);
+
+		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
+			public void onLoadComplete(SoundPool soundPool, int sampleId,
+					int status) {
+				loaded = true;
+
+			}
+		});
+	}
+
 	/** la boucle de jeu */
 	public void run() {
 		// Initialisation des premiers points
@@ -183,7 +212,6 @@ public class GameLoop extends Thread {
 							} else {
 								this.score += (int) Math.round(positionx / 150);
 							}
-
 						}
 						if (this.score > this.bestScore) {
 							editor.putInt("bestScore", this.score);
@@ -284,6 +312,29 @@ public class GameLoop extends Thread {
 		cleanShapes(leftShapes);
 		cleanShapes(rightShapes);
 	}
+
+	public void singTheDistance(int[] p) {
+		/*
+		 * p[0] -> distance entre la voiture et le mur a gauche p[1] ->
+		 * distancec entre la voiture et le mur à droite
+		 */
+		if (p[0] == 0 || p[1] == 0) {
+			// collision
+			this.playSound(R.drawable.bip);
+			this.setNbCollision(this.getNbCollision()+1);
+			Log.d("collision", "collision");
+
+		}
+	}
+
+	public int getNbCollision() {
+		return nbCollision;
+	}
+
+	public void setNbCollision(int nbCollision) {
+		this.nbCollision = nbCollision;
+	}
+
 
 	/**
 	 * Removes the shapes that are now invisible
@@ -663,9 +714,14 @@ public class GameLoop extends Thread {
 				.add(new mPoint(p.getX(), p.getY() + GameLoop.HAUTEUR));
 	}
 
+	private void playSound(int resId) {
+		if (loaded) {
+			soundPool.play(explosionId, (float) 0.5, (float) 0.5, 0, 0, 1);
+		}
+	}
+
 	/**
 	 * Getters et Setters
-	 * 
 	 * @return
 	 */
 	public int getSwidth() {
