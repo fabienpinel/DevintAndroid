@@ -258,6 +258,7 @@ public class GameLoop extends Thread {
 
 						this.setOrientationGap(0);
 
+
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
 

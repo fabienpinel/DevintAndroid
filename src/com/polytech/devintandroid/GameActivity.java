@@ -150,10 +150,9 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 				this.z = event.values[2];
 				if (x > 0) {
 					x *= majoration;
-				} else {
-					x *= majoration;
 				}
-				vue.game.addOrientationGap((int) Math.round(x));
+				vue.game.setOrientationGap((int) Math.round(x));
+				//vue.game.addOrientationGap((int) Math.round(x));
 
 			}
 		}
