@@ -10,7 +10,7 @@
     <string name="title_activity_help">HelpActivity</string>
     <string name="title_activity_options">OptionsActivity</string>
     <string name="title_activity_opengl">OpenglActivity</string>
-    <string name="helptext">Dans le menu OPTIONS vous avez le choix entre le thème bleu et le thème rouge.\nVous pouvez également changer l\'apparence de la voiture.\n4 choix sont disponibles (vert, rouge, bleu, police).\nDans le jeu vous pouvez booster votre vitesse en appuyant sur l'écran. </string>
+    <string name="helptext">Dans le menu OPTIONS vous avez le choix entre le thème bleu et le thème rouge.\nVous pouvez également changer l\'apparence de la voiture.\n4 choix sont disponibles (vert, rouge, bleu, police).\nDans le jeu vous pouvez booster votre vitesse en appuyant sur l\'écran. </string>
 
     <string-array name="choixTheme">
         <item>Theme Bleu</item>

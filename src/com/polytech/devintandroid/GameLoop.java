@@ -258,9 +258,7 @@ public class GameLoop extends Thread {
 						this.setOrientationGap(0);
 						// Triangles
 						// affichageDesPoints(path, p, canvas);
-						Log.d("toms", "=====displaying===============");
 						displayShapes(path, p, canvas);
-						Log.d("toms", "=====displaying END===============");
 
 						// Voiture
 						canvas.drawText("Meilleur: " + bestScore, 0, 70, pscore);
