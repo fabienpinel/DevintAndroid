@@ -258,12 +258,6 @@ public class GameLoop extends Thread {
 						int missingShapes = (int) Math.ceil(missingPixels * 1.0
 								/ GameLoop.HAUTEUR);
 
-						// Log.d("debug", "leftShapes:" + leftShapes.size());
-						// Log.d("debug", "generatedHeight:"+ generatedHeight);
-						// Log.d("debug", "heightDelta:"+ heightDelta +
-						// " (sHeight:"+sheight+")");
-						// Log.d("debug", "Missing shapes : " + missingShapes);
-
 						if (missingShapes > 0) {
 							generateNewShapes(missingShapes);
 						}
