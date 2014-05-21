@@ -33,7 +33,7 @@ public class GameShape {
 		}
 		
 		points = new LinkedList<mPoint>();
-		points.add(new mPoint(originX + width, originY -height));
+		points.add(new mPoint(originX + width, originY - height));
 		points.add(new mPoint(originX + previousWidth, originY));
 		
 		
@@ -88,11 +88,29 @@ public class GameShape {
 		}
 		
 	}
+	
+	public int getWidth2() {
+		return points.get(0).getX();
+	}
+	
+	public int getPreviousWidth2() {
+		return points.get(0).getX();
+	}
+	
+	/**
+	 * Retourne la variation selon X entre le bas et le haut de la forme.
+	 * @return
+	 */
+	public int getXDelta() {
+		return getWidth2() - getPreviousWidth2();
+	}
 
+	@Deprecated
 	public int getWidth() {
 		return width;
 	}
 	
+	@Deprecated
 	public int getPreviousWidth() {
 		return previousWidth;
 	}

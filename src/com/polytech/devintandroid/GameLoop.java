@@ -68,8 +68,8 @@ public class GameLoop extends Thread {
 		this.setHolder(holder);
 		this.car = car;
 		// TODO : put this back
-		// this.setLevel(level);
-		this.setLevel(OptionsActivity.FACILE);
+		 this.setLevel(level);
+		//this.setLevel(OptionsActivity.FACILE);
 		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 		editor = settings.edit();
 
@@ -369,11 +369,58 @@ public class GameLoop extends Thread {
 
 	private void generateNewShapes(int count) {
 		for (int i = 0; i < count; ++i) {
+			generateNewShapes();
 			// Log.d("debug", "=== left Shapes");
-			generateNewShape(leftShapes, true);
+			//generateNewShape(leftShapes, true);
 			// Log.d("debug", "=== right Shapes");
-			generateNewShape(rightShapes, false);
+			//generateNewShape(rightShapes, false);
 		}
+	}
+	
+	private void generateNewShapes() {
+		int lastRoadWidth = (int) (swidth*0.9), //(int) myCar.getWidth()*3,
+			lastWidthLeft = (swidth - lastRoadWidth)/2,
+			lastWidthRight = (swidth - lastRoadWidth)/2, //swidth - lastWidthLeft - lastRoadWidth,
+			lastXDelta = 0,
+			originY = sheight;
+		
+		int newXDelta, newRoadWidth;
+		
+		if (leftShapes.size() > 0) {
+			GameShape lastLeft = leftShapes.get(leftShapes.size()-1),
+					lastRight = rightShapes.get(leftShapes.size()-1);
+			
+			lastWidthLeft = lastLeft.getWidth2();
+			lastWidthRight = swidth - lastRight.getWidth2();
+			lastXDelta = lastLeft.getXDelta();	
+			lastRoadWidth = lastWidthRight - lastWidthLeft;
+			originY = lastLeft.getOriginY() - GameLoop.HAUTEUR;
+			
+			newXDelta = lastXDelta + (int) ((-0.5 + Math.random()) * 600);
+			newRoadWidth = Math.min(swidth-100, lastRoadWidth + (int) (-0.5 + Math.random()) * 100);
+		} else {
+			Log.d("toms-generation", "FIRST GENERATION!");
+			newXDelta = 0;
+			newRoadWidth = lastRoadWidth;
+		}
+		
+		int minimumWidth = (int) (myCar.getWidth() * 3); 
+		if (newRoadWidth < minimumWidth) {
+			Log.d("toms-generation", "Setting road width to minimum !");
+			newRoadWidth = minimumWidth;
+		}
+		
+		int newWidthLeft = lastWidthLeft + newXDelta,
+				newWidthRight = swidth - newWidthLeft - newRoadWidth;
+		
+		
+		Log.d("toms-generation", "newXDelta = "+newXDelta);
+		Log.d("toms-generation", "Adding left : "+newWidthLeft+","+lastWidthLeft+","+originY);
+		
+		GameShape left = new GameShape(newWidthLeft, lastWidthLeft, 0, originY, GameLoop.HAUTEUR, true),
+				right = new GameShape(newWidthRight, lastWidthRight, swidth, originY, GameLoop.HAUTEUR, false);
+		leftShapes.add(left);
+		rightShapes.add(right);
 	}
 
 	private void generateNewShape(List<GameShape> shapeList, boolean isLeft) {
