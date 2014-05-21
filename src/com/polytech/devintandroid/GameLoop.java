@@ -58,9 +58,9 @@ public class GameLoop extends Thread {
 	private int							generatedHeight;
 	private int							firstElementY;
 	private int							level;
-	private int				explosionId;
-	private SoundPool		soundPool;
-	private boolean			loaded		= false;
+	private int							explosionId;
+	private SoundPool					soundPool;
+	private boolean						loaded			= false;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
@@ -163,12 +163,12 @@ public class GameLoop extends Thread {
 	public void loadScore() {
 		this.bestScore = settings.getInt("bestScore", 0);
 	}
-	
-	public void loadSong(){
+
+	public void loadSong() {
 		/*
 		 * Lecture de fichier son
 		 */
-		
+
 		((Activity) context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
 		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
 
@@ -183,7 +183,7 @@ public class GameLoop extends Thread {
 			}
 		});
 	}
-	
+
 	/** la boucle de jeu */
 	public void run() {
 		// Initialisation des premiers points
@@ -293,7 +293,6 @@ public class GameLoop extends Thread {
 			}
 		}
 	}
-
 
 	/**
 	 * Nettoyage des formes (du décor)
@@ -580,13 +579,16 @@ public class GameLoop extends Thread {
 		this.pointsDroite
 				.add(new mPoint(p.getX(), p.getY() + GameLoop.HAUTEUR));
 	}
+
 	private void playSound(int resId) {
 		if (loaded) {
 			soundPool.play(explosionId, (float) 0.5, (float) 0.5, 0, 0, 1);
 		}
 	}
+
 	/**
 	 * Getters et Setters
+	 * 
 	 * @return
 	 */
 	public int getSwidth() {
@@ -664,6 +666,7 @@ public class GameLoop extends Thread {
 	public void setLevel(int level) {
 		this.level = level;
 	}
+
 	public int getGeneratedHeight() {
 		return generatedHeight;
 	}
@@ -679,6 +682,5 @@ public class GameLoop extends Thread {
 	public void setFirstElementY(int firstElementY) {
 		this.firstElementY = firstElementY;
 	}
-
 
 }
