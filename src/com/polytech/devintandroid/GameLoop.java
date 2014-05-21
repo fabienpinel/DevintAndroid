@@ -256,7 +256,7 @@ public class GameLoop extends Thread {
 						}
 						this.updateOrientation(this.getOrientationGap());
 
-						this.setOrientationGap(0);
+						//this.setOrientationGap(0);
 
 
 						// affichageDesPoints(path, p, canvas);
@@ -266,7 +266,7 @@ public class GameLoop extends Thread {
 						canvas.drawText("Meilleur: " + bestScore, 0, 50, pscore);
 						canvas.drawText("Score: " + score, 0, 100, pscore);
 						canvas.drawText("Points de vie restants: "
-								+ (100 - this.getNbCollision()), 0, 150, pscore);
+								+ (200 - this.getNbCollision()), 0, 150, pscore);
 						canvas.drawBitmap(myCar, getCarX(), getCarY(), null);
 
 						// Gestion des collisions
@@ -320,47 +320,43 @@ public class GameLoop extends Thread {
 	public boolean singTheDistance(int[] dist) {
 		if (dist[0] <= 0 || dist[1] <= 0) {
 			// jouer pleine balle !!
-			this.playSound(this.explosionIdBip, 0.5, 0.5);
+			//a gauche
+			if(dist[0] <= 0 ){
+				this.playSound(this.explosionIdBip, 1, 0);
+			}else{
+				this.playSound(this.explosionIdBip, 0, 1);
+			}
+			
 			this.vibreur.vibrate(100);
 			this.setNbCollision(this.getNbCollision() + 1);
 			this.score -= 50;
-			if (this.getNbCollision() >= 100) {
+			if (this.getNbCollision() >= 200) {
 				this.running = false;
 				Intent go = new Intent(this.context, GameOverActivity.class);
 				this.context.startActivity(go);
 			}
 			return true;
 		}
-		// cote gauche
-		else if (dist[0] <= 300) {
-			// jouer moyen
-			this.playSound(this.explosionIdBip2, 0.7, 0.3);
-			return true;
-		}// cote droit
-		else if (dist[1] <= 300) {
-			// jouer moyen
-			this.playSound(this.explosionIdBip2, 0.3, 0.7);
-			return true;
-		}
+	
 
 		// cote gauche
-		else if (dist[0] <= 150) {
+		else if (dist[0] <= 100) {
 			// jouer moyen
 			this.playSound(this.explosionIdBip2, 0.8, 0.2);
 			return true;
 		}// cote droit
-		else if (dist[1] <= 150) {
+		else if (dist[1] <= 100) {
 			// jouer moyen
 			this.playSound(this.explosionIdBip2, 0.2, 0.8);
 			return true;
 		}
 
 		// côté gauche
-		else if (dist[0] <= 50) {
+		else if (dist[0] <= 30) {
 			this.playSound(this.explosionIdBip2, 1.0, 0.0);
 			return true;
 		}// côté droit
-		else if (dist[1] <= 50) {
+		else if (dist[1] <= 30) {
 			this.playSound(this.explosionIdBip2, 0.0, 1.0);
 			return true;
 		}
