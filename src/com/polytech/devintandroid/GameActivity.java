@@ -46,14 +46,14 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	private int				car, level;
 	boolean					soundReady	= false;
 	private Canvas			canvas;
-	private Vibrator		vibreur;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setLayout(((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null)));
-		vibreur = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+		
 		// empecher la mise en veille de l'écran
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		/*
@@ -176,7 +176,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		Log.d("RunGameActivity", "OnTouchEvent");
-		// this.vibreur.vibrate(100);
 		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
 			Log.d("TouchTest", "Touch down");
 			this.vue.speedBoostOnTouch();
@@ -184,12 +183,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 			Log.d("TouchTest", "Touch up");
 			this.vue.speedBoostOnRelease();
 		}
-
-		// Test de la page de gameOver
-		/*
-		 * Intent main = new Intent(GameActivity.this, GameOverActivity.class);
-		 * startActivity(main);
-		 */
 		return true;
 	}
 
