@@ -253,11 +253,12 @@ public class GameLoop extends Thread {
 							this.position -= GameLoop.HAUTEUR;
 						}
 						this.updateOrientation(this.getOrientationGap());
-						if(this.getOrientationGap()>0){
+						
+						/*if(this.getOrientationGap()>0){
 							this.setOrientationGap(this.getOrientationGap()-1);
 						}else{
 							this.setOrientationGap(this.getOrientationGap()+1);
-						}
+						}*/
 						
 
 						// affichageDesPoints(path, p, canvas);
