@@ -61,6 +61,7 @@ public class GameLoop extends Thread {
 	private int							explosionId;
 	private SoundPool					soundPool;
 	private boolean						loaded			= false;
+	private int							nbCollision		= 0;
 
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
@@ -294,6 +295,28 @@ public class GameLoop extends Thread {
 	public void cleanShapes() {
 		cleanShapes(leftShapes);
 		cleanShapes(rightShapes);
+	}
+
+	public void singTheDistance(int[] p) {
+		/*
+		 * p[0] -> distance entre la voiture et le mur a gauche p[1] ->
+		 * distancec entre la voiture et le mur à droite
+		 */
+		if (p[0] == 0 || p[1] == 0) {
+			// collision
+			this.playSound(R.drawable.bip);
+			this.setNbCollision(this.getNbCollision()+1);
+			Log.d("collision", "collision");
+
+		}
+	}
+
+	public int getNbCollision() {
+		return nbCollision;
+	}
+
+	public void setNbCollision(int nbCollision) {
+		this.nbCollision = nbCollision;
 	}
 
 	/**
