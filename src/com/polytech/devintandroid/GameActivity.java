@@ -37,7 +37,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
-	// private TextView view_x, view_y, view_z;
 	private float			x, y, z;
 	private Display			display;
 	private Vue				vue;
@@ -70,16 +69,11 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 		display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 				.getDefaultDisplay();
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-		/*
-		 * Fin lecture de fichier son
-		 */
 		setContentView(vue);
 
 	}
 
 	public void gameActivityInit() {
-
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		accelerometer = sensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -93,7 +87,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 
 	@Override
 	protected void onResume() {
-
 		super.onResume();
 	}
 
@@ -131,8 +124,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	}
 
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void onSensorChanged(SensorEvent event) {
@@ -165,22 +156,15 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 				vue.game.addOrientationGap((int) Math.round(x));
 
 			}
-			/*
-			 * view_x.setText("x: " + this.getX()); view_y.setText("y: " +
-			 * this.getY()); view_z.setText("z: " + this.getZ());
-			 */
 		}
 
 	}
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		Log.d("RunGameActivity", "OnTouchEvent");
 		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-			Log.d("TouchTest", "Touch down");
 			this.vue.speedBoostOnTouch();
 		} else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-			Log.d("TouchTest", "Touch up");
 			this.vue.speedBoostOnRelease();
 		}
 		return true;
@@ -209,17 +193,12 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 		this.canvas = canvas;
 	}
 
-	
-
 	@Override
 	public void clearMetaKeyState(View view, Editable content, int states) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public int getInputType() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
@@ -233,13 +212,11 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 
 	@Override
 	public boolean onKeyOther(View view, Editable text, KeyEvent event) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	@Override

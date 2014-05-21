@@ -24,7 +24,7 @@ import android.view.SurfaceHolder;
 
 /**
  * 
- * @author Fabien Pinel
+ * @author Fabien Pinel and Tom Guillermin
  * 
  */
 public class GameLoop extends Thread {
@@ -141,7 +141,9 @@ public class GameLoop extends Thread {
 		}
 		pscore.setTextSize((float) 60.0);
 	}
-
+	/**
+	 * Chargement du niveau FACILE / NORMAL / DIFFICILE / HARDCORE
+	 */
 	public void loadLevel() {
 		switch (this.getLevel()) {
 		case OptionsActivity.FACILE:
@@ -168,7 +170,9 @@ public class GameLoop extends Thread {
 	public void loadScore() {
 		this.bestScore = settings.getInt("bestScore", 0);
 	}
-
+	 /**
+	  * Initialisation du système sonore
+	  */
 	public void loadSong() {
 		/*
 		 * Lecture de fichier son
@@ -249,7 +253,12 @@ public class GameLoop extends Thread {
 							this.position -= GameLoop.HAUTEUR;
 						}
 						this.updateOrientation(this.getOrientationGap());
-						this.setOrientationGap(0);
+						if(this.getOrientationGap()>0){
+							this.setOrientationGap(this.getOrientationGap()-1);
+						}else{
+							this.setOrientationGap(this.getOrientationGap()+1);
+						}
+						
 
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
@@ -372,7 +381,6 @@ public class GameLoop extends Thread {
 	 * @return
 	 */
 	public int getCarY() {
-		// return this.getSheight() - 310;
 		return this.getSheight() - myCar.getHeight() - 20;
 	}
 
