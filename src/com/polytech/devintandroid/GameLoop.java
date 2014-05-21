@@ -68,8 +68,8 @@ public class GameLoop extends Thread {
 		this.setHolder(holder);
 		this.car = car;
 		// TODO : put this back
-		 this.setLevel(level);
-		//this.setLevel(OptionsActivity.FACILE);
+		this.setLevel(level);
+		// this.setLevel(OptionsActivity.FACILE);
 		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
 		editor = settings.edit();
 
@@ -141,6 +141,7 @@ public class GameLoop extends Thread {
 		}
 		pscore.setTextSize((float) 60.0);
 	}
+
 	/**
 	 * Chargement du niveau FACILE / NORMAL / DIFFICILE / HARDCORE
 	 */
@@ -170,9 +171,10 @@ public class GameLoop extends Thread {
 	public void loadScore() {
 		this.bestScore = settings.getInt("bestScore", 0);
 	}
-	 /**
-	  * Initialisation du système sonore
-	  */
+
+	/**
+	 * Initialisation du système sonore
+	 */
 	public void loadSong() {
 		/*
 		 * Lecture de fichier son
@@ -253,12 +255,8 @@ public class GameLoop extends Thread {
 							this.position -= GameLoop.HAUTEUR;
 						}
 						this.updateOrientation(this.getOrientationGap());
-						if(this.getOrientationGap()>0){
-							this.setOrientationGap(this.getOrientationGap()-1);
-						}else{
-							this.setOrientationGap(this.getOrientationGap()+1);
-						}
-						
+
+						this.setOrientationGap(0);
 
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
@@ -419,54 +417,58 @@ public class GameLoop extends Thread {
 		for (int i = 0; i < count; ++i) {
 			generateNewShapes();
 			// Log.d("debug", "=== left Shapes");
-			//generateNewShape(leftShapes, true);
+			// generateNewShape(leftShapes, true);
 			// Log.d("debug", "=== right Shapes");
-			//generateNewShape(rightShapes, false);
+			// generateNewShape(rightShapes, false);
 		}
 	}
-	
+
 	private void generateNewShapes() {
-		int lastRoadWidth = (int) (swidth*0.9), //(int) myCar.getWidth()*3,
-			lastWidthLeft = (swidth - lastRoadWidth)/2,
-			lastWidthRight = (swidth - lastRoadWidth)/2, //swidth - lastWidthLeft - lastRoadWidth,
-			lastXDelta = 0,
-			originY = sheight;
-		
+		int lastRoadWidth = (int) (swidth * 0.9), // (int) myCar.getWidth()*3,
+		lastWidthLeft = (swidth - lastRoadWidth) / 2, lastWidthRight = (swidth - lastRoadWidth) / 2, // swidth
+																										// -
+																										// lastWidthLeft
+																										// -
+																										// lastRoadWidth,
+		lastXDelta = 0, originY = sheight;
+
 		int newXDelta, newRoadWidth;
-		
+
 		if (leftShapes.size() > 0) {
-			GameShape lastLeft = leftShapes.get(leftShapes.size()-1),
-					lastRight = rightShapes.get(leftShapes.size()-1);
-			
+			GameShape lastLeft = leftShapes.get(leftShapes.size() - 1), lastRight = rightShapes
+					.get(leftShapes.size() - 1);
+
 			lastWidthLeft = lastLeft.getWidth2();
 			lastWidthRight = swidth - lastRight.getWidth2();
-			lastXDelta = lastLeft.getXDelta();	
+			lastXDelta = lastLeft.getXDelta();
 			lastRoadWidth = lastWidthRight - lastWidthLeft;
 			originY = lastLeft.getOriginY() - GameLoop.HAUTEUR;
-			
+
 			newXDelta = lastXDelta + (int) ((-0.5 + Math.random()) * 600);
-			newRoadWidth = Math.min(swidth-100, lastRoadWidth + (int) (-0.5 + Math.random()) * 100);
+			newRoadWidth = Math.min(swidth - 100, lastRoadWidth
+					+ (int) (-0.5 + Math.random()) * 100);
 		} else {
 			Log.d("toms-generation", "FIRST GENERATION!");
 			newXDelta = 0;
 			newRoadWidth = lastRoadWidth;
 		}
-		
-		int minimumWidth = (int) (myCar.getWidth() * 3); 
+
+		int minimumWidth = (int) (myCar.getWidth() * 3);
 		if (newRoadWidth < minimumWidth) {
 			Log.d("toms-generation", "Setting road width to minimum !");
 			newRoadWidth = minimumWidth;
 		}
-		
-		int newWidthLeft = lastWidthLeft + newXDelta,
-				newWidthRight = swidth - newWidthLeft - newRoadWidth;
-		
-		
-		Log.d("toms-generation", "newXDelta = "+newXDelta);
-		Log.d("toms-generation", "Adding left : "+newWidthLeft+","+lastWidthLeft+","+originY);
-		
-		GameShape left = new GameShape(newWidthLeft, lastWidthLeft, 0, originY, GameLoop.HAUTEUR, true),
-				right = new GameShape(newWidthRight, lastWidthRight, swidth, originY, GameLoop.HAUTEUR, false);
+
+		int newWidthLeft = lastWidthLeft + newXDelta, newWidthRight = swidth
+				- newWidthLeft - newRoadWidth;
+
+		Log.d("toms-generation", "newXDelta = " + newXDelta);
+		Log.d("toms-generation", "Adding left : " + newWidthLeft + ","
+				+ lastWidthLeft + "," + originY);
+
+		GameShape left = new GameShape(newWidthLeft, lastWidthLeft, 0, originY,
+				GameLoop.HAUTEUR, true), right = new GameShape(newWidthRight,
+				lastWidthRight, swidth, originY, GameLoop.HAUTEUR, false);
 		leftShapes.add(left);
 		rightShapes.add(right);
 	}

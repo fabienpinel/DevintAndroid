@@ -43,7 +43,7 @@ public class GameOverActivity extends Activity implements OnInitListener {
 		loadSettings();
 		this.TTSinit();
 		
-		playThisText("GAME OVER");
+		//playThisText("GAME OVER");
 		/*
 		 * SON de gameOver ?
 		 */
@@ -71,6 +71,18 @@ public class GameOverActivity extends Activity implements OnInitListener {
 				startActivity(main);
 			}
 		});
+		/*
+		 * Ajout du listener sur le bouton menu pour revenir au menu
+		 */
+		Button menu = (Button) layout.findViewById(R.id.menu);
+		menu.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				Intent menuIntent = new Intent(GameOverActivity.this,
+						MainActivity.class);
+				startActivity(menuIntent);
+			}
+		});
+		
 		
 		setContentView(layout);
 		//playSound(R.drawable.game_over_song);
