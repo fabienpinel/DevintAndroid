@@ -57,11 +57,12 @@ public class GameLoop extends Thread {
 	private int							generatedHeight;
 	private int							firstElementY;
 	private int							level;
-	private int							explosionId;
+	private int							explosionIdBip, explosionIdBip2;
 	private SoundPool					soundPool;
 	private boolean						loaded			= false;
 	private int							nbCollision		= 0;
-	private Vibrator		vibreur;
+	private Vibrator					vibreur;
+
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
 		this.setHolder(holder);
@@ -81,9 +82,10 @@ public class GameLoop extends Thread {
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
-		
-		vibreur = (Vibrator) this.context.getSystemService(this.context.VIBRATOR_SERVICE);
-		
+
+		vibreur = (Vibrator) this.context
+				.getSystemService(this.context.VIBRATOR_SERVICE);
+
 		this.running = true;
 	}
 
@@ -174,8 +176,8 @@ public class GameLoop extends Thread {
 		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
 
 		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-		explosionId = soundPool.load(this.context, R.drawable.bip, 1);
-
+		explosionIdBip = soundPool.load(this.context, R.drawable.bip, 1);
+		explosionIdBip2 = soundPool.load(this.context, R.drawable.bip2, 1);
 		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
@@ -202,14 +204,13 @@ public class GameLoop extends Thread {
 					// Clear
 					if (canvas != null) {
 						canvas.drawColor(0, Mode.CLEAR);
-						
-						
+
 						if (this.score > this.bestScore) {
 							editor.putInt("bestScore", this.score);
 							editor.commit();
 							loadScore();
 						}
-						//Log.d("toms", "==============================");
+						// Log.d("toms", "==============================");
 
 						// Clean unused shapes
 						cleanShapes();
@@ -254,32 +255,46 @@ public class GameLoop extends Thread {
 						// Textes , scores et points de vie
 						canvas.drawText("Meilleur: " + bestScore, 0, 50, pscore);
 						canvas.drawText("Score: " + score, 0, 100, pscore);
-						canvas.drawText("Points de vie restants: "+(100-this.getNbCollision()), 0, 150, pscore);
+						canvas.drawText("Points de vie restants: "
+								+ (100 - this.getNbCollision()), 0, 150, pscore);
 						canvas.drawBitmap(myCar, getCarX(), getCarY(), null);
 
-						//Gestion des collisions
+						// Gestion des collisions
 						this.singTheDistance(getWallDistances(getCarY()));
 
-						/*canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
-								250, pscore);
-						canvas.drawCircle(getCarX(), getCarY(), 3, pscore);*/
+						/*
+						 * canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
+						 * 250, pscore); canvas.drawCircle(getCarX(), getCarY(),
+						 * 3, pscore);
+						 */
 
-						/*Log.d("toms","y = "+getCarY());
-						Log.d("toms","oY = "+leftShapes.get(0).getOriginY()+", h="+leftShapes.get(0).getHeight()+"/"+leftShapes.get(0).getPoints2());
-						Log.d("toms","oY2 = "+leftShapes.get(1).getOriginY()+", h2="+leftShapes.get(1).getHeight()+"/"+leftShapes.get(1).getPoints2());*/
-						GameShape testshape = getShapeForY(getCarY(), leftShapes);
-						//Log.d("toms", "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight()+":"+testshape);
-						//Log.d("toms", "shape("+getCarY()+")="+getShapeForY(getCarY(), leftShapes));
-						
+						/*
+						 * Log.d("toms","y = "+getCarY());
+						 * Log.d("toms","oY = "+leftShapes
+						 * .get(0).getOriginY()+", h="
+						 * +leftShapes.get(0).getHeight
+						 * ()+"/"+leftShapes.get(0).getPoints2());
+						 * Log.d("toms","oY2 = "
+						 * +leftShapes.get(1).getOriginY()+", h2="
+						 * +leftShapes.get
+						 * (1).getHeight()+"/"+leftShapes.get(1).getPoints2());
+						 */
+						GameShape testshape = getShapeForY(getCarY(),
+								leftShapes);
+						// Log.d("toms",
+						// "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight()+":"+testshape);
+						// Log.d("toms",
+						// "shape("+getCarY()+")="+getShapeForY(getCarY(),
+						// leftShapes));
+
 						if (level != OptionsActivity.FACILE) {
 							this.speed += 1;
 						}
 						// For debugging
-						/*try {
-				            Thread.sleep(500);
-				        } catch (InterruptedException e) {
-				            e.printStackTrace();
-				        }*/
+						/*
+						 * try { Thread.sleep(500); } catch
+						 * (InterruptedException e) { e.printStackTrace(); }
+						 */
 					} else {
 						Log.d("canvas null", "canvass null");
 					}
@@ -291,41 +306,56 @@ public class GameLoop extends Thread {
 			}
 		}
 	}
-	public boolean singTheDistance(int[] dist){
-		if(dist[0] <= 0 || dist[1]<=0){
-			//jouer pleine balle !!
-			this.playSound(R.drawable.bip, 0.5, 0.5);
+
+	public boolean singTheDistance(int[] dist) {
+		if (dist[0] <= 0 || dist[1] <= 0) {
+			// jouer pleine balle !!
+			this.playSound(this.explosionIdBip, 0.5, 0.5);
 			this.vibreur.vibrate(100);
-			this.setNbCollision(this.getNbCollision()+1);
+			this.setNbCollision(this.getNbCollision() + 1);
 			this.score -= 50;
-			if(this.getNbCollision()>=100){
-				 Intent go = new Intent(this.context, GameOverActivity.class);
-				 this.context.startActivity(go);
+			if (this.getNbCollision() >= 100) {
+				this.running = false;
+				Intent go = new Intent(this.context, GameOverActivity.class);
+				this.context.startActivity(go);
 			}
 			return true;
 		}
-		//côté gauche
-		else if(dist[0] <= 50){
-			this.playSound(R.drawable.bip, 1.0, 0.0);
+		// cote gauche
+		else if (dist[0] <= 300) {
+			// jouer moyen
+			this.playSound(this.explosionIdBip2, 0.7, 0.3);
 			return true;
-		}//côté droit
-		else if(dist[1] <= 50){
-			this.playSound(R.drawable.bip, 0.0, 1.0);
-			return true;
-		}
-		//cote gauche
-		else if(dist[0] <= 150){
-			//jouer moyen
-			this.playSound(R.drawable.bip, 0.8,0.2);
-			return true;
-		}//cote droit
-		else if(dist[1] <= 150){
-			//jouer moyen
-			this.playSound(R.drawable.bip, 0.2,0.8);
+		}// cote droit
+		else if (dist[1] <= 300) {
+			// jouer moyen
+			this.playSound(this.explosionIdBip2, 0.3, 0.7);
 			return true;
 		}
-		
-		else{
+
+		// cote gauche
+		else if (dist[0] <= 150) {
+			// jouer moyen
+			this.playSound(this.explosionIdBip2, 0.8, 0.2);
+			return true;
+		}// cote droit
+		else if (dist[1] <= 150) {
+			// jouer moyen
+			this.playSound(this.explosionIdBip2, 0.2, 0.8);
+			return true;
+		}
+
+		// côté gauche
+		else if (dist[0] <= 50) {
+			this.playSound(this.explosionIdBip2, 1.0, 0.0);
+			return true;
+		}// côté droit
+		else if (dist[1] <= 50) {
+			this.playSound(this.explosionIdBip2, 0.0, 1.0);
+			return true;
+		}
+
+		else {
 			return true;
 		}
 	}
@@ -355,9 +385,6 @@ public class GameLoop extends Thread {
 		cleanShapes(leftShapes);
 		cleanShapes(rightShapes);
 	}
-
-
-
 
 	/**
 	 * Removes the shapes that are now invisible
@@ -441,10 +468,10 @@ public class GameLoop extends Thread {
 	private int[] getWallDistances(int y) {
 		int result[] = new int[2];
 		List<GameShape> shapes = getShapesForY(y);
-		
+
 		// Left side
 		result[0] = getCarX() - shapes.get(0).getXForY(y);
-		
+
 		// Right side
 		result[1] = shapes.get(1).getXForY(y) - (getCarX() + getCarWidth());
 
@@ -460,7 +487,8 @@ public class GameLoop extends Thread {
 
 	private GameShape getShapeForY(int y, List<GameShape> list) {
 		for (GameShape p : list) {
-			//if (p.getOriginY() <= y && y <= (p.getOriginY() + p.getHeight())) {
+			// if (p.getOriginY() <= y && y <= (p.getOriginY() + p.getHeight()))
+			// {
 			if (p.getOriginY() - p.getHeight() <= y && y <= p.getOriginY()) {
 				return p;
 			}
@@ -616,7 +644,7 @@ public class GameLoop extends Thread {
 		ajouterUnTriangle(points.get(0), points.get(1), points.get(2), path,
 				paint, canvas);
 	}
-	
+
 	/**
 	 * Affichage des formes (du décor)
 	 * 
@@ -645,7 +673,7 @@ public class GameLoop extends Thread {
 
 	public void drawGameShape(GameShape t, Path path, Paint paint,
 			Canvas canvas, boolean left) {
-		//path = new Path();
+		// path = new Path();
 		mPoint p1 = t.getPoints2().get(0), p2 = t.getPoints2().get(1);
 
 		// Dessin du point aligné horizontalement avec p1
@@ -720,12 +748,13 @@ public class GameLoop extends Thread {
 
 	private void playSound(int resId, double left, double right) {
 		if (loaded) {
-			soundPool.play(explosionId, (float)left, (float)right, 0, 0, 2);
+			soundPool.play(resId, (float) left, (float) right, 0, 0, 2);
 		}
 	}
 
 	/**
 	 * Getters et Setters
+	 * 
 	 * @return
 	 */
 	public int getSwidth() {
@@ -819,6 +848,7 @@ public class GameLoop extends Thread {
 	public void setFirstElementY(int firstElementY) {
 		this.firstElementY = firstElementY;
 	}
+
 	public int getNbCollision() {
 		return nbCollision;
 	}
