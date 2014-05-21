@@ -270,6 +270,11 @@ public class GameLoop extends Thread {
 						canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
 								250, pscore);
 
+						Log.d("toms","oY = "+leftShapes.get(0).getOriginY()+", h="+leftShapes.get(0).getHeight());
+						GameShape testshape = getShapeForY(getCarY(), leftShapes);
+						Log.d("toms", "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight());
+						//Log.d("toms", "shape("+getCarY()+")="+getShapeForY(getCarY(), leftShapes));
+						
 						if (level != OptionsActivity.FACILE) {
 							this.speed += 1;
 						}
@@ -368,7 +373,6 @@ public class GameLoop extends Thread {
 
 	private void displayShapes(List<GameShape> shapesList, Path path,
 			Paint paint, Canvas canvas, boolean left) {
-		Log.d("toms","DRAWING!");
 		for (GameShape s : shapesList) {
 			boolean colorSwitch = false;
 
@@ -476,12 +480,12 @@ public class GameLoop extends Thread {
 
 	private List<GameShape> getShapesForY(int y) {
 		List<GameShape> result = new LinkedList();
-		result.add(getShapesForY(y, leftShapes));
-		result.add(getShapesForY(y, rightShapes));
+		result.add(getShapeForY(y, leftShapes));
+		result.add(getShapeForY(y, rightShapes));
 		return result;
 	}
 
-	private GameShape getShapesForY(int y, List<GameShape> list) {
+	private GameShape getShapeForY(int y, List<GameShape> list) {
 		for (GameShape p : list) {
 			if (p.getOriginY() <= y && y <= (p.getOriginY() + p.getHeight())) {
 				return p;
