@@ -220,7 +220,8 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	}
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-	    int keyCode = event.getKeyCode();
+		return true;
+	   /* int keyCode = event.getKeyCode();
 	        switch (keyCode) {
 	        case KeyEvent.KEYCODE_VOLUME_UP:
 	        	vue.game.addOrientationGap(50);
@@ -230,6 +231,6 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	            return true;
 	        default:
 	            return super.dispatchKeyEvent(event);
-	        }
+	        }*/
 	    }
 }
