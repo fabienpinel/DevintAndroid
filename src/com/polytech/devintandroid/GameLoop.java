@@ -67,7 +67,6 @@ public class GameLoop extends Thread {
 		this.context = context;
 		this.setHolder(holder);
 		this.car = car;
-		// TODO : put this back
 		this.setLevel(level);
 		// this.setLevel(OptionsActivity.FACILE);
 		settings = context.getSharedPreferences("prefs", Context.MODE_PRIVATE);
@@ -86,7 +85,7 @@ public class GameLoop extends Thread {
 		rightShapes = new ArrayList<GameShape>();
 
 		vibreur = (Vibrator) this.context
-				.getSystemService(this.context.VIBRATOR_SERVICE);
+				.getSystemService(Context.VIBRATOR_SERVICE);
 
 		this.running = true;
 	}
@@ -181,7 +180,7 @@ public class GameLoop extends Thread {
 		 */
 
 		((Activity) context).setVolumeControlStream(AudioManager.STREAM_MUSIC);
-		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
+		// Chargement du fichier
 
 		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
 		explosionIdBip = soundPool.load(this.context, R.drawable.bip, 1);
@@ -190,7 +189,6 @@ public class GameLoop extends Thread {
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 					int status) {
 				loaded = true;
-
 			}
 		});
 	}
@@ -201,7 +199,7 @@ public class GameLoop extends Thread {
 		// chargementDesPoints(this.pointsGauche, pointsG);
 		// chargementDesPoints(this.pointsDroite, pointsD);
 		this.position = 0;
-		this.positionx = 0;
+		this.setPositionx(0);
 		this.score = 0;
 		while (this.running) {
 			path = new Path();
@@ -256,8 +254,7 @@ public class GameLoop extends Thread {
 						}
 						this.updateOrientation(this.getOrientationGap());
 
-						//this.setOrientationGap(0);
-
+						// this.setOrientationGap(0);
 
 						// affichageDesPoints(path, p, canvas);
 						displayShapes(path, p, canvas);
@@ -273,12 +270,6 @@ public class GameLoop extends Thread {
 						this.singTheDistance(getWallDistances(getCarY()));
 
 						/*
-						 * canvas.drawText("Dist:" + dist[0] + "," + dist[1], 0,
-						 * 250, pscore); canvas.drawCircle(getCarX(), getCarY(),
-						 * 3, pscore);
-						 */
-
-						/*
 						 * Log.d("toms","y = "+getCarY());
 						 * Log.d("toms","oY = "+leftShapes
 						 * .get(0).getOriginY()+", h="
@@ -289,8 +280,8 @@ public class GameLoop extends Thread {
 						 * +leftShapes.get
 						 * (1).getHeight()+"/"+leftShapes.get(1).getPoints2());
 						 */
-						GameShape testshape = getShapeForY(getCarY(),
-								leftShapes);
+						/*GameShape testshape = getShapeForY(getCarY(),
+								leftShapes);*/
 						// Log.d("toms",
 						// "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight()+":"+testshape);
 						// Log.d("toms",
@@ -300,11 +291,6 @@ public class GameLoop extends Thread {
 						if (level != OptionsActivity.FACILE) {
 							this.speed += 1;
 						}
-						// For debugging
-						/*
-						 * try { Thread.sleep(500); } catch
-						 * (InterruptedException e) { e.printStackTrace(); }
-						 */
 					} else {
 						Log.d("canvas null", "canvass null");
 					}
@@ -317,16 +303,24 @@ public class GameLoop extends Thread {
 		}
 	}
 
+	/**
+	 * Fonction permettant de jouer des sons en fonction de la proximité avec
+	 * les murs de chaque côté.
+	 * 
+	 * @param dist
+	 * @return
+	 */
 	public boolean singTheDistance(int[] dist) {
 		if (dist[0] <= 0 || dist[1] <= 0) {
 			// jouer pleine balle !!
-			//a gauche
-			if(dist[0] <= 0 ){
+			// a gauche
+			if (dist[0] <= 0) {
 				this.playSound(this.explosionIdBip, 1, 0);
-			}else{
+			} else {
+				// a droite
 				this.playSound(this.explosionIdBip, 0, 1);
 			}
-			
+
 			this.vibreur.vibrate(100);
 			this.setNbCollision(this.getNbCollision() + 1);
 			this.score -= 50;
@@ -337,7 +331,6 @@ public class GameLoop extends Thread {
 			}
 			return true;
 		}
-	
 
 		// cote gauche
 		else if (dist[0] <= 100) {
@@ -630,7 +623,7 @@ public class GameLoop extends Thread {
 		for (GameShape s : shapesList) {
 			s.translate(dX, 0);
 		}
-		positionx += dX;
+		setPositionx(getPositionx() + dX);
 	}
 
 	/**
@@ -911,6 +904,14 @@ public class GameLoop extends Thread {
 
 	public void setNbCollision(int nbCollision) {
 		this.nbCollision = nbCollision;
+	}
+
+	public int getPositionx() {
+		return positionx;
+	}
+
+	public void setPositionx(int positionx) {
+		this.positionx = positionx;
 	}
 
 }
