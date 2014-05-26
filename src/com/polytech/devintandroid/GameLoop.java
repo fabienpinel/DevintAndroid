@@ -63,6 +63,8 @@ public class GameLoop extends Thread {
 	private int							nbCollision		= 0;
 	private Vibrator					vibreur;
 
+	// TODO : checkbox pour activer le boost
+	
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
 		this.setHolder(holder);
@@ -147,20 +149,20 @@ public class GameLoop extends Thread {
 	public void loadLevel() {
 		switch (this.getLevel()) {
 		case OptionsActivity.FACILE:
-			this.setSpeed(700);
+			this.setSpeed(150);
 			break;
 		case OptionsActivity.NORMAL:
-			this.setSpeed(1000);
+			this.setSpeed(380);
 			break;
 
 		case OptionsActivity.DIFFICILE:
-			this.setSpeed(1500);
+			this.setSpeed(600);
 			break;
 		case OptionsActivity.HARDCORE:
-			this.setSpeed(3000);
+			this.setSpeed(1200);
 			break;
 		default:
-			this.setSpeed(1000);
+			this.setSpeed(380);
 		}
 	}
 
@@ -264,7 +266,7 @@ public class GameLoop extends Thread {
 						canvas.drawText("Meilleur: " + bestScore, 0, 50, pscore);
 						canvas.drawText("Score: " + score, 0, 100, pscore);
 						canvas.drawText("Points de vie restants: "
-								+ (200 - this.getNbCollision()), 0, 150, pscore);
+								+ (400 - this.getNbCollision()), 0, 150, pscore);
 						canvas.drawBitmap(myCar, getCarX(), getCarY(), null);
 
 						// Gestion des collisions
@@ -289,7 +291,7 @@ public class GameLoop extends Thread {
 						// "shape("+getCarY()+")="+getShapeForY(getCarY(),
 						// leftShapes));
 
-						if (level != OptionsActivity.FACILE) {
+						if (level != OptionsActivity.FACILE && level != OptionsActivity.NORMAL) {
 							this.speed += 1;
 						}
 					} else {
@@ -316,16 +318,16 @@ public class GameLoop extends Thread {
 			// jouer pleine balle !!
 			// a gauche
 			if (dist[0] <= 0) {
-				this.playSound(this.explosionIdBip, 1, 0);
+				this.playSound(this.explosionIdBip, 0.7, 0);
 			} else {
 				// a droite
-				this.playSound(this.explosionIdBip, 0, 1);
+				this.playSound(this.explosionIdBip, 0, 0.7);
 			}
 
 			this.vibreur.vibrate(100);
 			this.setNbCollision(this.getNbCollision() + 1);
-			this.score -= 50;
-			if (this.getNbCollision() >= 200) {
+			//this.score -= 50;
+			if (this.getNbCollision() >= 400) {
 				this.running = false;
 				//mise a jour du score courant
 				editor.putInt("currentScore", this.score);
@@ -337,23 +339,23 @@ public class GameLoop extends Thread {
 		}
 
 		// cote gauche
-		else if (dist[0] <= 100) {
+		else if (dist[0] <= 150) {
 			// jouer moyen
-			this.playSound(this.explosionIdBip2, 0.8, 0.2);
+			this.playSound(this.explosionIdBip2, 0.8, 0.0);
 			return true;
 		}// cote droit
-		else if (dist[1] <= 100) {
+		else if (dist[1] <= 150) {
 			// jouer moyen
-			this.playSound(this.explosionIdBip2, 0.2, 0.8);
+			this.playSound(this.explosionIdBip2, 0.0, 0.8);
 			return true;
 		}
 
 		// côté gauche
-		else if (dist[0] <= 30) {
+		else if (dist[0] <= 50) {
 			this.playSound(this.explosionIdBip2, 1.0, 0.0);
 			return true;
 		}// côté droit
-		else if (dist[1] <= 30) {
+		else if (dist[1] <= 50) {
 			this.playSound(this.explosionIdBip2, 0.0, 1.0);
 			return true;
 		}
@@ -420,9 +422,6 @@ public class GameLoop extends Thread {
 	private void generateNewShapes() {
 		int lastRoadWidth = (int) (swidth * 0.9), // (int) myCar.getWidth()*3,
 		lastWidthLeft = (swidth - lastRoadWidth) / 2, lastWidthRight = (swidth - lastRoadWidth) / 2, // swidth
-																										// -
-																										// lastWidthLeft
-																										// -
 																										// lastRoadWidth,
 		lastXDelta = 0, originY = sheight;
 
@@ -438,7 +437,13 @@ public class GameLoop extends Thread {
 			lastRoadWidth = lastWidthRight - lastWidthLeft;
 			originY = lastLeft.getOriginY() - GameLoop.HAUTEUR;
 
-			newXDelta = lastXDelta + (int) ((-0.5 + Math.random()) * 600);
+			double difficultyCoeff = 1;
+			if (level == OptionsActivity.FACILE) {
+				difficultyCoeff = 0.5;
+			} else if (level == OptionsActivity.NORMAL) {
+				difficultyCoeff = 0.75;
+			}
+			newXDelta = lastXDelta + (int) ((-0.5 + Math.random()) * 600 * difficultyCoeff);
 			newRoadWidth = Math.min(swidth - 100, lastRoadWidth
 					+ (int) (-0.5 + Math.random()) * 100);
 		} else {
@@ -447,7 +452,13 @@ public class GameLoop extends Thread {
 			newRoadWidth = lastRoadWidth;
 		}
 
-		int minimumWidth = (int) (myCar.getWidth() * 3);
+		double minWidth = 3;
+		if (level == OptionsActivity.FACILE) {
+			minWidth = 5;
+		} else if (level == OptionsActivity.NORMAL) {
+			minWidth = 4;
+		}
+		int minimumWidth = (int) (myCar.getWidth() * minWidth);
 		if (newRoadWidth < minimumWidth) {
 			Log.d("toms-generation", "Setting road width to minimum !");
 			newRoadWidth = minimumWidth;

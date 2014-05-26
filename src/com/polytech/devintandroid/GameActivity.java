@@ -40,7 +40,7 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	private float			x, y, z;
 	private Display			display;
 	private Vue				vue;
-	private static int		majoration	= 6;
+	private static int		majoration	= 2;
 	private LinearLayout	layout		= null;
 	private int				car, level;
 	boolean					soundReady	= false;
@@ -148,9 +148,9 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 					break;
 				}
 				this.z = event.values[2];
-				if (x > 0) {
-					x *= majoration;
-				}
+				
+				x *= majoration;
+				
 				vue.game.setOrientationGap((int) Math.round(x));
 				//vue.game.addOrientationGap((int) Math.round(x));
 
@@ -161,6 +161,9 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
+		if (level == OptionsActivity.FACILE) {
+			return true;
+		}
 		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
 			this.vue.speedBoostOnTouch();
 		} else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
