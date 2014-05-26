@@ -147,7 +147,7 @@ public class GameLoop extends Thread {
 	public void loadLevel() {
 		switch (this.getLevel()) {
 		case OptionsActivity.FACILE:
-			this.setSpeed(800);
+			this.setSpeed(700);
 			break;
 		case OptionsActivity.NORMAL:
 			this.setSpeed(1000);
@@ -249,9 +249,7 @@ public class GameLoop extends Thread {
 							generateNewShapes(missingShapes);
 						}
 						this.update();
-						//mise a jour du score courant
-						editor.putInt("currentScore", this.score);
-						editor.commit();
+						
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
@@ -329,6 +327,9 @@ public class GameLoop extends Thread {
 			this.score -= 50;
 			if (this.getNbCollision() >= 200) {
 				this.running = false;
+				//mise a jour du score courant
+				editor.putInt("currentScore", this.score);
+				editor.commit();
 				Intent go = new Intent(this.context, GameOverActivity.class);
 				this.context.startActivity(go);
 			}
@@ -714,11 +715,11 @@ public class GameLoop extends Thread {
 			Paint paint, Canvas canvas, boolean left) {
 		for (GameShape s : shapesList) {
 			// TODO : remove the red painting!
-			if (getShapesForY(getCarY()).contains(s)) {
+			/*if (getShapesForY(getCarY()).contains(s)) {
 				paint.setColor(Color.RED);
 			} else {
 				paint.setColor(Color.WHITE);
-			}
+			}*/
 			drawGameShape(s, path, paint, canvas, left);
 		}
 	}
