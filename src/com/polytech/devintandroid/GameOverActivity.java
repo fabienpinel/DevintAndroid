@@ -32,7 +32,7 @@ public class GameOverActivity extends Activity {
 	private SoundPool	soundPool;
 	private boolean		loaded	= false;
 	private RelativeLayout	layout		= null;
-
+	private int currentScore = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,6 +40,8 @@ public class GameOverActivity extends Activity {
 				R.layout.activity_game_over, null);
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		loadSettings();
+		
+		
 		
 		//playThisText("GAME OVER");
 		/*
@@ -99,6 +101,9 @@ public class GameOverActivity extends Activity {
 	public void loadSettings() {
 		SharedPreferences settings = getSharedPreferences("prefs",
 				Context.MODE_PRIVATE);
+		this.currentScore = settings.getInt("currentScore", 0);
+		TextView score = (TextView) layout.findViewById(R.id.gameOverScore);
+		score.setText("Ton score : "+this.currentScore);
 		TextView titre = (TextView) layout.findViewById(R.id.gameOverTitle);
 		switch (settings.getInt("titreFond", 0)) {
 		case OptionsActivity.THEME_BLEU:

@@ -249,6 +249,9 @@ public class GameLoop extends Thread {
 							generateNewShapes(missingShapes);
 						}
 						this.update();
+						//mise a jour du score courant
+						editor.putInt("currentScore", this.score);
+						editor.commit();
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
