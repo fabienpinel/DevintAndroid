@@ -1,27 +1,24 @@
 package com.polytech.devintandroid;
 
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.app.Activity;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 
 /**
@@ -46,7 +43,8 @@ public class OptionsActivity extends Activity {
 	public static final int	HARDCORE	= 3;
 	// SPINNERS
 	private Spinner			themeSpinner, carSpinner, levelSpinner;
-
+	private CheckBox		boostCheck, sonCheck;
+	private boolean			boostc,sonc;
 	private LinearLayout	layout		= null;
 	private int				posTheme, posCar, posLevel;
 
@@ -57,7 +55,6 @@ public class OptionsActivity extends Activity {
 				R.layout.activity_options, null);
 		loadSettings();
 		setContentView(layout);
-		Intent intent = getIntent();
 
 		themeSpinner = (Spinner) findViewById(R.id.selectionTheme);
 		themeSpinner.setAdapter(ArrayAdapter.createFromResource(this,
@@ -121,6 +118,27 @@ public class OptionsActivity extends Activity {
 
 		});
 
+		boostCheck = (CheckBox) findViewById(R.id.boostCheck);
+		boostCheck.setChecked(this.boostc);
+		boostCheck.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+					boostc = ((CheckBox) v).isChecked();
+					saveSettings();
+			}
+		});
+		sonCheck = (CheckBox) findViewById(R.id.son);
+		sonCheck.setChecked(this.sonc);
+		sonCheck.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				sonc = ((CheckBox) v).isChecked();
+				saveSettings();
+				
+			}
+		});
 		/*
 		 * Ajout du listener sur le bouton retour pour revenir à MainActivity
 		 */
@@ -156,6 +174,9 @@ public class OptionsActivity extends Activity {
 		}
 		this.posCar = settings.getInt("car", 0);
 		this.posLevel = settings.getInt("level", 0);
+		this.boostc = settings.getBoolean("boost", false);
+		this.sonc = settings.getBoolean("son", false);
+		
 
 	}
 
@@ -166,6 +187,8 @@ public class OptionsActivity extends Activity {
 		editor.putInt("titreFond", posTheme);
 		editor.putInt("car", posCar);
 		editor.putInt("level", posLevel);
+		editor.putBoolean("boost", boostc);
+		editor.putBoolean("son", sonc);
 		editor.commit();
 	}
 

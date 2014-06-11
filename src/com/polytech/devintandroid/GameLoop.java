@@ -62,9 +62,12 @@ public class GameLoop extends Thread {
 	private boolean						loaded			= false;
 	private int							nbCollision		= 0;
 	private Vibrator					vibreur;
+	private boolean						son;
 
-	// TODO : checkbox pour activer le boost
-	
+	// TODO : cul de voiture en haut de l'écran
+	// TODO rajouter des voitures
+	// TODO tourner plus vite plus on penche
+
 	public GameLoop(Context context, SurfaceHolder holder, int car, int level) {
 		this.context = context;
 		this.setHolder(holder);
@@ -82,6 +85,7 @@ public class GameLoop extends Thread {
 		loadScore();
 		loadLevel();
 		loadSong();
+		loadSon();
 
 		leftShapes = new ArrayList<GameShape>();
 		rightShapes = new ArrayList<GameShape>();
@@ -173,6 +177,10 @@ public class GameLoop extends Thread {
 		this.bestScore = settings.getInt("bestScore", 0);
 	}
 
+	public void loadSon() {
+		this.son = settings.getBoolean("son", false);
+	}
+
 	/**
 	 * Initialisation du système sonore
 	 */
@@ -251,7 +259,7 @@ public class GameLoop extends Thread {
 							generateNewShapes(missingShapes);
 						}
 						this.update();
-						
+
 						if ((this.position) >= (GameLoop.HAUTEUR)) {
 							this.position -= GameLoop.HAUTEUR;
 						}
@@ -270,6 +278,7 @@ public class GameLoop extends Thread {
 						canvas.drawBitmap(myCar, getCarX(), getCarY(), null);
 
 						// Gestion des collisions
+
 						this.singTheDistance(getWallDistances(getCarY()));
 
 						/*
@@ -283,15 +292,18 @@ public class GameLoop extends Thread {
 						 * +leftShapes.get
 						 * (1).getHeight()+"/"+leftShapes.get(1).getPoints2());
 						 */
-						/*GameShape testshape = getShapeForY(getCarY(),
-								leftShapes);*/
+						/*
+						 * GameShape testshape = getShapeForY(getCarY(),
+						 * leftShapes);
+						 */
 						// Log.d("toms",
 						// "shape("+getCarY()+"): oY="+testshape.getOriginY()+", h="+testshape.getHeight()+":"+testshape);
 						// Log.d("toms",
 						// "shape("+getCarY()+")="+getShapeForY(getCarY(),
 						// leftShapes));
 
-						if (level != OptionsActivity.FACILE && level != OptionsActivity.NORMAL) {
+						if (level != OptionsActivity.FACILE
+								&& level != OptionsActivity.NORMAL) {
 							this.speed += 1;
 						}
 					} else {
@@ -317,19 +329,21 @@ public class GameLoop extends Thread {
 		if (dist[0] <= 0 || dist[1] <= 0) {
 			// jouer pleine balle !!
 			// a gauche
-			if (dist[0] <= 0) {
-				this.playSound(this.explosionIdBip, 0.7, 0);
-			} else {
-				// a droite
-				this.playSound(this.explosionIdBip, 0, 0.7);
+			if (son) {
+				if (dist[0] <= 0) {
+					this.playSound(this.explosionIdBip, 0.7, 0);
+				} else {
+					// a droite
+					this.playSound(this.explosionIdBip, 0, 0.7);
+				}
 			}
 
 			this.vibreur.vibrate(100);
 			this.setNbCollision(this.getNbCollision() + 1);
-			//this.score -= 50;
+			// this.score -= 50;
 			if (this.getNbCollision() >= 400) {
 				this.running = false;
-				//mise a jour du score courant
+				// mise a jour du score courant
 				editor.putInt("currentScore", this.score);
 				editor.commit();
 				Intent go = new Intent(this.context, GameOverActivity.class);
@@ -339,23 +353,23 @@ public class GameLoop extends Thread {
 		}
 
 		// cote gauche
-		else if (dist[0] <= 150) {
+		else if (dist[0] <= 150 && son) {
 			// jouer moyen
 			this.playSound(this.explosionIdBip2, 0.8, 0.0);
 			return true;
 		}// cote droit
-		else if (dist[1] <= 150) {
+		else if (dist[1] <= 150 && son) {
 			// jouer moyen
 			this.playSound(this.explosionIdBip2, 0.0, 0.8);
 			return true;
 		}
 
 		// côté gauche
-		else if (dist[0] <= 50) {
+		else if (dist[0] <= 50 && son) {
 			this.playSound(this.explosionIdBip2, 1.0, 0.0);
 			return true;
 		}// côté droit
-		else if (dist[1] <= 50) {
+		else if (dist[1] <= 50 && son) {
 			this.playSound(this.explosionIdBip2, 0.0, 1.0);
 			return true;
 		}
@@ -443,7 +457,8 @@ public class GameLoop extends Thread {
 			} else if (level == OptionsActivity.NORMAL) {
 				difficultyCoeff = 0.75;
 			}
-			newXDelta = lastXDelta + (int) ((-0.5 + Math.random()) * 600 * difficultyCoeff);
+			newXDelta = lastXDelta
+					+ (int) ((-0.5 + Math.random()) * 600 * difficultyCoeff);
 			newRoadWidth = Math.min(swidth - 100, lastRoadWidth
 					+ (int) (-0.5 + Math.random()) * 100);
 		} else {
@@ -478,34 +493,6 @@ public class GameLoop extends Thread {
 		rightShapes.add(right);
 	}
 
-	private void generateNewShape(List<GameShape> shapeList, boolean isLeft) {
-		int previousWidth = 100;
-		int originX = 0, originY = sheight;
-
-		if (!isLeft) {
-			originX = swidth;
-		}
-
-		if (shapeList.size() > 0) {
-			GameShape previousShape = shapeList.get(shapeList.size() - 1);
-			if (previousShape != null) {
-				previousWidth = previousShape.getWidth();
-				originY = previousShape.getOriginY()
-						- previousShape.getHeight();
-			}
-		}
-
-		int newWidth = Math.min(400,
-				previousWidth + (int) ((0.5 - Math.random()) * 600));
-		if (newWidth < 10)
-			newWidth = 10;
-		GameShape s = new GameShape(newWidth, previousWidth, originX, originY,
-				GameLoop.HAUTEUR, isLeft);
-		// Log.d("debug", "Generated Shape:" + s);
-		shapeList.add(s);
-	}
-
-	/** Dessiner les composant du jeu sur le buffer de l'écran */
 	/*
 	 * public void render() { this.screen.canvas.drawPaint(p);
 	 * screen.affichageDesPoints(this.path, this.p, this.screen.canvas); Bitmap
@@ -513,21 +500,6 @@ public class GameLoop extends Thread {
 	 * R.drawable.car); this.screen.canvas.drawBitmap(car, (this.getSwidth() /
 	 * 2) - 80, this.getSheight() - 300, null); }
 	 */
-
-	private void cleanLast(List<mPoint> points) {
-		for (int i = 0; i < points.size(); ++i) {// mPoint p : points) {
-			mPoint p = points.get(i);
-			if (p.getY() > sheight) {
-				points.remove(i);
-				--i;
-			}
-		}
-
-		/*
-		 * Log.d("apres clean " + pointsGauche.size(), "apres clean " +
-		 * pointsGauche.size());
-		 */
-	}
 
 	private int[] getWallDistances(int y) {
 		int result[] = new int[2];
@@ -725,12 +697,11 @@ public class GameLoop extends Thread {
 	private void displayShapes(List<GameShape> shapesList, Path path,
 			Paint paint, Canvas canvas, boolean left) {
 		for (GameShape s : shapesList) {
-			// TODO : remove the red painting!
-			/*if (getShapesForY(getCarY()).contains(s)) {
-				paint.setColor(Color.RED);
-			} else {
-				paint.setColor(Color.WHITE);
-			}*/
+			/*
+			 * if (getShapesForY(getCarY()).contains(s)) {
+			 * paint.setColor(Color.RED); } else { paint.setColor(Color.WHITE);
+			 * }
+			 */
 			drawGameShape(s, path, paint, canvas, left);
 		}
 	}

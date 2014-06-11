@@ -3,8 +3,6 @@ package com.polytech.devintandroid;
 import java.util.LinkedList;
 import java.util.List;
 
-import android.util.Log;
-
 /**
  * 
  * @author Tom Guillermin

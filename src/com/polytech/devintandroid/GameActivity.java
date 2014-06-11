@@ -1,13 +1,8 @@
 package com.polytech.devintandroid;
 
-import android.media.AudioManager;
-import android.media.SoundPool;
-import android.media.SoundPool.OnLoadCompleteListener;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.text.Editable;
@@ -18,8 +13,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.View;
-import android.view.View.OnKeyListener;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.graphics.Canvas;
@@ -33,8 +26,9 @@ import android.hardware.SensorManager;
  * @author Fabien Pinel
  * 
  */
-public class GameActivity extends Activity implements SensorEventListener, KeyListener {
-	
+public class GameActivity extends Activity implements SensorEventListener,
+		KeyListener {
+
 	private SensorManager	sensorManager;
 	private Sensor			accelerometer;
 	private float			x, y, z;
@@ -45,20 +39,20 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	private int				car, level;
 	boolean					soundReady	= false;
 	private Canvas			canvas;
-	
+	private boolean			boost;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setLayout(((LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game, null)));
-		
+
 		// empecher la mise en veille de l'écran
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		/*
 		 * Lecture de fichier son
 		 */
-		
+
 		loadSettings();
 		vue = new Vue(this, car, level);
 		gameActivityInit();
@@ -148,11 +142,11 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 					break;
 				}
 				this.z = event.values[2];
-				
+
 				x *= majoration;
-				
+
 				vue.game.setOrientationGap((int) Math.round(x));
-				//vue.game.addOrientationGap((int) Math.round(x));
+				// vue.game.addOrientationGap((int) Math.round(x));
 
 			}
 		}
@@ -164,10 +158,12 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 		if (level == OptionsActivity.FACILE) {
 			return true;
 		}
-		if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
-			this.vue.speedBoostOnTouch();
-		} else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
-			this.vue.speedBoostOnRelease();
+		if (boost) {
+			if (event.getAction() == android.view.MotionEvent.ACTION_DOWN) {
+				this.vue.speedBoostOnTouch();
+			} else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+				this.vue.speedBoostOnRelease();
+			}
 		}
 		return true;
 	}
@@ -177,6 +173,7 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 				Context.MODE_PRIVATE);
 		this.car = settings.getInt("car", 0);
 		this.level = settings.getInt("level", OptionsActivity.NORMAL);
+		this.boost = settings.getBoolean("boost", false);
 	}
 
 	public LinearLayout getLayout() {
@@ -207,8 +204,7 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	@Override
 	public boolean onKeyDown(View view, Editable text, int keyCode,
 			KeyEvent event) {
-	
-		
+
 		return true;
 	}
 
@@ -221,19 +217,16 @@ public class GameActivity extends Activity implements SensorEventListener, KeyLi
 	public boolean onKeyUp(View view, Editable text, int keyCode, KeyEvent event) {
 		return false;
 	}
+
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
 		return true;
-	   /* int keyCode = event.getKeyCode();
-	        switch (keyCode) {
-	        case KeyEvent.KEYCODE_VOLUME_UP:
-	        	vue.game.addOrientationGap(50);
-	            return true;
-	        case KeyEvent.KEYCODE_VOLUME_DOWN:
-	        	vue.game.addOrientationGap(-50);
-	            return true;
-	        default:
-	            return super.dispatchKeyEvent(event);
-	        }*/
-	    }
+		/*
+		 * int keyCode = event.getKeyCode(); switch (keyCode) { case
+		 * KeyEvent.KEYCODE_VOLUME_UP: vue.game.addOrientationGap(50); return
+		 * true; case KeyEvent.KEYCODE_VOLUME_DOWN:
+		 * vue.game.addOrientationGap(-50); return true; default: return
+		 * super.dispatchKeyEvent(event); }
+		 */
+	}
 }

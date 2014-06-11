@@ -1,6 +1,5 @@
 package com.polytech.devintandroid;
 
-import java.util.Locale;
 
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -12,38 +11,32 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.TextToSpeech.OnInitListener;
-import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
+
 /**
  * 
  * @author Fabien Pinel
- *
+ * 
  */
 public class GameOverActivity extends Activity {
-	private int			explosionId;
-	private SoundPool	soundPool;
-	private boolean		loaded	= false;
-	private RelativeLayout	layout		= null;
-	private int currentScore = 0;
+	private int				explosionId;
+	private SoundPool		soundPool;
+	private boolean			loaded			= false;
+	private LinearLayout	layout			= null;
+	private int				currentScore	= 0;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		layout = (RelativeLayout) RelativeLayout.inflate(this,
+		layout = (LinearLayout) LinearLayout.inflate(this,
 				R.layout.activity_game_over, null);
 		this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		loadSettings();
-		
-		
-		
-		//playThisText("GAME OVER");
+
+		// playThisText("GAME OVER");
 		/*
 		 * SON de gameOver ?
 		 */
@@ -51,7 +44,7 @@ public class GameOverActivity extends Activity {
 		// Chargement du fichier musique.mp3 qui se trouve sous assets de notre
 
 		soundPool = new SoundPool(20, AudioManager.STREAM_MUSIC, 0);
-		
+
 		explosionId = soundPool.load(this, R.drawable.game_over, 1);
 
 		soundPool.setOnLoadCompleteListener(new OnLoadCompleteListener() {
@@ -84,17 +77,17 @@ public class GameOverActivity extends Activity {
 				startActivity(menuIntent);
 			}
 		});
-		
-		
+
 		setContentView(layout);
-		//playSound(R.drawable.game_over_song);
+		// playSound(R.drawable.game_over_song);
 	}
+
 	private void playSound(int resId) {
 		if (loaded) {
-			soundPool.play(resId, (float)2, (float)2, 0, 0, 1);
+			soundPool.play(resId, (float) 2, (float) 2, 0, 0, 1);
 		}
 	}
-	
+
 	/**
 	 * Chargement de la couleur du thème choisi pour la couleur de fond du titre
 	 */
@@ -103,7 +96,7 @@ public class GameOverActivity extends Activity {
 				Context.MODE_PRIVATE);
 		this.currentScore = settings.getInt("currentScore", 0);
 		TextView score = (TextView) layout.findViewById(R.id.gameOverScore);
-		score.setText("Ton score : "+this.currentScore);
+		score.setText("Ton score : " + this.currentScore);
 		TextView titre = (TextView) layout.findViewById(R.id.gameOverTitle);
 		switch (settings.getInt("titreFond", 0)) {
 		case OptionsActivity.THEME_BLEU:
@@ -118,5 +111,5 @@ public class GameOverActivity extends Activity {
 		}
 
 	}
-	
+
 }

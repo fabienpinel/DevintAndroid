@@ -60,16 +60,39 @@ android:layout_height="match_parent"
         android:textStyle="bold"
         android:entries="@array/choixdifficulte" />
 
+	<CheckBox
+	    android:id="@+id/boostCheck"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/selectionDifficulte"
+	    android:layout_centerHorizontal="true"
+	    android:text="Boost ?"
+	    android:textColor="#000000"
+	    android:textSize="@dimen/corpText"
+        android:textStyle="bold" />
+	<CheckBox
+	    android:id="@+id/son"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/boostCheck"
+	    android:layout_centerHorizontal="true"
+	    android:text="Son ?"
+	    android:textColor="#000000"
+	    android:textSize="@dimen/corpText"
+        android:textStyle="bold" />
+
      <Button
          android:id="@+id/backOptions"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
-         android:layout_below="@+id/selectionDifficulte"
+         android:layout_below="@+id/son"
          android:layout_marginTop="22dp"
          android:layout_weight="0.20"
          android:text="Retour"
          android:textSize="@dimen/menuDimension"
          android:textStyle="bold" />
+
+     
 
 </RelativeLayout>
 </ScrollView>

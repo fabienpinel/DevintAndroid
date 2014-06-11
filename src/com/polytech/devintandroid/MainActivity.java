@@ -15,7 +15,7 @@ import android.widget.TextView;
 /**
  * 
  * @author Fabien Pinel
- *
+ * Voir http://developer.android.com/sdk/installing/installing-adt.html pour installation
  */
 public class MainActivity extends Activity{
 	LinearLayout	layout	= null;
